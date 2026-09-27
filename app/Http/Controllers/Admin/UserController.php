@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -38,8 +39,8 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'full_name'    => 'required|string|max:255',
-            'username'     => 'required|string|max:255|unique:users,username,' . $user->user_id . ',user_id',
-            'email'        => 'required|email|unique:users,email,' . $user->user_id . ',user_id',
+            'username'     => 'required|string|max:255|unique:users,username,' . $user->getKey() . ',' . $user->getKeyName(),
+            'email'        => 'required|email|unique:users,email,' . $user->getKey() . ',' . $user->getKeyName(),
             'phone_number' => 'nullable|string|max:20',
             'role'         => 'required|in:admin,staff,finance',
             'status'       => 'required|in:active,inactive',
@@ -57,7 +58,7 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
-        if ($user->user_id === auth()->user()->user_id) {
+        if ($user->getKey() === Auth::id()) {
             return redirect()->back()->with('error', 'You cannot delete your own account.');
         }
 
