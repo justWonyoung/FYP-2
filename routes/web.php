@@ -12,6 +12,7 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+// Authentication Routes (includes Login, Register, Password Reset)
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
@@ -24,6 +25,10 @@ Route::middleware(['auth'])->group(function () {
                             ->latest()->get();
         return view('admin.dashboard', compact('pendingApprovals'));
     })->name('admin.dashboard');
+
+    Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
+        Route::resource('users', UserController::class);
+    });
 
     Route::get('/pr/admin-show/{id}', [PurchaseRequestController::class, 'showAdminApprove'])->name('pr.admin.show');
     Route::post('/pr/admin-approve/{id}', [PurchaseRequestController::class, 'adminApprove'])->name('pr.admin.approve');
@@ -61,6 +66,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/finance/expenses', [FinancialController::class, 'index'])->name('finance.expenses.index');
     Route::post('/finance/expenses/store', [FinancialController::class, 'storeExpense'])->name('finance.expenses.store');
     Route::get('/finance/report', [FinancialController::class, 'report'])->name('finance.report');
+
+    
 
     // Logout
     Route::get('/logout-custom', function () {

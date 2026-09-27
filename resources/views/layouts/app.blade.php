@@ -29,6 +29,9 @@
                             <a class="nav-link {{ request()->is('admin/dashboard') ? 'active' : '' }}" href="/admin/dashboard"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link {{ request()->is('admin/users*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}"><i class="bi bi-people me-2"></i> User Management</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link {{ request()->is('inventory*') ? 'active' : '' }}" href="/inventory"><i class="bi bi-box-seam me-2"></i> Inventory</a>
                         </li>
                         <li class="nav-item">
