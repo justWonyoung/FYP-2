@@ -11,71 +11,95 @@ use App\Http\Controllers\FinancialController;
 use App\Http\Controllers\PurchaseRequestController;
 
 
-// ==============================
-// Landing Page
-// ==============================
+
+/*
+|--------------------------------------------------------------------------
+| LANDING PAGE
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/', function () {
+
     return view('welcome');
+
 });
 
 
-// ==============================
-// Authentication
-// ==============================
+
+/*
+|--------------------------------------------------------------------------
+| AUTH
+|--------------------------------------------------------------------------
+*/
 
 Auth::routes();
 
 
-// ==============================
-// Role Based Home Redirect
-// ==============================
+
+
+/*
+|--------------------------------------------------------------------------
+| HOME REDIRECT
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/home', function () {
 
+
     $user = Auth::user();
 
-    if (!$user) {
+
+    if(!$user){
+
         return redirect('/login');
+
     }
 
 
-    switch ($user->role) {
 
-        case 'admin':
-            return redirect()
-                ->route('admin.dashboard');
+    return match($user->role){
 
-
-        case 'staff':
-            return redirect()
-                ->route('staff.dashboard');
+        'admin'
+            => redirect()->route('admin.dashboard'),
 
 
-        case 'finance':
-            return redirect()
-                ->route('finance.dashboard');
+        'staff'
+            => redirect()->route('staff.dashboard'),
 
 
-        default:
-            return redirect('/login');
-    }
-
-})->name('home');
+        'finance'
+            => redirect()->route('finance.dashboard'),
 
 
+        default
+            => redirect('/login'),
 
-// ==============================
-// Custom Logout
-// ==============================
+    };
 
-Route::get('/logout-custom', function () {
+
+})
+->name('home');
+
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| LOGOUT
+|--------------------------------------------------------------------------
+*/
+
+
+Route::get('/logout-custom', function(){
 
     Auth::logout();
+
 
     request()
         ->session()
         ->invalidate();
+
 
     request()
         ->session()
@@ -84,217 +108,278 @@ Route::get('/logout-custom', function () {
 
     return redirect('/login');
 
+
 });
 
 
 
-// ==============================
-// AUTHENTICATED USERS
-// ==============================
 
-Route::middleware(['auth'])->group(function () {
 
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | ADMIN MODULE
-    |--------------------------------------------------------------------------
-    */
+/*
+|--------------------------------------------------------------------------
+| AUTHENTICATED USERS
+|--------------------------------------------------------------------------
+*/
 
-    Route::middleware(['role:admin'])
-        ->prefix('admin')
-        ->name('admin.')
-        ->group(function () {
 
+Route::middleware(['auth'])->group(function(){
 
-            // Dashboard
-            Route::get(
-                '/dashboard',
-                [DashboardController::class, 'admin']
-            )
-            ->name('dashboard');
 
 
 
-            // User Management CRUD
-            Route::resource(
-                'users',
-                UserController::class
-            );
 
 
-            // Purchase Request Approval
-            Route::get(
-                '/purchase-requests',
-                [PurchaseRequestController::class,'index']
-            )
-            ->name('purchase.requests');
+/*
+|--------------------------------------------------------------------------
+| ADMIN MODULE
+|--------------------------------------------------------------------------
+*/
 
 
-            Route::post(
-                '/purchase-request/{id}/approve',
-                [PurchaseRequestController::class,'approve']
-            )
-            ->name('purchase.approve');
+Route::middleware(['role:admin'])
+->prefix('admin')
+->name('admin.')
+->group(function(){
 
 
-            Route::post(
-                '/purchase-request/{id}/reject',
-                [PurchaseRequestController::class,'reject']
-            )
-            ->name('purchase.reject');
 
-        });
+    Route::get(
+        '/dashboard',
+        [DashboardController::class,'admin']
+    )
+    ->name('dashboard');
 
 
 
+    Route::resource(
+        'users',
+        UserController::class
+    );
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | STAFF MODULE
-    |--------------------------------------------------------------------------
-    */
 
-    Route::middleware(['role:staff,admin'])
-        ->prefix('staff')
-        ->name('staff.')
-        ->group(function () {
+    // Admin Purchase Approval
 
+    Route::get(
+        '/purchase-requests',
+        [PurchaseRequestController::class,'index']
+    )
+    ->name('purchase.requests');
 
-            // Staff Dashboard
 
-            Route::get(
-                '/dashboard',
-                [DashboardController::class,'staff']
-            )
-            ->name('dashboard');
 
+    Route::post(
+        '/purchase-request/{id}/approve',
+        [PurchaseRequestController::class,'approve']
+    )
+    ->name('purchase.approve');
 
 
-            // Create Purchase Request
 
-            Route::get(
-                '/pr/create',
-                [PurchaseRequestController::class,'create']
-            )
-            ->name('pr.create');
+    Route::post(
+        '/purchase-request/{id}/reject',
+        [PurchaseRequestController::class,'reject']
+    )
+    ->name('purchase.reject');
 
 
 
-            Route::post(
-                '/pr/store',
-                [PurchaseRequestController::class,'store']
-            )
-            ->name('pr.store');
+});
 
 
 
-            // Inventory
 
-            Route::get(
-                '/inventory',
-                [InventoryController::class,'index']
-            )
-            ->name('inventory.index');
 
 
 
-            // Production
 
-            Route::get(
-                '/production',
-                [ProductionController::class,'index']
-            )
-            ->name('production.index');
 
-        });
+/*
+|--------------------------------------------------------------------------
+| STAFF MODULE
+|--------------------------------------------------------------------------
+*/
 
 
+Route::middleware(['role:staff,admin'])
+->prefix('staff')
+->name('staff.')
+->group(function(){
 
 
 
+    Route::get(
+        '/dashboard',
+        [DashboardController::class,'staff']
+    )
+    ->name('dashboard');
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | FINANCE MODULE
-    |--------------------------------------------------------------------------
-    */
 
-    Route::middleware(['role:finance,admin'])
-        ->prefix('finance')
-        ->name('finance.')
-        ->group(function () {
+    // Create Purchase Request
 
+    Route::get(
+        '/pr/create',
+        [PurchaseRequestController::class,'create']
+    )
+    ->name('pr.create');
 
 
-            // Finance Dashboard
 
-            Route::get(
-                '/dashboard',
-                [DashboardController::class,'finance']
-            )
-            ->name('dashboard');
+    Route::post(
+        '/pr/store',
+        [PurchaseRequestController::class,'store']
+    )
+    ->name('pr.store');
 
 
 
-            // Expense List
+});
 
-            Route::get(
-                '/expenses',
-                [FinancialController::class,'expenses']
-            )
-            ->name('expenses');
 
 
 
-            // Store Expense
 
-            Route::post(
-                '/expenses/store',
-                [FinancialController::class,'storeExpense']
-            )
-            ->name('expenses.store');
 
 
 
-            // Financial Report
 
-            Route::get(
-                '/report',
-                [FinancialController::class,'report']
-            )
-            ->name('report');
+/*
+|--------------------------------------------------------------------------
+| FINANCE MODULE
+|--------------------------------------------------------------------------
+*/
 
 
+Route::middleware(['role:finance,admin'])
+->prefix('finance')
+->name('finance.')
+->group(function(){
 
-            // Purchase Request Review
 
-            Route::get(
-                '/purchase-requests',
-                [PurchaseRequestController::class,'financeReview']
-            )
-            ->name('purchase.review');
 
+    Route::get(
+        '/dashboard',
+        [DashboardController::class,'finance']
+    )
+    ->name('dashboard');
 
-            Route::post(
-                '/purchase-request/{id}/approve',
-                [PurchaseRequestController::class,'financeApprove']
-            )
-            ->name('purchase.approve');
 
 
-            Route::post(
-                '/purchase-request/{id}/reject',
-                [PurchaseRequestController::class,'financeReject']
-            )
-            ->name('purchase.reject');
+    // Expenses
 
+    Route::get(
+        '/expenses',
+        [FinancialController::class,'expenses']
+    )
+    ->name('expenses');
 
-        });
 
+
+    Route::post(
+        '/expenses/store',
+        [FinancialController::class,'storeExpense']
+    )
+    ->name('expenses.store');
+
+
+
+    // Financial Report
+
+    Route::get(
+        '/report',
+        [FinancialController::class,'report']
+    )
+    ->name('report');
+
+
+
+    // Finance Purchase Review
+
+    Route::get(
+        '/purchase-requests',
+        [PurchaseRequestController::class,'financeReview']
+    )
+    ->name('purchase.review');
+
+
+
+    Route::post(
+        '/purchase-request/{id}/approve',
+        [PurchaseRequestController::class,'financeApprove']
+    )
+    ->name('purchase.approve');
+
+
+
+    Route::post(
+        '/purchase-request/{id}/reject',
+        [PurchaseRequestController::class,'financeReject']
+    )
+    ->name('purchase.reject');
+
+
+
+});
+
+
+
+
+
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| SHARED OPERATIONAL MODULE
+|--------------------------------------------------------------------------
+|
+| Inventory and Production are shared modules.
+| Admin, Staff and Finance can access them.
+|
+|--------------------------------------------------------------------------
+*/
+
+
+Route::middleware(['auth'])
+->group(function(){
+
+
+
+    // Inventory
+
+    Route::get(
+        '/inventory',
+        [InventoryController::class,'index']
+    )
+    ->name('inventory.index');
+
+
+
+    // Add Material
+
+    Route::post(
+        '/inventory/store',
+        [InventoryController::class,'store']
+    )
+    ->name('inventory.store');
+
+
+
+    // Production
+
+    Route::get(
+        '/production',
+        [ProductionController::class,'index']
+    )
+    ->name('production.index');
+
+
+
+});
 
 
 

@@ -2,8 +2,10 @@
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="m-0 fw-bold">Production & Material Tracking</h4>
-    <a href="{{ route('production.create') }}" class="btn btn-primary"><i class="bi bi-gear-wide-connected me-1"></i> Start New Batch</a>
+    <a href="#" class="btn btn-primary">
+    <i class="bi bi-gear-wide-connected me-1"></i>
+    Start New Batch
+</a>
 </div>
 
 @if(session('success'))
@@ -56,9 +58,12 @@
                         @endif
                     </td>
                     <td>
-                        <a href="{{ route('production.record.show', $batch->production_id) }}" class="btn btn-sm btn-outline-primary">
-                            <i class="bi bi-clipboard-data"></i> Log Material/Waste
-                        </a>
+                        <a href="#" class="btn btn-sm btn-outline-primary">
+
+    <i class="bi bi-clipboard-data"></i>
+    Log Material/Waste
+
+</a>
                     </td>
                 </tr>
                 @empty

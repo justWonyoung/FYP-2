@@ -64,7 +64,15 @@
                     <td><small class="text-muted">{{ $pr->finance_remark ?? 'None' }}</small></td>
                     <td><span class="badge bg-warning text-dark">{{ ucfirst($pr->approval_status) }}</span></td>
                     <td>
-                        <a href="{{ route('pr.admin.show', $pr->purchase_request_id) }}" class="btn btn-sm btn-success">
+                        <form action="{{ route('admin.purchase.approve', $pr->id) }}" method="POST">
+    @csrf
+
+    <button type="submit" class="btn btn-sm btn-success">
+        <i class="bi bi-check-circle"></i>
+        Final Approve
+    </button>
+
+</form>
                             <i class="bi bi-check-circle"></i> Final Approve
                         </a>
                     </td>
