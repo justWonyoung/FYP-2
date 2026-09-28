@@ -3,7 +3,9 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h4 class="m-0 fw-bold">Inventory & Material Management</h4>
-    <a href="{{ route('receiving.create') }}" class="btn btn-primary"><i class="bi bi-box-seam me-1"></i> Receive Material</a>
+    <a href="#" class="btn btn-primary">
+    <i class="bi bi-box-seam me-1"></i> Receive Material
+</a>
 </div>
 
 @if(session('success'))

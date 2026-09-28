@@ -91,25 +91,20 @@ Route::get('/home', function () {
 */
 
 
-Route::get('/logout-custom', function(){
+Route::post('/logout-custom', function(){
 
     Auth::logout();
 
+    request()->session()->flush();
 
-    request()
-        ->session()
-        ->invalidate();
+    request()->session()->invalidate();
 
-
-    request()
-        ->session()
-        ->regenerateToken();
+    request()->session()->regenerateToken();
 
 
     return redirect('/login');
 
-
-});
+})->name('logout.custom');
 
 
 
@@ -159,6 +154,11 @@ Route::middleware(['role:admin'])
     );
 
 
+    Route::get(
+    '/purchase-request/{id}/review',
+    [PurchaseRequestController::class,'adminReview']
+    )
+    ->name('purchase.review');
 
     // Admin Purchase Approval
 
@@ -168,6 +168,11 @@ Route::middleware(['role:admin'])
     )
     ->name('purchase.requests');
 
+    Route::get(
+    '/purchase-request/{id}/review',
+    [PurchaseRequestController::class,'adminReview']
+)
+    ->name('purchase.review');
 
 
     Route::post(
@@ -298,11 +303,12 @@ Route::middleware(['role:finance,admin'])
 
     // Finance Purchase Review
 
-    Route::get(
-        '/purchase-requests',
-        [PurchaseRequestController::class,'financeReview']
-    )
-    ->name('purchase.review');
+// View one Purchase Request for Finance review
+Route::get(
+    '/purchase-request/{id}/review',
+    [PurchaseRequestController::class, 'showFinanceReview']
+)
+->name('purchase.show');
 
 
 

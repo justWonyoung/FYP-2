@@ -8,7 +8,7 @@
 
         <div>
             <span class="text-muted small">
-                Finance / Purchase Request Review
+                Admin / Purchase Request Final Approval
             </span>
 
             <h4 class="fw-bold m-0">
@@ -16,8 +16,9 @@
             </h4>
         </div>
 
+
         <a
-            href="{{ route('finance.dashboard') }}"
+            href="{{ route('admin.dashboard') }}"
             class="btn btn-outline-secondary"
         >
             <i class="bi bi-arrow-left me-1"></i>
@@ -27,18 +28,22 @@
     </div>
 
 
+
     <div class="card stat-card p-4">
+
 
         <h5 class="fw-bold mb-4">
 
-            <i class="bi bi-pencil-square me-2"></i>
+            <i class="bi bi-shield-check me-2"></i>
 
-            Finance Review for {{ $pr->request_no }}
+            Admin Final Review for {{ $pr->request_no }}
 
         </h5>
 
 
+
         <div class="bg-light p-4 rounded mb-4">
+
 
             <div class="row g-3">
 
@@ -56,6 +61,7 @@
                 </div>
 
 
+
                 <div class="col-md-6">
 
                     <small class="text-muted d-block">
@@ -67,6 +73,7 @@
                     </strong>
 
                 </div>
+
 
 
                 <div class="col-md-6">
@@ -82,6 +89,7 @@
                 </div>
 
 
+
                 <div class="col-md-6">
 
                     <small class="text-muted d-block">
@@ -89,43 +97,48 @@
                     </small>
 
                     <strong>
-                        {{ number_format($pr->quantity, 2) }}
+                        {{ number_format($pr->quantity,2) }}
                         {{ $pr->unit }}
                     </strong>
 
                 </div>
 
 
+
                 <div class="col-md-6">
 
                     <small class="text-muted d-block">
-                        Current Finance Status
+                        Finance Status
                     </small>
 
-                    <span class="badge bg-warning text-dark">
+                    <span class="badge bg-info text-dark">
                         {{ ucfirst($pr->finance_status) }}
                     </span>
 
                 </div>
 
 
+
                 <div class="col-md-6">
 
                     <small class="text-muted d-block">
-                        Admin Approval
+                        Admin Approval Status
                     </small>
 
-                    <span class="badge bg-secondary">
+                    <span class="badge bg-warning text-dark">
                         {{ ucfirst($pr->approval_status) }}
                     </span>
 
                 </div>
 
 
+
             </div>
 
 
+
             <hr>
+
 
 
             <div>
@@ -134,25 +147,32 @@
                     Estimated Purchase Cost
                 </small>
 
+
                 <h3 class="text-primary fw-bold mb-0">
 
-                    RM {{ number_format($pr->estimated_cost, 2) }}
+                    RM {{ number_format($pr->estimated_cost,2) }}
 
                 </h3>
 
             </div>
 
+
         </div>
+
+
 
 
         <div class="alert alert-info">
 
             <i class="bi bi-info-circle me-1"></i>
 
-            If approved, this Purchase Request will be forwarded to
-            Admin for final approval.
+            If approved, this Purchase Request will update inventory
+            and complete the approval process.
 
         </div>
+
+
+
 
 
         <div class="d-flex justify-content-end gap-2">
@@ -161,12 +181,13 @@
             <!-- Reject -->
 
             <form
-                action="{{ route('finance.purchase.reject', $pr->getKey()) }}"
+                action="{{ route('admin.purchase.reject', $pr->getKey()) }}"
                 method="POST"
                 onsubmit="return confirm('Are you sure you want to reject this Purchase Request?');"
             >
 
                 @csrf
+
 
                 <button
                     type="submit"
@@ -179,19 +200,24 @@
 
                 </button>
 
+
             </form>
 
 
 
-            <!-- Approve -->
+
+
+            <!-- Final Approve -->
+
 
             <form
-                action="{{ route('finance.purchase.approve', $pr->getKey()) }}"
+                action="{{ route('admin.purchase.approve', $pr->getKey()) }}"
                 method="POST"
-                onsubmit="return confirm('Approve this Purchase Request and forward it to Admin?');"
+                onsubmit="return confirm('Final approve this Purchase Request? This will update inventory.');"
             >
 
                 @csrf
+
 
                 <button
                     type="submit"
@@ -200,18 +226,23 @@
 
                     <i class="bi bi-check-circle me-1"></i>
 
-                    Approve & Forward to Admin
+                    Final Approve
 
                 </button>
 
+
             </form>
+
 
 
         </div>
 
 
+
     </div>
 
+
 </div>
+
 
 @endsection

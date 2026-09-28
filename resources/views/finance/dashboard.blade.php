@@ -61,9 +61,15 @@
                             <td>{{ $pr->staff->full_name ?? 'Staff' }}</td>
                             <td>RM {{ number_format($pr->estimated_cost ?? 0, 2) }}</td>
                             <td><span class="badge bg-warning text-dark">Pending Review</span></td>
-                            <td class="text-end pe-4">
-                                <a href="#" class="btn btn-sm btn-primary">Review PR</a>
-                            </td>
+                           <td class="text-end pe-4">
+    <a
+    href="{{ route('finance.purchase.show', $pr->getKey()) }}"
+    class="btn btn-sm btn-primary"
+>
+    <i class="bi bi-eye me-1"></i>
+    Review PR
+</a>
+</td>
                         </tr>
                         @empty
                         <tr>

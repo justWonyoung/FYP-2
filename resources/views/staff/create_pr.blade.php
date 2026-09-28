@@ -5,7 +5,7 @@
     <div class="card stat-card p-4">
         <h5 class="fw-bold mb-4"><i class="bi bi-file-earmark-plus me-2"></i>New Purchase Request</h5>
 
-        <form action="{{ route('pr.store') }}" method="POST">
+        <form action="{{ route('staff.pr.store') }}" method="POST">
             @csrf
             <div class="row g-3 mb-3">
                 <div class="col-md-6">

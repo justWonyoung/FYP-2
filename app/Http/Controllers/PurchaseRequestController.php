@@ -132,54 +132,44 @@ class PurchaseRequestController extends Controller
 
     // Display Purchase Requests For Finance
 
-    public function financeReview()
-    {
+// Show one Purchase Request for Finance Review
+public function showFinanceReview($id)
+{
+    $pr = PurchaseRequest::findOrFail($id);
 
-        $requests = PurchaseRequest::where(
-            'finance_status',
-            'pending'
-        )
-        ->get();
-
-
-
-        return view(
-            'finance.purchase_requests',
-            compact('requests')
-        );
-
+    // Only pending requests should normally be reviewed
+    if ($pr->finance_status !== 'pending') {
+        return redirect()
+            ->route('finance.dashboard')
+            ->with('error', 'This Purchase Request has already been reviewed.');
     }
+
+    return view(
+        'finance.review_pr',
+        compact('pr')
+    );
+}
 
 
 
     // Finance Approve
 
-    public function financeApprove($id)
-    {
+ // Finance Approve
+public function financeApprove($id)
+{
+    $pr = PurchaseRequest::findOrFail($id);
 
-        $pr = PurchaseRequest::findOrFail($id);
+    $pr->update([
+        'finance_status' => 'approved',
+    ]);
 
-
-
-        $pr->update([
-
-            'finance_status'
-                => 'approved'
-
-        ]);
-
-
-
-        return redirect()
-
-            ->route('finance.purchase.review')
-
-            ->with(
-                'success',
-                'Purchase Request approved by Finance'
-            );
-
-    }
+    return redirect()
+        ->route('finance.dashboard')
+        ->with(
+            'success',
+            'Purchase Request ' . $pr->request_no . ' approved by Finance and forwarded to Admin.'
+        );
+}
 
 
 
@@ -187,32 +177,22 @@ class PurchaseRequestController extends Controller
 
     // Finance Reject
 
-    public function financeReject($id)
-    {
+   // Finance Reject
+public function financeReject($id)
+{
+    $pr = PurchaseRequest::findOrFail($id);
 
-        $pr = PurchaseRequest::findOrFail($id);
+    $pr->update([
+        'finance_status' => 'rejected',
+    ]);
 
-
-
-        $pr->update([
-
-            'finance_status'
-                => 'rejected'
-
-        ]);
-
-
-
-        return redirect()
-
-            ->route('finance.purchase.review')
-
-            ->with(
-                'success',
-                'Purchase Request rejected by Finance'
-            );
-
-    }
+    return redirect()
+        ->route('finance.dashboard')
+        ->with(
+            'success',
+            'Purchase Request ' . $pr->request_no . ' rejected by Finance.'
+        );
+}
 
 
 
@@ -225,7 +205,17 @@ class PurchaseRequestController extends Controller
     |--------------------------------------------------------------------------
     */
 
+    // Show one Purchase Request for Admin Review
 
+public function adminReview($id)
+{
+    $pr = PurchaseRequest::findOrFail($id);
+
+    return view(
+        'admin.review_pr',
+        compact('pr')
+    );
+}
 
     // Display Requests For Admin
 
@@ -240,15 +230,12 @@ class PurchaseRequestController extends Controller
 
         )->get();
 
-
-
-        return view(
-
-            'admin.purchase_requests',
-
-            compact('requests')
-
-        );
+        return redirect()
+    ->route('admin.dashboard')
+    ->with(
+        'success',
+        'Purchase Request list updated'
+    );
 
     }
 

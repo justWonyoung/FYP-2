@@ -160,7 +160,7 @@ User Management
 <li class="nav-item">
 
 <a class="nav-link"
-href="{{route('staff.inventory.index')}}">
+href="{{route('inventory.index')}}">
 
 <i class="bi bi-box-seam me-2"></i>
 
@@ -175,7 +175,7 @@ Inventory
 <li class="nav-item">
 
 <a class="nav-link"
-href="{{route('staff.production.index')}}">
+href="{{route('production.index')}}">
 
 <i class="bi bi-gear-wide-connected me-2"></i>
 
@@ -241,7 +241,7 @@ Create Purchase Request
 <li class="nav-item">
 
 <a class="nav-link"
-href="{{route('staff.inventory.index')}}">
+href="{{route('inventory.index')}}">
 
 <i class="bi bi-box-seam me-2"></i>
 
@@ -256,7 +256,7 @@ Inventory
 <li class="nav-item">
 
 <a class="nav-link"
-href="{{route('staff.production.index')}}">
+href="{{route('production.index')}}">
 
 <i class="bi bi-gear-wide-connected me-2"></i>
 
@@ -324,7 +324,7 @@ Financial Report
 <li class="nav-item">
 
 <a class="nav-link"
-href="{{route('staff.inventory.index')}}">
+href="{{route('inventory.index')}}">
 
 <i class="bi bi-box-seam me-2"></i>
 
@@ -383,14 +383,19 @@ Role:
 
 
 
-<a href="/logout-custom"
-class="btn btn-outline-danger btn-sm">
+<form action="{{ route('logout.custom') }}" method="POST">
+
+@csrf
+
+<button type="submit" class="btn btn-outline-danger btn-sm">
 
 <i class="bi bi-box-arrow-right"></i>
 
 Logout
 
-</a>
+</button>
+
+</form>
 
 
 </div>

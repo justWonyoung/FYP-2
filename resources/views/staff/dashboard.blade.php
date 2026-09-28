@@ -3,7 +3,7 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h4 class="m-0 fw-bold">Staff Operational Dashboard</h4>
-    <a href="{{ route('pr.create') }}" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i> Create Purchase Request</a>
+    <a href="{{ route('staff.pr.create') }}" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i> Create Purchase Request</a>
 </div>
 
 @if(session('success'))
