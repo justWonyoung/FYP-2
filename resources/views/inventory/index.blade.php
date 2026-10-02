@@ -1,5 +1,24 @@
 @extends('layouts.app')
 
+
+@php
+
+$pageTitle = "Inventory | Beauty Kasih";
+$moduleTitle = "Inventory Management";
+$moduleSubtitle = "Material Stock & Availability Monitoring";
+
+@endphp
+
+@php
+
+$pageTitle = 'Inventory Management';
+
+$moduleTitle = 'Inventory Management';
+
+$moduleSubtitle = 'Monitor raw material availability';
+
+@endphp
+
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h4 class="m-0 fw-bold">Inventory & Material Management</h4>

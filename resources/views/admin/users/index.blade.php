@@ -1,5 +1,24 @@
 @extends('layouts.app')
 
+
+@php
+
+$pageTitle = "User Management | Beauty Kasih";
+$moduleTitle = "User Management";
+$moduleSubtitle = "Staff Account & Access Control";
+
+@endphp
+
+@php
+
+$pageTitle = 'User Management';
+
+$moduleTitle = 'User Management';
+
+$moduleSubtitle = 'Manage users, roles and system access';
+
+@endphp
+
 @section('content')
 <div class="container-fluid px-4 py-3">
     <div class="d-flex justify-content-between align-items-center mb-4">

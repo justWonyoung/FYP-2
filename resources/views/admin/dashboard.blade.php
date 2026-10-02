@@ -1,5 +1,26 @@
 @extends('layouts.app')
 
+
+@php
+
+$pageTitle = 'Dashboard';
+
+$moduleTitle = 'Dashboard';
+
+$moduleSubtitle = 'Operational Overview';
+
+@endphp
+
+
+@php
+
+$pageTitle = "Dashboard | Beauty Kasih";
+$moduleTitle = "Dashboard";
+$moduleSubtitle = "Operational Overview";
+
+@endphp
+
+
 @section('content')
 
 

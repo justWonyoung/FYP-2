@@ -185,6 +185,7 @@ Financial Report
 
 {{ $moduleTitle ?? 'Dashboard' }}
 
+
 </div>
 
 

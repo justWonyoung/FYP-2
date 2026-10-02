@@ -1,5 +1,24 @@
 @extends('layouts.app')
 
+
+@php
+
+$pageTitle = "Financial Report | Beauty Kasih";
+$moduleTitle = "Financial Report";
+$moduleSubtitle = "Profitability & Expense Analysis";
+
+@endphp
+
+@php
+
+$pageTitle = 'Financial Report';
+
+$moduleTitle = 'Financial Report';
+
+$moduleSubtitle = 'Profitability & Expense Analysis';
+
+@endphp
+
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h4 class="m-0 fw-bold">Financial Summary & Profitability Report</h4>

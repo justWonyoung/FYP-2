@@ -1,5 +1,24 @@
 @extends('layouts.app')
 
+
+@php
+
+$pageTitle = "Production | Beauty Kasih";
+$moduleTitle = "Production Control";
+$moduleSubtitle = "Batch Processing & Yield Monitoring";
+
+@endphp
+
+@php
+
+$pageTitle = 'Production Control';
+
+$moduleTitle = 'Production Control';
+
+$moduleSubtitle = 'Track manufacturing batches and output';
+
+@endphp
+
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <a href="#" class="btn btn-primary">

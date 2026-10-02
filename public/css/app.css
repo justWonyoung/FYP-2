@@ -1,30 +1,36 @@
-/* ===================================
-   BEAUTY KASIH DESIGN SYSTEM
-=================================== */
+/* =====================================================
+   BEAUTY KASIH MANAGEMENT SYSTEM
+   DESIGN SYSTEM v2
+===================================================== */
 
 
 :root {
 
     --primary: #7c3aed;
-    --primary-dark: #5b21b6;
+    --primary-hover: #6d28d9;
+
+    --dark: #111827;
 
     --background: #f8fafc;
 
-    --sidebar: #111827;
-
     --card: #ffffff;
 
-    --text: #1e293b;
+    --text: #172033;
 
     --muted: #64748b;
 
-    --border: #e2e8f0;
+    --border: #e5e7eb;
+
+    --success: #16a34a;
+
+    --danger: #dc2626;
 
 }
 
 
-
-/* GLOBAL */
+/* =====================================================
+   GLOBAL
+===================================================== */
 
 
 * {
@@ -36,21 +42,21 @@
 
 body {
 
-    background: var(--background);
-
-    color: var(--text);
-
     margin:0;
+
+    background:var(--background);
+
+    color:var(--text);
+
+    font-size:15px;
 
 }
 
 
 
-
-
-/* ===================================
-   MAIN LAYOUT
-=================================== */
+/* =====================================================
+   MAIN STRUCTURE
+===================================================== */
 
 
 .dashboard-wrapper {
@@ -63,20 +69,18 @@ body {
 
 
 
-/* ===================================
+/* =====================================================
    SIDEBAR
-=================================== */
+===================================================== */
 
 
 .sidebar {
 
-    width:260px;
+    width:250px;
+
+    background:#111827;
 
     min-height:100vh;
-
-    background:var(--sidebar);
-
-    padding:30px 20px;
 
     position:fixed;
 
@@ -84,42 +88,52 @@ body {
 
     top:0;
 
+    padding:28px 18px;
+
 }
 
+.sidebar .nav-link.active:hover {
 
-
-.sidebar-brand {
+    background:#7c3aed;
 
     color:white;
+
+}
+
+.sidebar-brand {
 
     text-decoration:none;
 
     display:block;
 
-    margin-bottom:40px;
+    margin-bottom:45px;
 
 }
 
 
 
-.sidebar-brand .brand-title {
+.brand-title {
 
-    font-size:22px;
+    color:white;
+
+    font-size:24px;
 
     font-weight:800;
 
-}
+    letter-spacing:-0.5px;
 
+}
 
 
 .sidebar-brand small {
 
     color:#94a3b8;
 
-    letter-spacing:1px;
+    font-size:12px;
+
+    letter-spacing:1.5px;
 
 }
-
 
 
 
@@ -132,31 +146,36 @@ body {
 
     font-weight:700;
 
-    margin:25px 0 10px;
-
-    text-transform:uppercase;
+    margin-bottom:12px;
 
 }
 
 
 
 
-
 .sidebar .nav-link {
+
 
     color:#cbd5e1;
 
-    text-decoration:none;
 
-    padding:12px 15px;
+    padding:13px 14px;
+
 
     border-radius:10px;
 
-    margin-bottom:8px;
 
-    font-size:14px;
+    font-size:15px;
+
 
     font-weight:500;
+
+
+    margin-bottom:6px;
+
+
+    transition:.2s;
+
 
 }
 
@@ -164,9 +183,12 @@ body {
 
 .sidebar .nav-link:hover {
 
+
     background:#1f2937;
 
+
     color:white;
+
 
 }
 
@@ -174,47 +196,49 @@ body {
 
 .sidebar .nav-link.active {
 
+
     background:#7c3aed;
 
+
     color:white;
+
 
 }
 
 
 
-
-
-/* ===================================
-CONTENT AREA
-=================================== */
+/* =====================================================
+   CONTENT
+===================================================== */
 
 
 .main-content {
 
-    margin-left:260px;
 
-    width:calc(100% - 260px);
+    margin-left:250px;
+
+
+    width:calc(100% - 250px);
+
 
 }
 
 
 
-
-
-/* ===================================
-TOP NAVBAR
-=================================== */
+/* =====================================================
+   TOP NAVBAR
+===================================================== */
 
 
 .top-navbar {
 
-    height:75px;
+    height:72px;
 
     background:white;
 
     border-bottom:1px solid var(--border);
 
-    padding:0 35px;
+    padding:0 32px;
 
     display:flex;
 
@@ -224,67 +248,154 @@ TOP NAVBAR
 
 }
 
+.top-navbar .badge {
 
+    font-size:13px;
+
+}
 
 .top-navbar-title {
 
-    font-size:20px;
+
+    font-size:22px;
+
 
     font-weight:700;
+
+
+    line-height:1.2;
+
 
 }
 
 
 
+.top-navbar-subtitle {
+
+    font-size:14px;
+
+    font-weight:400;
+
+    color:var(--muted);
+
+    margin-top:3px;
+
+}
 
 
-/* ===================================
-PAGE
-=================================== */
+
+/* =====================================================
+   PAGE AREA
+===================================================== */
 
 
 .page-container {
 
-    padding:35px;
+
+    padding:34px;
+
 
 }
 
 
 
+.page-header {
 
 
-/* ===================================
-CARDS
-=================================== */
+    background:white;
+
+
+    border:1px solid var(--border);
+
+
+    border-radius:18px;
+
+
+    padding:28px;
+
+
+    margin-bottom:25px;
+
+
+}
+
+
+
+.page-header h1 {
+
+
+    font-size:32px;
+
+
+    font-weight:800;
+
+
+    letter-spacing:-.5px;
+
+
+    margin-bottom:8px;
+
+
+}
+
+
+
+.page-header p {
+
+
+    color:var(--muted);
+
+
+    font-size:16px;
+
+
+}
+
+
+
+/* =====================================================
+   CARDS
+===================================================== */
 
 
 .dashboard-card {
 
+
     background:white;
+
+
+    border:1px solid #edf0f5;
+
 
     border-radius:18px;
 
-    border:1px solid #eef2f7;
 
-    padding:25px;
+    padding:24px;
+
 
     box-shadow:
 
-    0 8px 25px rgba(15,23,42,.05);
+    0 8px 30px rgba(15,23,42,.05);
+
 
 }
-
-
 
 
 
 .card-title {
 
-    color:var(--muted);
+
+    color:#64748b;
+
 
     font-size:13px;
 
+
     font-weight:700;
+
+
+    letter-spacing:.4px;
+
 
 }
 
@@ -292,186 +403,79 @@ CARDS
 
 .card-value {
 
-    font-size:32px;
-
-    font-weight:800;
 
     margin-top:10px;
 
-}
 
+    font-size:34px;
 
-
-
-
-/* BUTTON */
-
-
-.btn-primary {
-
-    background:var(--primary);
-
-    border:none;
-
-}
-
-
-.btn-primary:hover {
-
-    background:var(--primary-dark);
-
-}
-
-
-
-
-
-/* TABLE */
-
-
-.table {
-
-    background:white;
-
-}
-
-
-
-.table thead th {
-
-    background:#f8fafc;
-
-    color:#64748b;
-
-    font-size:12px;
-
-    text-transform:uppercase;
-
-    letter-spacing:.5px;
-
-}
-
-
-
-.table tbody tr:hover {
-
-    background:#faf5ff;
-
-}
-
-/* ===================================
-   ENHANCED COMPONENTS
-=================================== */
-
-
-.page-header {
-
-    background:white;
-
-    border-radius:20px;
-
-    padding:30px;
-
-    margin-bottom:25px;
-
-    border:1px solid var(--border);
-
-}
-
-
-.page-header h1 {
-
-    font-size:28px;
 
     font-weight:800;
 
-    margin-bottom:8px;
 
-}
+    letter-spacing:-1px;
 
-
-.page-header p {
-
-    color:var(--muted);
-
-    margin:0;
 
 }
 
 
 
-
-
-.dashboard-card {
-
-    transition:.2s ease;
-
-}
-
-
-.dashboard-card:hover {
-
-    transform:translateY(-3px);
-
-    box-shadow:
-
-    0 15px 35px rgba(15,23,42,.08);
-
-}
-
-
-
+/* icon box */
 
 
 .stat-icon {
 
-    width:55px;
 
-    height:55px;
+    width:48px;
 
-    border-radius:16px;
+
+    height:48px;
+
+
+    background:#ede9fe;
+
+
+    border-radius:14px;
+
 
     display:flex;
 
+
     align-items:center;
+
 
     justify-content:center;
 
-    background:#f3e8ff;
 
     color:#7c3aed;
 
-    font-size:25px;
+
+    font-size:22px;
+
 
 }
 
 
 
-
-
-.stat-change {
-
-    margin-top:12px;
-
-    font-size:13px;
-
-    color:#16a34a;
-
-}
-
-
-
+/* =====================================================
+   SECTION BOX
+===================================================== */
 
 
 .section-card {
 
+
     background:white;
 
-    border-radius:20px;
 
-    padding:25px;
+    border-radius:18px;
+
 
     border:1px solid var(--border);
+
+
+    padding:24px;
+
 
 }
 
@@ -479,18 +483,238 @@ CARDS
 
 .section-title {
 
-    font-size:18px;
+
+    font-size:20px;
+
 
     font-weight:700;
+
 
 }
 
 
 
-.section-subtitle {
+/* =====================================================
+   TABLE
+===================================================== */
 
-    color:var(--muted);
 
-    font-size:14px;
+.table {
+
+
+    margin-bottom:0;
+
+
+}
+
+
+
+.table thead th {
+
+
+    background:#f8fafc;
+
+
+    color:#64748b;
+
+
+    font-size:12px;
+
+
+    text-transform:uppercase;
+
+
+    letter-spacing:.6px;
+
+
+    font-weight:700;
+
+
+    padding:14px;
+
+
+}
+
+
+
+.table tbody td {
+
+
+    padding:15px;
+
+
+    font-size:15px;
+
+
+    color:#334155;
+
+
+}
+
+
+
+.table tbody tr:hover {
+
+
+    background:#faf5ff;
+
+
+}
+
+
+
+/* =====================================================
+   BUTTONS
+===================================================== */
+
+
+.btn-primary {
+
+
+    background:#7c3aed;
+
+
+    border-color:#7c3aed;
+
+
+    font-weight:600;
+
+
+}
+
+
+
+.btn-primary:hover {
+
+
+    background:#6d28d9;
+
+
+    border-color:#6d28d9;
+
+
+}
+
+
+
+/* =====================================================
+   BADGES
+===================================================== */
+
+
+.badge {
+
+
+    font-weight:600;
+
+
+    padding:6px 10px;
+
+
+    border-radius:20px;
+
+
+}
+
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+
+@media(max-width:992px){
+
+
+.sidebar {
+
+    width:200px;
+
+}
+
+
+.main-content {
+
+    margin-left:200px;
+
+    width:calc(100% - 200px);
+
+}
+
+
+}
+
+/* ===================================
+   COMPONENT SYSTEM
+=================================== */
+
+
+.page-header {
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+background:white;
+
+border:1px solid var(--border);
+
+border-radius:18px;
+
+padding:30px;
+
+margin-bottom:28px;
+
+}
+
+
+.page-header h1 {
+
+font-size:32px;
+
+font-weight:800;
+
+margin:0 0 8px;
+
+}
+
+
+.page-header p {
+
+font-size:16px;
+
+color:var(--muted);
+
+margin:0;
+
+}
+
+
+
+.section-card {
+
+background:white;
+
+border:1px solid var(--border);
+
+border-radius:18px;
+
+padding:26px;
+
+margin-bottom:25px;
+
+}
+
+
+
+.section-title {
+
+font-size:20px;
+
+font-weight:700;
+
+color:var(--text);
 
 }
