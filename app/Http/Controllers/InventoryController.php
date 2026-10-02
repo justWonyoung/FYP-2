@@ -450,22 +450,13 @@ class InventoryController extends Controller
 
     }
     catch(\Exception $e)
-    {
+{
 
+    DB::rollBack();
 
-        DB::rollBack();
+    dd($e->getMessage());
 
-
-
-        return back()
-
-            ->with(
-                'error',
-                'Receiving failed: '.$e->getMessage()
-            );
-
-
-    }
+}
 
 
 }

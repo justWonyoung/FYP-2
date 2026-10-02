@@ -68,10 +68,9 @@ value="{{ $pr->purchase_request_id }}">
 
 -
 
-{{ $pr->quantity }}
+{{ $pr->quantity - $pr->received_quantity }}
 
-{{ $pr->unit }}
-
+{{ $pr->unit }} remaining
 
 </option>
 
@@ -135,14 +134,34 @@ Purchase Request Details
 
 
 
-<p class="mb-0">
+<p class="mb-1">
 
 <strong>Ordered Quantity:</strong>
 
 <span id="ordered_quantity">
-
 -
+</span>
 
+</p>
+
+
+<p class="mb-1">
+
+<strong>Already Received:</strong>
+
+<span id="received_quantity">
+-
+</span>
+
+</p>
+
+
+<p class="mb-0">
+
+<strong>Remaining Quantity:</strong>
+
+<span id="remaining_quantity">
+-
 </span>
 
 </p>
@@ -348,6 +367,10 @@ document.getElementById('supplier_name').innerHTML = '-';
 
 document.getElementById('ordered_quantity').innerHTML = '-';
 
+document.getElementById('received_quantity').innerHTML = '-';
+
+document.getElementById('remaining_quantity').innerHTML = '-';
+
 document.getElementById('quantity_received').value = '';
 
 return;
@@ -382,15 +405,22 @@ data.supplier;
 
 document.getElementById('ordered_quantity')
 .innerHTML =
-data.quantity + ' ' + data.unit;
+data.ordered_quantity + ' ' + data.unit;
 
 
+document.getElementById('received_quantity')
+.innerHTML =
+data.received_quantity + ' ' + data.unit;
+
+
+document.getElementById('remaining_quantity')
+.innerHTML =
+data.remaining_quantity + ' ' + data.unit;
 
 
 
 document.getElementById('quantity_received')
-.value =
-data.quantity;
+.value = '';
 
 
 
