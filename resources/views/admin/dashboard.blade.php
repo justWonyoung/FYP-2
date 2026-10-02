@@ -2,24 +2,71 @@
 
 @section('content')
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="m-0 fw-bold">
-        Admin Executive Dashboard
-    </h4>
+
+<!-- PAGE HEADER -->
+
+<div class="page-header">
+
+
+<div class="d-flex justify-content-between align-items-start">
+
+
+<div>
+
+<h1>
+Welcome back, Administrator
+</h1>
+
+
+<p>
+Here is today's Beauty Kasih operational overview.
+</p>
+
+
+<div class="text-muted small mt-3">
+
+Last updated:
+{{ now()->format('d M Y, h:i A') }}
+
 </div>
+
+
+</div>
+
+
+
+<div>
+
+<span class="badge bg-primary px-3 py-2">
+
+Executive Dashboard
+
+</span>
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
 
 
 @if(session('success'))
 
-<div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+<div class="alert alert-success alert-dismissible fade show">
 
-    {{ session('success') }}
+{{ session('success') }}
 
-    <button 
-        type="button" 
-        class="btn-close" 
-        data-bs-dismiss="alert">
-    </button>
+
+<button 
+class="btn-close"
+data-bs-dismiss="alert">
+</button>
+
 
 </div>
 
@@ -27,78 +74,63 @@
 
 
 
-<div class="row g-3 mb-4">
 
 
-    <div class="col-md-3">
+<!-- KPI SECTION -->
 
-        <div class="card stat-card p-3">
 
-            <div class="text-muted small fw-bold">
-                ACTIVE ORDERS
-            </div>
-
-            <h3 class="m-0 mt-2">
-                24
-            </h3>
-
-        </div>
-
-    </div>
+<div class="row g-4 mb-4">
 
 
 
-    <div class="col-md-3">
-
-        <div class="card stat-card p-3">
-
-            <div class="text-muted small fw-bold">
-                INVENTORY ITEMS
-            </div>
-
-            <h3 class="m-0 mt-2">
-                138
-            </h3>
-
-        </div>
-
-    </div>
+<div class="col-lg-3 col-md-6">
 
 
-
-    <div class="col-md-3">
-
-        <div class="card stat-card p-3">
-
-            <div class="text-muted small fw-bold">
-                PENDING APPROVALS
-            </div>
-
-            <h3 class="m-0 mt-2 text-danger">
-                {{ $pendingApprovals->count() }}
-            </h3>
-
-        </div>
-
-    </div>
+<div class="dashboard-card">
 
 
+<div class="d-flex justify-content-between">
 
-    <div class="col-md-3">
 
-        <div class="card stat-card p-3">
+<div>
 
-            <div class="text-muted small fw-bold">
-                MONTHLY EXPENSE
-            </div>
 
-            <h3 class="m-0 mt-2">
-                RM 42K
-            </h3>
+<div class="card-title">
 
-        </div>
+ACTIVE ORDERS
 
-    </div>
+</div>
+
+
+<div class="card-value">
+
+24
+
+</div>
+
+
+<div class="stat-change">
+
+↑ 12% from last month
+
+</div>
+
+
+</div>
+
+
+
+<div class="stat-icon">
+
+<i class="bi bi-cart-check"></i>
+
+</div>
+
+
+</div>
+
+
+</div>
 
 
 </div>
@@ -107,12 +139,415 @@
 
 
 
-<div class="card stat-card p-3">
 
 
-<h6 class="m-0 fw-bold mb-3">
-    Purchase Requests Pending Admin Final Approval
-</h6>
+<div class="col-lg-3 col-md-6">
+
+
+<div class="dashboard-card">
+
+
+<div class="d-flex justify-content-between">
+
+
+<div>
+
+
+<div class="card-title">
+
+INVENTORY ITEMS
+
+</div>
+
+
+<div class="card-value">
+
+138
+
+</div>
+
+
+<div class="stat-change">
+
+Healthy stock level
+
+</div>
+
+
+</div>
+
+
+
+<div class="stat-icon">
+
+<i class="bi bi-box-seam"></i>
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="col-lg-3 col-md-6">
+
+
+<div class="dashboard-card">
+
+
+<div class="d-flex justify-content-between">
+
+
+<div>
+
+
+<div class="card-title">
+
+PENDING APPROVALS
+
+</div>
+
+
+<div class="card-value text-danger">
+
+{{ $pendingApprovals->count() }}
+
+</div>
+
+
+<div class="text-danger small mt-2">
+
+Requires attention
+
+</div>
+
+
+</div>
+
+
+
+<div class="stat-icon">
+
+<i class="bi bi-hourglass-split"></i>
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="col-lg-3 col-md-6">
+
+
+<div class="dashboard-card">
+
+
+<div class="d-flex justify-content-between">
+
+
+<div>
+
+
+<div class="card-title">
+
+MONTHLY EXPENSE
+
+</div>
+
+
+<div class="card-value">
+
+RM 42K
+
+</div>
+
+
+<div class="stat-change">
+
+Current month
+
+</div>
+
+
+</div>
+
+
+
+<div class="stat-icon">
+
+<i class="bi bi-cash-stack"></i>
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<!-- OPERATION SUMMARY -->
+
+
+<div class="row g-4 mb-4">
+
+
+<div class="col-lg-6">
+
+
+<div class="section-card">
+
+
+<div class="section-title">
+
+Production Overview
+
+</div>
+
+
+<div class="section-subtitle mb-4">
+
+Current manufacturing status
+
+</div>
+
+
+
+<div class="row text-center">
+
+
+<div class="col">
+
+
+<h3 class="fw-bold">
+
+12
+
+</h3>
+
+
+<small class="text-muted">
+
+Completed
+
+</small>
+
+
+</div>
+
+
+
+<div class="col">
+
+
+<h3 class="fw-bold">
+
+4
+
+</h3>
+
+
+<small class="text-muted">
+
+Running
+
+</small>
+
+
+</div>
+
+
+
+<div class="col">
+
+
+<h3 class="fw-bold">
+
+2
+
+</h3>
+
+
+<small class="text-muted">
+
+Pending
+
+</small>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="col-lg-6">
+
+
+<div class="section-card">
+
+
+<div class="section-title">
+
+Inventory Health
+
+</div>
+
+
+<div class="section-subtitle mb-4">
+
+Material availability status
+
+</div>
+
+
+
+<div class="d-flex justify-content-between mb-3">
+
+<span>
+
+Raw Material
+
+</span>
+
+
+<span class="badge bg-success">
+
+Healthy
+
+</span>
+
+
+</div>
+
+
+
+<div class="d-flex justify-content-between mb-3">
+
+<span>
+
+Low Stock Alert
+
+</span>
+
+
+<span class="badge bg-warning text-dark">
+
+0
+
+</span>
+
+
+</div>
+
+
+
+
+<div class="d-flex justify-content-between">
+
+<span>
+
+Critical Items
+
+</span>
+
+
+<span class="badge bg-danger">
+
+0
+
+</span>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- APPROVAL QUEUE -->
+
+
+<div class="section-card">
+
+
+<div class="mb-4">
+
+
+<div class="section-title">
+
+Approval Queue
+
+</div>
+
+
+<div class="section-subtitle">
+
+Purchase requests requiring final administrator review
+
+</div>
+
+
+</div>
+
+
 
 
 
@@ -122,31 +557,49 @@
 <table class="table align-middle">
 
 
-<thead class="table-light">
+<thead>
+
 
 <tr>
 
-<th>PR ID</th>
+<th>
+PR ID
+</th>
 
-<th>ITEM</th>
+<th>
+ITEM
+</th>
 
-<th>AMOUNT</th>
+<th>
+AMOUNT
+</th>
 
-<th>FINANCE REVIEW</th>
+<th>
+FINANCE REVIEW
+</th>
 
-<th>FINANCE REMARK</th>
+<th>
+FINANCE REMARK
+</th>
 
-<th>ADMIN STATUS</th>
+<th>
+STATUS
+</th>
 
-<th>ACTION</th>
+<th>
+ACTION
+</th>
+
 
 </tr>
+
 
 </thead>
 
 
 
 <tbody>
+
 
 
 @forelse($pendingApprovals as $pr)
@@ -156,34 +609,59 @@
 
 
 <td>
+
 <strong>
+
 {{ $pr->request_no }}
+
 </strong>
+
 </td>
 
 
 
+
 <td>
+
 {{ $pr->material_item }}
 
-({{ $pr->quantity }} {{ $pr->unit }})
+<br>
+
+<small class="text-muted">
+
+{{ $pr->quantity }} {{ $pr->unit }}
+
+</small>
+
+
 </td>
 
 
 
+
 <td>
+
+<strong>
+
 RM {{ number_format($pr->estimated_cost,2) }}
+
+</strong>
+
+
 </td>
 
 
 
+
 <td>
+
 
 <span class="badge bg-info text-dark">
 
 {{ ucfirst($pr->finance_status) }}
 
 </span>
+
 
 </td>
 
@@ -198,12 +676,14 @@ RM {{ number_format($pr->estimated_cost,2) }}
 
 </small>
 
+
 </td>
 
 
 
 
 <td>
+
 
 <span class="badge bg-warning text-dark">
 
@@ -211,6 +691,7 @@ RM {{ number_format($pr->estimated_cost,2) }}
 
 </span>
 
+
 </td>
 
 
@@ -219,13 +700,10 @@ RM {{ number_format($pr->estimated_cost,2) }}
 <td>
 
 
-<a 
-href="{{ route('admin.purchase.review', $pr->getKey()) }}"
-class="btn btn-sm btn-primary">
+<a href="{{ route('admin.purchase.review', $pr->getKey()) }}"
+class="btn btn-primary btn-sm">
 
-<i class="bi bi-eye"></i>
-
-Review PR
+Review
 
 </a>
 
@@ -243,13 +721,21 @@ Review PR
 
 <tr>
 
-<td colspan="7" class="text-center text-muted py-4">
 
-No Purchase Requests awaiting Admin approval.
+<td colspan="7" class="text-center py-5 text-muted">
+
+
+<i class="bi bi-inbox fs-2 d-block mb-3"></i>
+
+
+No Purchase Requests awaiting approval.
+
 
 </td>
 
+
 </tr>
+
 
 
 @endforelse
@@ -266,6 +752,7 @@ No Purchase Requests awaiting Admin approval.
 
 
 </div>
+
 
 
 @endsection

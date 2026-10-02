@@ -1,0 +1,496 @@
+/* ===================================
+   BEAUTY KASIH DESIGN SYSTEM
+=================================== */
+
+
+:root {
+
+    --primary: #7c3aed;
+    --primary-dark: #5b21b6;
+
+    --background: #f8fafc;
+
+    --sidebar: #111827;
+
+    --card: #ffffff;
+
+    --text: #1e293b;
+
+    --muted: #64748b;
+
+    --border: #e2e8f0;
+
+}
+
+
+
+/* GLOBAL */
+
+
+* {
+
+    font-family: 'Inter', sans-serif;
+
+}
+
+
+body {
+
+    background: var(--background);
+
+    color: var(--text);
+
+    margin:0;
+
+}
+
+
+
+
+
+/* ===================================
+   MAIN LAYOUT
+=================================== */
+
+
+.dashboard-wrapper {
+
+    display:flex;
+
+    min-height:100vh;
+
+}
+
+
+
+/* ===================================
+   SIDEBAR
+=================================== */
+
+
+.sidebar {
+
+    width:260px;
+
+    min-height:100vh;
+
+    background:var(--sidebar);
+
+    padding:30px 20px;
+
+    position:fixed;
+
+    left:0;
+
+    top:0;
+
+}
+
+
+
+.sidebar-brand {
+
+    color:white;
+
+    text-decoration:none;
+
+    display:block;
+
+    margin-bottom:40px;
+
+}
+
+
+
+.sidebar-brand .brand-title {
+
+    font-size:22px;
+
+    font-weight:800;
+
+}
+
+
+
+.sidebar-brand small {
+
+    color:#94a3b8;
+
+    letter-spacing:1px;
+
+}
+
+
+
+
+
+.sidebar-menu-title {
+
+    color:#64748b;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    margin:25px 0 10px;
+
+    text-transform:uppercase;
+
+}
+
+
+
+
+
+.sidebar .nav-link {
+
+    color:#cbd5e1;
+
+    text-decoration:none;
+
+    padding:12px 15px;
+
+    border-radius:10px;
+
+    margin-bottom:8px;
+
+    font-size:14px;
+
+    font-weight:500;
+
+}
+
+
+
+.sidebar .nav-link:hover {
+
+    background:#1f2937;
+
+    color:white;
+
+}
+
+
+
+.sidebar .nav-link.active {
+
+    background:#7c3aed;
+
+    color:white;
+
+}
+
+
+
+
+
+/* ===================================
+CONTENT AREA
+=================================== */
+
+
+.main-content {
+
+    margin-left:260px;
+
+    width:calc(100% - 260px);
+
+}
+
+
+
+
+
+/* ===================================
+TOP NAVBAR
+=================================== */
+
+
+.top-navbar {
+
+    height:75px;
+
+    background:white;
+
+    border-bottom:1px solid var(--border);
+
+    padding:0 35px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+}
+
+
+
+.top-navbar-title {
+
+    font-size:20px;
+
+    font-weight:700;
+
+}
+
+
+
+
+
+/* ===================================
+PAGE
+=================================== */
+
+
+.page-container {
+
+    padding:35px;
+
+}
+
+
+
+
+
+/* ===================================
+CARDS
+=================================== */
+
+
+.dashboard-card {
+
+    background:white;
+
+    border-radius:18px;
+
+    border:1px solid #eef2f7;
+
+    padding:25px;
+
+    box-shadow:
+
+    0 8px 25px rgba(15,23,42,.05);
+
+}
+
+
+
+
+
+.card-title {
+
+    color:var(--muted);
+
+    font-size:13px;
+
+    font-weight:700;
+
+}
+
+
+
+.card-value {
+
+    font-size:32px;
+
+    font-weight:800;
+
+    margin-top:10px;
+
+}
+
+
+
+
+
+/* BUTTON */
+
+
+.btn-primary {
+
+    background:var(--primary);
+
+    border:none;
+
+}
+
+
+.btn-primary:hover {
+
+    background:var(--primary-dark);
+
+}
+
+
+
+
+
+/* TABLE */
+
+
+.table {
+
+    background:white;
+
+}
+
+
+
+.table thead th {
+
+    background:#f8fafc;
+
+    color:#64748b;
+
+    font-size:12px;
+
+    text-transform:uppercase;
+
+    letter-spacing:.5px;
+
+}
+
+
+
+.table tbody tr:hover {
+
+    background:#faf5ff;
+
+}
+
+/* ===================================
+   ENHANCED COMPONENTS
+=================================== */
+
+
+.page-header {
+
+    background:white;
+
+    border-radius:20px;
+
+    padding:30px;
+
+    margin-bottom:25px;
+
+    border:1px solid var(--border);
+
+}
+
+
+.page-header h1 {
+
+    font-size:28px;
+
+    font-weight:800;
+
+    margin-bottom:8px;
+
+}
+
+
+.page-header p {
+
+    color:var(--muted);
+
+    margin:0;
+
+}
+
+
+
+
+
+.dashboard-card {
+
+    transition:.2s ease;
+
+}
+
+
+.dashboard-card:hover {
+
+    transform:translateY(-3px);
+
+    box-shadow:
+
+    0 15px 35px rgba(15,23,42,.08);
+
+}
+
+
+
+
+
+.stat-icon {
+
+    width:55px;
+
+    height:55px;
+
+    border-radius:16px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:#f3e8ff;
+
+    color:#7c3aed;
+
+    font-size:25px;
+
+}
+
+
+
+
+
+.stat-change {
+
+    margin-top:12px;
+
+    font-size:13px;
+
+    color:#16a34a;
+
+}
+
+
+
+
+
+.section-card {
+
+    background:white;
+
+    border-radius:20px;
+
+    padding:25px;
+
+    border:1px solid var(--border);
+
+}
+
+
+
+.section-title {
+
+    font-size:18px;
+
+    font-weight:700;
+
+}
+
+
+
+.section-subtitle {
+
+    color:var(--muted);
+
+    font-size:14px;
+
+}
