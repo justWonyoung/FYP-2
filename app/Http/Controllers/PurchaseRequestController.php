@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\PurchaseRequest;
-use App\Models\Material;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 
 class PurchaseRequestController extends Controller
@@ -28,33 +28,72 @@ class PurchaseRequestController extends Controller
 
 
     // Store Purchase Request
-    public function store(Request $request)
-    {
+    // Store Purchase Request
+public function store(Request $request)
+{
 
-        $request->validate([
+    $request->validate([
 
-            'customer_order_no' => 'required|string',
+        'customer_order_no' => 'required|string',
 
-            'supplier_name' => 'required|string',
+        'supplier_name' => 'required|string',
 
-            'material_item' => 'required|string',
+        'material_item' => 'required|string',
 
-            'quantity' => 'required|numeric',
+        'quantity' => 'required|numeric|min:1',
 
-            'unit' => 'required|string',
+        'unit' => 'required|string',
 
-            'estimated_cost' => 'required|numeric',
+        'estimated_cost' => 'required|numeric|min:0',
 
-        ]);
+    ]);
 
 
 
-        $prCount = PurchaseRequest::count() + 1;
+    DB::beginTransaction();
+
+
+    try {
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Generate Purchase Request Number
+        |--------------------------------------------------------------------------
+        */
+
+
+        $lastRequest = PurchaseRequest::orderBy(
+            'purchase_request_id',
+            'desc'
+        )->first();
+
+
+
+        if($lastRequest)
+        {
+
+            $number = intval(
+                str_replace(
+                    'PR-',
+                    '',
+                    $lastRequest->request_no
+                )
+            ) + 1;
+
+        }
+        else
+        {
+
+            $number = 1;
+
+        }
+
 
 
         $requestNo = 'PR-' .
             str_pad(
-                $prCount,
+                $number,
                 3,
                 '0',
                 STR_PAD_LEFT
@@ -62,10 +101,19 @@ class PurchaseRequestController extends Controller
 
 
 
-        PurchaseRequest::create([
+
+        /*
+        |--------------------------------------------------------------------------
+        | Save Purchase Request
+        |--------------------------------------------------------------------------
+        */
+
+
+        $purchaseRequest = PurchaseRequest::create([
 
 
             'request_no' => $requestNo,
+
 
             'customer_order_no' =>
                 $request->customer_order_no,
@@ -107,16 +155,52 @@ class PurchaseRequestController extends Controller
 
 
 
+        DB::commit();
+
+
+
         return redirect()
 
             ->route('staff.dashboard')
 
             ->with(
+
                 'success',
+
                 'Purchase Request '.$requestNo.' submitted successfully!'
+
             );
 
+
+
     }
+    catch(\Exception $e)
+    {
+
+
+        DB::rollBack();
+
+
+        \Log::error(
+            'Purchase Request Error: '.$e->getMessage()
+        );
+
+
+        return back()
+
+            ->with(
+
+                'error',
+
+                'Failed to submit Purchase Request: '.$e->getMessage()
+
+            );
+
+
+    }
+
+
+}
 
 
 
@@ -130,46 +214,74 @@ class PurchaseRequestController extends Controller
     */
 
 
-    // Display Purchase Requests For Finance
 
-// Show one Purchase Request for Finance Review
-public function showFinanceReview($id)
-{
-    $pr = PurchaseRequest::findOrFail($id);
+    // Show Purchase Request for Finance Review
 
-    // Only pending requests should normally be reviewed
-    if ($pr->finance_status !== 'pending') {
-        return redirect()
-            ->route('finance.dashboard')
-            ->with('error', 'This Purchase Request has already been reviewed.');
+    public function showFinanceReview($id)
+    {
+
+        $pr = PurchaseRequest::findOrFail($id);
+
+
+
+        if($pr->finance_status !== 'pending')
+        {
+
+            return redirect()
+
+                ->route('finance.dashboard')
+
+                ->with(
+                    'error',
+                    'This Purchase Request has already been reviewed.'
+                );
+
+        }
+
+
+
+        return view(
+            'finance.review_pr',
+            compact('pr')
+        );
+
+
     }
 
-    return view(
-        'finance.review_pr',
-        compact('pr')
-    );
-}
+
+
 
 
 
     // Finance Approve
 
- // Finance Approve
-public function financeApprove($id)
-{
-    $pr = PurchaseRequest::findOrFail($id);
+    public function financeApprove($id)
+    {
 
-    $pr->update([
-        'finance_status' => 'approved',
-    ]);
+        $pr = PurchaseRequest::findOrFail($id);
 
-    return redirect()
-        ->route('finance.dashboard')
-        ->with(
-            'success',
-            'Purchase Request ' . $pr->request_no . ' approved by Finance and forwarded to Admin.'
-        );
-}
+
+
+        $pr->update([
+
+            'finance_status' => 'approved'
+
+        ]);
+
+
+
+        return redirect()
+
+            ->route('finance.dashboard')
+
+            ->with(
+                'success',
+                'Purchase Request '.$pr->request_no.' approved by Finance and forwarded to Admin.'
+            );
+
+
+    }
+
 
 
 
@@ -177,22 +289,34 @@ public function financeApprove($id)
 
     // Finance Reject
 
-   // Finance Reject
-public function financeReject($id)
-{
-    $pr = PurchaseRequest::findOrFail($id);
+    public function financeReject($id)
+    {
 
-    $pr->update([
-        'finance_status' => 'rejected',
-    ]);
+        $pr = PurchaseRequest::findOrFail($id);
 
-    return redirect()
-        ->route('finance.dashboard')
-        ->with(
-            'success',
-            'Purchase Request ' . $pr->request_no . ' rejected by Finance.'
-        );
-}
+
+
+        $pr->update([
+
+            'finance_status' => 'rejected'
+
+        ]);
+
+
+
+        return redirect()
+
+            ->route('finance.dashboard')
+
+            ->with(
+                'success',
+                'Purchase Request '.$pr->request_no.' rejected by Finance.'
+            );
+
+
+    }
+
+
 
 
 
@@ -205,44 +329,73 @@ public function financeReject($id)
     |--------------------------------------------------------------------------
     */
 
-    // Show one Purchase Request for Admin Review
 
-public function adminReview($id)
-{
-    $pr = PurchaseRequest::findOrFail($id);
 
-    return view(
-        'admin.review_pr',
-        compact('pr')
-    );
-}
+    // Show Admin Review Page
 
-    // Display Requests For Admin
+    public function adminReview($id)
+    {
 
-// Display Purchase Requests Waiting For Admin Approval
-
-public function index()
-{
-
-    $requests = PurchaseRequest::where(
-        'finance_status',
-        'approved'
-    )
-    ->where(
-        'approval_status',
-        'pending'
-    )
-    ->latest()
-    ->get();
+        $pr = PurchaseRequest::findOrFail($id);
 
 
 
-    return view(
-        'admin.approve_pr',
-        compact('requests')
-    );
+        return view(
 
-}
+            'admin.review_pr',
+
+            compact('pr')
+
+        );
+
+
+    }
+
+
+
+
+
+
+    // Display Requests Waiting For Approval
+
+    public function index()
+    {
+
+
+        $requests = PurchaseRequest::where(
+
+            'finance_status',
+
+            'approved'
+
+        )
+
+        ->where(
+
+            'approval_status',
+
+            'pending'
+
+        )
+
+        ->latest()
+
+        ->get();
+
+
+
+        return view(
+
+            'admin.approve_pr',
+
+            compact('requests')
+
+        );
+
+
+    }
+
+
 
 
 
@@ -259,66 +412,39 @@ public function index()
 
         $pr->update([
 
-            'approval_status'
-                => 'approved'
+            'approval_status' => 'approved'
 
         ]);
 
 
 
-        // Update Inventory
-
-        $material = Material::where(
-
-            'material_name',
-
-            $pr->material_item
-
-        )->first();
-
-
-
-        if($material){
-
-
-            $material->increment(
-
-                'current_stock',
-
-                $pr->quantity
-
-            );
-
-
-        }else{
-
-
-            Material::create([
-
-
-                'material_name'
-                    => $pr->material_item,
-
-
-                'material_type'
-                    => 'Raw Material',
-
-
-                'unit'
-                    => $pr->unit,
-
-
-                'current_stock'
-                    => $pr->quantity,
-
-
-                'minimum_stock'
-                    => 10,
-
-
-            ]);
-
-        }
+        /*
+        |--------------------------------------------------------------------------
+        | IMPORTANT CHANGE
+        |--------------------------------------------------------------------------
+        |
+        | Inventory update removed here.
+        |
+        | Reason:
+        |
+        | Approval does not mean material has arrived.
+        |
+        | Correct workflow:
+        |
+        | Purchase Request
+        |       ↓
+        | Finance Review
+        |       ↓
+        | Admin Approval
+        |       ↓
+        | Supplier Delivery
+        |       ↓
+        | Material Receiving
+        |       ↓
+        | Inventory Update
+        |
+        |--------------------------------------------------------------------------
+        */
 
 
 
@@ -330,11 +456,14 @@ public function index()
 
                 'success',
 
-                'Purchase Request approved and inventory updated'
+                'Purchase Request approved successfully. Waiting for material receiving.'
 
             );
 
+
     }
+
+
 
 
 
@@ -345,14 +474,14 @@ public function index()
     public function reject($id)
     {
 
+
         $pr = PurchaseRequest::findOrFail($id);
 
 
 
         $pr->update([
 
-            'approval_status'
-                => 'rejected'
+            'approval_status' => 'rejected'
 
         ]);
 
@@ -370,6 +499,9 @@ public function index()
 
             );
 
+
     }
+
+
 
 }
