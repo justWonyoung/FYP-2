@@ -18,52 +18,150 @@ class DashboardController extends Controller
     |--------------------------------------------------------------------------
     */
 
-    public function admin()
-    {
+public function admin()
+{
 
-        // Purchase requests waiting for Admin approval
-        $pendingApprovals = PurchaseRequest::where(
-            'finance_status',
-            'approved'
-        )
-        ->where(
-            'approval_status',
-            'pending'
-        )
-        ->get();
+    /*
+    |--------------------------------------------------------------------------
+    | PURCHASE REQUEST APPROVAL
+    |--------------------------------------------------------------------------
+    */
 
-
-
-        // Total inventory items
-        $totalMaterials = Material::count();
-
-
-
-        // Total expenses
-        $totalExpenses = Expense::sum('amount');
+    $pendingApprovals = PurchaseRequest::where(
+        'finance_status',
+        'approved'
+    )
+    ->where(
+        'approval_status',
+        'pending'
+    )
+    ->get();
 
 
 
-        // Active production
-        $activeOrders = Production::where(
-            'status',
+    /*
+    |--------------------------------------------------------------------------
+    | INVENTORY
+    |--------------------------------------------------------------------------
+    */
+
+    $totalMaterials = Material::count();
+
+
+
+    $lowStockItems = Material::whereColumn(
+        'current_stock',
+        '<=',
+        'minimum_stock'
+    )
+    ->count();
+
+
+
+    $criticalItems = Material::where(
+        'current_stock',
+        '<=',
+        0
+    )
+    ->count();
+
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | FINANCE
+    |--------------------------------------------------------------------------
+    */
+
+
+    $monthlyExpense = Expense::whereMonth(
+        'expense_date',
+        now()->month
+    )
+    ->whereYear(
+        'expense_date',
+        now()->year
+    )
+    ->sum('amount');
+
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | PRODUCTION
+    |--------------------------------------------------------------------------
+    */
+
+
+    $completedProduction = Production::where(
+        'status',
+        'Completed'
+    )
+    ->count();
+
+
+
+    $runningProduction = Production::where(
+        'status',
+        'In Progress'
+    )
+    ->count();
+
+
+
+    $pendingProduction = Production::where(
+        'status',
+        'Pending'
+    )
+    ->count();
+
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ACTIVE ORDERS
+    |--------------------------------------------------------------------------
+    |
+    | Currently production is your operational order source.
+    |
+    */
+
+    $activeOrders = Production::whereIn(
+        'status',
+        [
+            'Pending',
             'In Progress'
+        ]
+    )
+    ->count();
+
+
+
+
+
+    return view(
+        'admin.dashboard',
+        compact(
+            'pendingApprovals',
+            'totalMaterials',
+            'activeOrders',
+            'monthlyExpense',
+            'completedProduction',
+            'runningProduction',
+            'pendingProduction',
+            'lowStockItems',
+            'criticalItems'
         )
-        ->count();
+    );
 
 
-
-        return view(
-            'admin.dashboard',
-            compact(
-                'pendingApprovals',
-                'totalMaterials',
-                'totalExpenses',
-                'activeOrders'
-            )
-        );
-
-    }
+}
 
 
 

@@ -40,7 +40,8 @@
 <aside class="sidebar">
 
 
-<a href="{{ route('admin.dashboard') }}" class="sidebar-brand">
+
+<a href="{{ route(Auth::user()->role.'.dashboard') }}" class="sidebar-brand">
 
 
 <div class="brand-title">
@@ -62,6 +63,7 @@ OPERATIONAL SYSTEM
 
 
 
+
 <div class="sidebar-menu-title">
 
 MAIN
@@ -70,7 +72,15 @@ MAIN
 
 
 
+
+
 <ul class="nav flex-column">
+
+
+
+
+
+<!-- ================= ADMIN MENU ================= -->
 
 
 @if(Auth::user()->role == 'admin')
@@ -79,8 +89,7 @@ MAIN
 <li>
 
 <a href="{{route('admin.dashboard')}}"
-class="nav-link 
-{{ request()->routeIs('admin.dashboard') ? 'active':'' }}">
+class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active':'' }}">
 
 Dashboard
 
@@ -90,11 +99,11 @@ Dashboard
 
 
 
+
 <li>
 
 <a href="{{route('admin.users.index')}}"
-class="nav-link 
-{{ request()->routeIs('admin.users.*') ? 'active':'' }}">
+class="nav-link {{ request()->routeIs('admin.users.*') ? 'active':'' }}">
 
 User Management
 
@@ -104,12 +113,25 @@ User Management
 
 
 
+@endif
+
+
+
+
+
+
+
+<!-- ================= STAFF / ADMIN / FINANCE SHARED ================= -->
+
+
+@if(in_array(Auth::user()->role,['admin','staff','finance']))
+
+
 
 <li>
 
 <a href="{{route('inventory.index')}}"
-class="nav-link
-{{ request()->routeIs('inventory.*') ? 'active':'' }}">
+class="nav-link {{ request()->routeIs('inventory.*') ? 'active':'' }}">
 
 Inventory
 
@@ -123,8 +145,7 @@ Inventory
 <li>
 
 <a href="{{route('production.index')}}"
-class="nav-link
-{{ request()->routeIs('production.*') ? 'active':'' }}">
+class="nav-link {{ request()->routeIs('production.*') ? 'active':'' }}">
 
 Production
 
@@ -134,12 +155,25 @@ Production
 
 
 
+@endif
+
+
+
+
+
+
+
+<!-- ================= FINANCE / ADMIN MENU ================= -->
+
+
+@if(in_array(Auth::user()->role,['admin','finance']))
+
+
 
 <li>
 
 <a href="{{route('finance.report')}}"
-class="nav-link
-{{ request()->routeIs('finance.*') ? 'active':'' }}">
+class="nav-link {{ request()->routeIs('finance.*') ? 'active':'' }}">
 
 Financial Report
 
@@ -148,7 +182,39 @@ Financial Report
 </li>
 
 
+
 @endif
+
+
+
+
+
+
+
+<!-- ================= ADMIN REPORT MENU ================= -->
+
+
+@if(Auth::user()->role == 'admin')
+
+
+
+<li>
+
+<a href="{{route('admin.reports')}}"
+class="nav-link {{ request()->routeIs('admin.reports*') ? 'active':'' }}">
+
+Reports
+
+</a>
+
+</li>
+
+
+
+@endif
+
+
+
 
 
 </ul>
@@ -156,6 +222,8 @@ Financial Report
 
 
 </aside>
+
+
 
 
 
@@ -172,10 +240,14 @@ Financial Report
 
 
 
+
+
+
 <!-- TOP NAVBAR -->
 
 
 <header class="top-navbar">
+
 
 
 <div>
@@ -185,11 +257,14 @@ Financial Report
 
 {{ $moduleTitle ?? 'Dashboard' }}
 
-
 </div>
 
 
+
+
+
 @if(isset($moduleSubtitle))
+
 
 <div class="top-navbar-subtitle">
 
@@ -197,10 +272,15 @@ Financial Report
 
 </div>
 
+
 @endif
 
 
+
 </div>
+
+
+
 
 
 
@@ -209,11 +289,14 @@ Financial Report
 <div class="d-flex align-items-center gap-3">
 
 
+
 <span class="role-badge">
 
 {{ ucfirst(Auth::user()->role) }}
 
 </span>
+
+
 
 
 
@@ -233,11 +316,17 @@ Logout
 
 
 
+
 </div>
 
 
 
+
+
 </header>
+
+
+
 
 
 
@@ -258,11 +347,17 @@ Logout
 
 
 
+
+
 </div>
 
 
 
+
+
 </div>
+
+
 
 
 
@@ -270,7 +365,11 @@ Logout
 
 
 
+
+
 @yield('content')
+
+
 
 
 
@@ -279,9 +378,16 @@ Logout
 
 
 
+
+
+
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 
+
+
 </body>
+
 
 </html>

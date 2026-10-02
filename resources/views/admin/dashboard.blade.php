@@ -105,7 +105,7 @@ ACTIVE ORDERS
 
 <div class="card-value">
 
-24
+{{ $activeOrders }}
 
 </div>
 
@@ -164,7 +164,7 @@ INVENTORY ITEMS
 
 <div class="card-value">
 
-138
+{{ $totalMaterials }}
 
 </div>
 
@@ -282,7 +282,7 @@ MONTHLY EXPENSE
 
 <div class="card-value">
 
-RM 42K
+RM {{ number_format($monthlyExpense,2) }}
 
 </div>
 
@@ -360,7 +360,7 @@ Current manufacturing status
 
 <h3 class="fw-bold">
 
-12
+{{ $completedProduction }}
 
 </h3>
 
@@ -381,7 +381,7 @@ Completed
 
 <h3 class="fw-bold">
 
-4
+{{ $runningProduction }}
 
 </h3>
 
@@ -402,7 +402,7 @@ Running
 
 <h3 class="fw-bold">
 
-2
+{{ $pendingProduction }}
 
 </h3>
 
@@ -459,11 +459,28 @@ Raw Material
 </span>
 
 
-<span class="badge bg-success">
+@if($criticalItems > 0)
 
-Healthy
-
+<span class="badge bg-danger">
+Critical
 </span>
+
+
+@elseif($lowStockItems > 0)
+
+<span class="badge bg-warning text-dark">
+Attention Required
+</span>
+
+
+@else
+
+<span class="badge bg-success">
+Healthy
+</span>
+
+
+@endif
 
 
 </div>
@@ -481,7 +498,7 @@ Low Stock Alert
 
 <span class="badge bg-warning text-dark">
 
-0
+{{ $lowStockItems }}
 
 </span>
 
@@ -502,7 +519,7 @@ Critical Items
 
 <span class="badge bg-danger">
 
-0
+{{ $criticalItems }}
 
 </span>
 

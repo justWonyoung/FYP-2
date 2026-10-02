@@ -219,25 +219,30 @@ public function adminReview($id)
 
     // Display Requests For Admin
 
-    public function index()
-    {
+// Display Purchase Requests Waiting For Admin Approval
 
-        $requests = PurchaseRequest::where(
+public function index()
+{
 
-            'finance_status',
+    $requests = PurchaseRequest::where(
+        'finance_status',
+        'approved'
+    )
+    ->where(
+        'approval_status',
+        'pending'
+    )
+    ->latest()
+    ->get();
 
-            'approved'
 
-        )->get();
 
-        return redirect()
-    ->route('admin.dashboard')
-    ->with(
-        'success',
-        'Purchase Request list updated'
+    return view(
+        'admin.approve_pr',
+        compact('requests')
     );
 
-    }
+}
 
 
 

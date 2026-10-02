@@ -42,37 +42,77 @@ class Production extends Model
 
 
 
+
     /*
     |--------------------------------------------------------------------------
-    | Material Usage Relationship
+    | MATERIAL USAGE RELATIONSHIP
     |--------------------------------------------------------------------------
     */
 
     public function usages()
     {
+
         return $this->hasMany(
+
             MaterialUsage::class,
+
             'production_id',
+
             'production_id'
+
         );
+
     }
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ALIAS FOR MATERIAL USAGE
+    |--------------------------------------------------------------------------
+    |
+    | Used by ProductionController
+    |
+    */
+
+    public function materialUsages()
+    {
+
+        return $this->hasMany(
+
+            MaterialUsage::class,
+
+            'production_id',
+
+            'production_id'
+
+        );
+
+    }
+
 
 
 
 
     /*
     |--------------------------------------------------------------------------
-    | Material Waste Relationship
+    | MATERIAL WASTE RELATIONSHIP
     |--------------------------------------------------------------------------
     */
 
     public function wastes()
     {
+
         return $this->hasMany(
+
             MaterialWaste::class,
+
             'production_id',
+
             'production_id'
+
         );
+
     }
 
 
@@ -81,22 +121,25 @@ class Production extends Model
 
     /*
     |--------------------------------------------------------------------------
-    | Production Yield Relationship
+    | PRODUCTION YIELD
     |--------------------------------------------------------------------------
-    |
-    | One production batch has one yield calculation
-    |
     */
 
     public function yield()
     {
+
         return $this->hasOne(
+
             ProductionYield::class,
+
             'production_id',
+
             'production_id'
+
         );
+
     }
 
-
+    
 
 }

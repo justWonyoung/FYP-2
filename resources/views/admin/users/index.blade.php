@@ -16,7 +16,8 @@ $moduleSubtitle = "Staff Account & Access Control";
 
 <div class="d-flex justify-content-end mb-4">
 
-    <a href="#" class="btn btn-primary">
+    <a href="{{ route('admin.users.create') }}"
+   class="btn btn-primary">
 
         <i class="bi bi-person-plus me-1"></i>
 
@@ -224,24 +225,38 @@ $moduleSubtitle = "Staff Account & Access Control";
                     <td>
 
 
-                        <a href="#"
-                           class="btn btn-sm btn-outline-secondary">
+                        <a href="{{ route('admin.users.edit',$user->user_id) }}"
+class="btn btn-sm btn-outline-secondary">
 
-                            Edit
+Edit
 
-                        </a>
+</a>
 
 
 
                         @if($user->role != 'admin')
 
 
-                        <a href="#"
-                           class="btn btn-sm btn-outline-danger">
+                        <form method="POST"
+action="{{ route('admin.users.destroy',$user->user_id) }}"
+class="d-inline"
+onsubmit="return confirm('Delete this user account?');">
 
-                            Delete
 
-                        </a>
+@csrf
+
+@method('DELETE')
+
+
+<button type="submit"
+class="btn btn-sm btn-outline-danger">
+
+Delete
+
+</button>
+
+
+</form>
 
 
                         @endif

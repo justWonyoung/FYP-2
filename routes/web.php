@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\ReportController;
+
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\ProductionController;
@@ -104,7 +106,8 @@ Route::post('/logout-custom', function(){
 
     return redirect('/login');
 
-})->name('logout.custom');
+})
+->name('logout.custom');
 
 
 
@@ -125,7 +128,6 @@ Route::middleware(['auth'])->group(function(){
 
 
 
-
 /*
 |--------------------------------------------------------------------------
 | ADMIN MODULE
@@ -140,6 +142,12 @@ Route::middleware(['role:admin'])
 
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | Dashboard
+    |--------------------------------------------------------------------------
+    */
+
     Route::get(
         '/dashboard',
         [DashboardController::class,'admin']
@@ -148,19 +156,85 @@ Route::middleware(['role:admin'])
 
 
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | User Management
+    |--------------------------------------------------------------------------
+    */
+
     Route::resource(
         'users',
         UserController::class
     );
 
 
-    Route::get(
-    '/purchase-request/{id}/review',
-    [PurchaseRequestController::class,'adminReview']
-    )
-    ->name('purchase.review');
 
-    // Admin Purchase Approval
+
+    /*
+    |--------------------------------------------------------------------------
+    | Reports
+    |--------------------------------------------------------------------------
+    */
+
+
+    // Main Reports Dashboard
+
+    Route::get(
+        '/reports',
+        [ReportController::class,'index']
+    )
+    ->name('reports');
+
+
+
+    // Detailed Inventory Report
+
+    Route::get(
+        '/reports/inventory',
+        [ReportController::class,'inventory']
+    )
+    ->name('reports.inventory');
+
+
+
+    // Detailed Purchase Report
+
+    Route::get(
+        '/reports/purchase',
+        [ReportController::class,'purchase']
+    )
+    ->name('reports.purchase');
+
+
+
+    // Detailed Production Report
+
+    Route::get(
+        '/reports/production',
+        [ReportController::class,'production']
+    )
+    ->name('reports.production');
+
+
+
+    // Detailed Financial Report
+
+    Route::get(
+        '/reports/financial',
+        [ReportController::class,'financial']
+    )
+    ->name('reports.financial');
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Purchase Request Approval
+    |--------------------------------------------------------------------------
+    */
+
 
     Route::get(
         '/purchase-requests',
@@ -168,11 +242,14 @@ Route::middleware(['role:admin'])
     )
     ->name('purchase.requests');
 
+
+
     Route::get(
-    '/purchase-request/{id}/review',
-    [PurchaseRequestController::class,'adminReview']
-)
+        '/purchase-request/{id}/review',
+        [PurchaseRequestController::class,'adminReview']
+    )
     ->name('purchase.review');
+
 
 
     Route::post(
@@ -223,8 +300,6 @@ Route::middleware(['role:staff,admin'])
 
 
 
-    // Create Purchase Request
-
     Route::get(
         '/pr/create',
         [PurchaseRequestController::class,'create']
@@ -273,8 +348,6 @@ Route::middleware(['role:finance,admin'])
 
 
 
-    // Expenses
-
     Route::get(
         '/expenses',
         [FinancialController::class,'expenses']
@@ -291,8 +364,6 @@ Route::middleware(['role:finance,admin'])
 
 
 
-    // Financial Report
-
     Route::get(
         '/report',
         [FinancialController::class,'report']
@@ -301,14 +372,11 @@ Route::middleware(['role:finance,admin'])
 
 
 
-    // Finance Purchase Review
-
-// View one Purchase Request for Finance review
-Route::get(
-    '/purchase-request/{id}/review',
-    [PurchaseRequestController::class, 'showFinanceReview']
-)
-->name('purchase.show');
+    Route::get(
+        '/purchase-request/{id}/review',
+        [PurchaseRequestController::class,'showFinanceReview']
+    )
+    ->name('purchase.show');
 
 
 
@@ -342,11 +410,6 @@ Route::get(
 |--------------------------------------------------------------------------
 | SHARED OPERATIONAL MODULE
 |--------------------------------------------------------------------------
-|
-| Inventory and Production are shared modules.
-| Admin, Staff and Finance can access them.
-|
-|--------------------------------------------------------------------------
 */
 
 
@@ -355,7 +418,12 @@ Route::middleware(['auth'])
 
 
 
-    // Inventory
+    /*
+    |--------------------------------------------------------------------------
+    | Inventory
+    |--------------------------------------------------------------------------
+    */
+
 
     Route::get(
         '/inventory',
@@ -363,9 +431,17 @@ Route::middleware(['auth'])
     )
     ->name('inventory.index');
 
+Route::get(
+    '/inventory/receiving-history',
+    [InventoryController::class,'receivingHistory']
+)
+->name('inventory.receiving.history');
 
-
-    // Add Material
+    Route::get(
+    '/production/{id}/log',
+    [ProductionController::class,'log']
+)
+->name('production.log');
 
     Route::post(
         '/inventory/store',
@@ -375,15 +451,68 @@ Route::middleware(['auth'])
 
 
 
-    // Production
+
+    /*
+    |--------------------------------------------------------------------------
+    | Production
+    |--------------------------------------------------------------------------
+    */
+
 
     Route::get(
-        '/production',
-        [ProductionController::class,'index']
-    )
-    ->name('production.index');
+    '/production',
+    [ProductionController::class,'index']
+)
+->name('production.index');
 
 
+
+Route::get(
+    '/production/create',
+    [ProductionController::class,'create']
+)
+->name('production.create');
+
+
+
+Route::post(
+    '/production/store',
+    [ProductionController::class,'store']
+)
+->name('production.store');
+
+Route::post(
+    '/production/{id}/usage',
+    [ProductionController::class,'storeUsage']
+)
+->name('production.usage');
+
+
+Route::post(
+    '/production/{id}/waste',
+    [ProductionController::class,'storeWaste']
+)
+->name('production.waste');
+
+Route::post(
+    '/production/{id}/complete',
+    [ProductionController::class,'complete']
+)
+->name('production.complete');
+
+Route::post(
+    '/production/{id}/output',
+    [ProductionController::class,'updateOutput']
+)
+->name('production.output');
+
+
+
+Route::post(
+    '/production/{id}/complete',
+    [ProductionController::class,'complete']
+)
+->name('production.complete');
 
 });
 

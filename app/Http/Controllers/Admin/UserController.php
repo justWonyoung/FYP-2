@@ -16,6 +16,13 @@ class UserController extends Controller
         return view('admin.users.index', compact('users'));
     }
 
+    public function create()
+{
+    return view(
+        'admin.users.create'
+    );
+}
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -34,6 +41,14 @@ class UserController extends Controller
 
         return redirect()->back()->with('success', 'User account created successfully.');
     }
+
+public function edit(User $user)
+{
+    return view(
+        'admin.users.edit',
+        compact('user')
+    );
+}
 
     public function update(Request $request, User $user)
     {
