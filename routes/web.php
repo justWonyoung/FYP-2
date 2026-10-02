@@ -431,23 +431,35 @@ Route::middleware(['auth'])
     )
     ->name('inventory.index');
 
-Route::get(
+    Route::get(
+    '/inventory/receive',
+    [InventoryController::class,'receive']
+    )
+    ->name('inventory.receive');
+
+    Route::get(
+    '/inventory/pr-details/{id}',
+    [InventoryController::class,'getPRDetails']
+)
+->name('inventory.pr.details');
+
+    Route::get(
     '/inventory/receiving-history',
     [InventoryController::class,'receivingHistory']
-)
-->name('inventory.receiving.history');
+    )
+    ->name('inventory.receiving.history');
 
-Route::get(
+    Route::get(
     '/inventory/report',
     [InventoryController::class,'report']
-)
-->name('inventory.report');
+    )
+    ->name('inventory.report');
 
     Route::get(
     '/production/{id}/log',
     [ProductionController::class,'log']
-)
-->name('production.log');
+    )
+    ->name('production.log');
 
     Route::post(
         '/inventory/store',

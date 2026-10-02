@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Material;
 use App\Models\MaterialReceiving;
+use App\Models\PurchaseRequest;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 
 
@@ -14,8 +16,16 @@ class InventoryController extends Controller
 {
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | INVENTORY MAIN PAGE
+    |--------------------------------------------------------------------------
+    */
+
+
     public function index()
     {
+
 
         $materials = Material::orderBy(
             'material_name',
@@ -24,28 +34,71 @@ class InventoryController extends Controller
         ->get();
 
 
+
         return view(
             'inventory.index',
             compact('materials')
         );
 
+
     }
 
 
-public function receivingHistory()
+
+
+
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | RECEIVE MATERIAL PAGE
+    |--------------------------------------------------------------------------
+    |
+    | Show approved Purchase Requests waiting for delivery.
+    |
+    | Flow:
+    |
+    | Staff PR
+    |      ↓
+    | Finance approve
+    |      ↓
+    | Admin approve
+    |      ↓
+    | Warehouse receive
+    |      ↓
+    | Inventory update
+    |
+    |--------------------------------------------------------------------------
+    */
+
+
+    public function receive()
 {
 
-    $receivings = \App\Models\MaterialReceiving::orderBy(
-        'created_at',
-        'desc'
-    )
-    ->get();
+    $approvedPRs = PurchaseRequest::where(
+            'approval_status',
+            'approved'
+        )
+        ->whereIn(
+            'delivery_status',
+            [
+                'pending',
+                'partial'
+            ]
+        )
+        ->orderBy(
+            'created_at',
+            'desc'
+        )
+        ->get();
 
 
 
     return view(
-        'inventory.receiving_history',
-        compact('receivings')
+        'inventory.receive_material',
+        compact('approvedPRs')
     );
 
 }
@@ -53,35 +106,210 @@ public function receivingHistory()
 
 
 
+
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | GET PURCHASE REQUEST DETAILS
+    |--------------------------------------------------------------------------
+    |
+    | Used by JavaScript when user selects PR.
+    |
+    | Example:
+    |
+    | Select PR-008
+    |
+    | Return:
+    |
+    | Material: Shea Butter
+    | Supplier: Azalea Chemical
+    | Quantity: 10 kg
+    |
+    |--------------------------------------------------------------------------
+    */
+
+
+    public function getPRDetails($id)
+{
+
+
+    $pr = PurchaseRequest::findOrFail($id);
+
+
+
+    return response()->json([
+
+
+        'material'
+            => $pr->material_item,
+
+
+        'supplier'
+            => $pr->supplier_name,
+
+
+        'ordered_quantity'
+            => $pr->quantity,
+
+
+        'received_quantity'
+            => $pr->received_quantity,
+
+
+        'remaining_quantity'
+            => $pr->quantity - $pr->received_quantity,
+
+
+        'unit'
+            => $pr->unit,
+
+
+    ]);
+
+
+}
+
+
+
+
+
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | STORE RECEIVED MATERIAL
+    |--------------------------------------------------------------------------
+    */
+
+
     public function store(Request $request)
+{
+
+
+    $validated = $request->validate([
+
+
+        'purchase_request_id'
+            => 'required|exists:purchase_requests,purchase_request_id',
+
+
+        'quantity_received'
+            => 'required|numeric|min:0.01',
+
+
+        'received_date'
+            => 'required|date',
+
+
+        'remarks'
+            => 'nullable|string',
+
+
+    ]);
+
+
+
+
+
+    DB::beginTransaction();
+
+
+
+    try
     {
 
 
-        $validated = $request->validate([
+        $pr = PurchaseRequest::findOrFail(
+            $request->purchase_request_id
+        );
 
 
-            'material_name'
-                => 'required|string|max:255',
 
 
-            'supplier_name'
-                => 'required|string|max:255',
+
+        /*
+        |--------------------------------------------------------------------------
+        | CHECK REMAINING QUANTITY
+        |--------------------------------------------------------------------------
+        */
 
 
-            'quantity_received'
-                => 'required|numeric|min:0',
+        $remaining = 
+            $pr->quantity - $pr->received_quantity;
 
 
-            'unit'
-                => 'required|string',
+
+        if($request->quantity_received > $remaining)
+        {
 
 
-            'received_date'
-                => 'required|date',
+            return back()
+
+                ->with(
+                    'error',
+                    'Cannot receive more than remaining quantity. Remaining: '
+                    .$remaining.' '.$pr->unit
+                );
 
 
-            'remarks'
-                => 'nullable|string',
+        }
+
+
+
+
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | UPDATE PR RECEIVING STATUS
+        |--------------------------------------------------------------------------
+        */
+
+
+        $newReceived = 
+            $pr->received_quantity 
+            +
+            $request->quantity_received;
+
+
+
+
+        if($newReceived >= $pr->quantity)
+        {
+
+
+            $status = 'received';
+
+
+        }
+        else
+        {
+
+
+            $status = 'partial';
+
+
+        }
+
+
+
+
+
+        $pr->update([
+
+
+            'received_quantity'
+                => $newReceived,
+
+
+            'delivery_status'
+                => $status,
 
 
         ]);
@@ -94,51 +322,42 @@ public function receivingHistory()
 
         /*
         |--------------------------------------------------------------------------
-        | FIND EXISTING MATERIAL
+        | UPDATE INVENTORY
         |--------------------------------------------------------------------------
         */
 
 
         $material = Material::where(
-            'material_name',
-            $request->material_name
-        )
-        ->first();
+                'material_name',
+                $pr->material_item
+            )
+            ->first();
 
 
 
 
 
+        if($material)
+        {
 
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | UPDATE STOCK
-        |--------------------------------------------------------------------------
-        */
-
-
-        if($material){
-
-
-            $material->current_stock +=
+            $material->current_stock += 
                 $request->quantity_received;
 
 
             $material->save();
 
 
-
         }
-
-        else {
+        else
+        {
 
 
             Material::create([
 
+
                 'material_name'
-                    => $request->material_name,
+                    => $pr->material_item,
 
 
                 'material_type'
@@ -146,7 +365,7 @@ public function receivingHistory()
 
 
                 'unit'
-                    => $request->unit,
+                    => $pr->unit,
 
 
                 'current_stock'
@@ -167,7 +386,6 @@ public function receivingHistory()
 
 
 
-
         /*
         |--------------------------------------------------------------------------
         | SAVE RECEIVING HISTORY
@@ -178,12 +396,16 @@ public function receivingHistory()
         MaterialReceiving::create([
 
 
+            'purchase_request_id'
+                => $pr->purchase_request_id,
+
+
             'material_name'
-                => $request->material_name,
+                => $pr->material_item,
 
 
             'supplier_name'
-                => $request->supplier_name,
+                => $pr->supplier_name,
 
 
             'quantity_received'
@@ -191,7 +413,7 @@ public function receivingHistory()
 
 
             'unit'
-                => $request->unit,
+                => $pr->unit,
 
 
             'received_date'
@@ -201,6 +423,7 @@ public function receivingHistory()
             'remarks'
                 => $request->remarks,
 
+
         ]);
 
 
@@ -209,57 +432,170 @@ public function receivingHistory()
 
 
 
+        DB::commit();
+
+
+
+
+
         return redirect()
-            ->back()
+
+            ->route('inventory.index')
+
             ->with(
                 'success',
-                'Material received and stock updated successfully.'
+                'Material received successfully.'
+            );
+
+
+    }
+    catch(\Exception $e)
+    {
+
+
+        DB::rollBack();
+
+
+
+        return back()
+
+            ->with(
+                'error',
+                'Receiving failed: '.$e->getMessage()
             );
 
 
     }
 
-    public function report()
-{
-
-    $materials = Material::orderBy(
-        'material_name',
-        'asc'
-    )
-    ->get();
-
-
-
-    $totalMaterials = Material::count();
-
-
-
-    $lowStock = Material::whereColumn(
-        'current_stock',
-        '<=',
-        'minimum_stock'
-    )
-    ->count();
-
-
-
-    $totalStock = Material::sum(
-        'current_stock'
-    );
-
-
-
-    return view(
-        'inventory.report',
-        compact(
-            'materials',
-            'totalMaterials',
-            'lowStock',
-            'totalStock'
-        )
-    );
 
 }
+
+
+
+
+
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | RECEIVING HISTORY
+    |--------------------------------------------------------------------------
+    */
+
+
+    public function receivingHistory()
+    {
+
+
+        $receivings = MaterialReceiving::orderBy(
+
+            'created_at',
+
+            'desc'
+
+        )
+        ->get();
+
+
+
+
+        return view(
+
+            'inventory.receiving_history',
+
+            compact('receivings')
+
+        );
+
+
+    }
+
+
+
+
+
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | INVENTORY REPORT
+    |--------------------------------------------------------------------------
+    */
+
+
+    public function report()
+    {
+
+
+        $materials = Material::orderBy(
+
+            'material_name',
+
+            'asc'
+
+        )
+        ->get();
+
+
+
+
+
+        $totalMaterials = Material::count();
+
+
+
+
+
+        $lowStock = Material::whereColumn(
+
+            'current_stock',
+
+            '<=',
+
+            'minimum_stock'
+
+        )
+        ->count();
+
+
+
+
+
+        $totalStock = Material::sum(
+
+            'current_stock'
+
+        );
+
+
+
+
+
+
+        return view(
+
+            'inventory.report',
+
+            compact(
+
+                'materials',
+
+                'totalMaterials',
+
+                'lowStock',
+
+                'totalStock'
+
+            )
+
+        );
+
+
+    }
 
 
 

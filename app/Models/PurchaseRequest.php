@@ -22,9 +22,13 @@ class PurchaseRequest extends Model
 
         'supplier_name',
 
+        'requested_by',
+
         'material_item',
 
         'quantity',
+
+        'received_quantity',
 
         'unit',
 
@@ -33,6 +37,8 @@ class PurchaseRequest extends Model
         'finance_status',
 
         'approval_status',
+
+        'delivery_status',
 
         'finance_remark',
 
@@ -46,10 +52,18 @@ class PurchaseRequest extends Model
     |--------------------------------------------------------------------------
     | Purchase Request Items
     |--------------------------------------------------------------------------
-    |
-    | One purchase request can contain many materials
-    |
     */
+
+    public function staff()
+    {
+        return $this->belongsTo(
+            User::class,
+            'requested_by',
+            'user_id'
+        );
+    }
+
+
 
     public function items()
     {
@@ -62,14 +76,11 @@ class PurchaseRequest extends Model
 
 
 
+
     /*
     |--------------------------------------------------------------------------
     | Supplier Relationship
     |--------------------------------------------------------------------------
-    |
-    | Future upgrade:
-    | supplier_id should replace supplier_name
-    |
     */
 
     public function supplier()
@@ -83,13 +94,12 @@ class PurchaseRequest extends Model
 
 
 
+
+
     /*
     |--------------------------------------------------------------------------
     | User Relationship
     |--------------------------------------------------------------------------
-    |
-    | Requested by staff/admin
-    |
     */
 
     public function requester()
@@ -100,7 +110,6 @@ class PurchaseRequest extends Model
             'id'
         );
     }
-
 
 
 }

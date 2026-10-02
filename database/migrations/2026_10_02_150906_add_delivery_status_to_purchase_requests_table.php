@@ -1,0 +1,38 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+
+    public function up(): void
+    {
+        Schema::table('purchase_requests', function (Blueprint $table) {
+
+            $table->enum(
+                'delivery_status',
+                [
+                    'pending',
+                    'received'
+                ]
+            )
+            ->default('pending')
+            ->after('approval_status');
+
+        });
+    }
+
+
+
+    public function down(): void
+    {
+        Schema::table('purchase_requests', function (Blueprint $table) {
+
+            $table->dropColumn('delivery_status');
+
+        });
+    }
+
+};

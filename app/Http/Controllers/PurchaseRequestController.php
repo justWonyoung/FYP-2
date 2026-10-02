@@ -19,7 +19,6 @@ class PurchaseRequestController extends Controller
     */
 
 
-    // Show Create Purchase Request Form
     public function create()
     {
         return view('staff.create_pr');
@@ -27,180 +26,172 @@ class PurchaseRequestController extends Controller
 
 
 
-    // Store Purchase Request
-    // Store Purchase Request
-public function store(Request $request)
-{
 
-    $request->validate([
+    public function store(Request $request)
+    {
 
-        'customer_order_no' => 'required|string',
+        $request->validate([
 
-        'supplier_name' => 'required|string',
+            'customer_order_no' => 'required|string',
 
-        'material_item' => 'required|string',
+            'supplier_name' => 'required|string',
 
-        'quantity' => 'required|numeric|min:1',
+            'material_item' => 'required|string',
 
-        'unit' => 'required|string',
+            'quantity' => 'required|numeric|min:1',
 
-        'estimated_cost' => 'required|numeric|min:0',
+            'unit' => 'required|string',
 
-    ]);
-
-
-
-    DB::beginTransaction();
-
-
-    try {
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Generate Purchase Request Number
-        |--------------------------------------------------------------------------
-        */
-
-
-        $lastRequest = PurchaseRequest::orderBy(
-            'purchase_request_id',
-            'desc'
-        )->first();
-
-
-
-        if($lastRequest)
-        {
-
-            $number = intval(
-                str_replace(
-                    'PR-',
-                    '',
-                    $lastRequest->request_no
-                )
-            ) + 1;
-
-        }
-        else
-        {
-
-            $number = 1;
-
-        }
-
-
-
-        $requestNo = 'PR-' .
-            str_pad(
-                $number,
-                3,
-                '0',
-                STR_PAD_LEFT
-            );
-
-
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Save Purchase Request
-        |--------------------------------------------------------------------------
-        */
-
-
-        $purchaseRequest = PurchaseRequest::create([
-
-
-            'request_no' => $requestNo,
-
-
-            'customer_order_no' =>
-                $request->customer_order_no,
-
-
-            'supplier_name' =>
-                $request->supplier_name,
-
-
-            'material_item' =>
-                $request->material_item,
-
-
-            'quantity' =>
-                $request->quantity,
-
-
-            'unit' =>
-                $request->unit,
-
-
-            'estimated_cost' =>
-                $request->estimated_cost,
-
-
-            'finance_status' =>
-                'pending',
-
-
-            'approval_status' =>
-                'pending',
-
-
-            'requested_by' =>
-                Auth::id(),
-
+            'estimated_cost' => 'required|numeric|min:0',
 
         ]);
 
 
 
-        DB::commit();
+        DB::beginTransaction();
 
 
 
-        return redirect()
+        try
+        {
 
-            ->route('staff.dashboard')
 
-            ->with(
+            $lastRequest = PurchaseRequest::latest(
+                'purchase_request_id'
+            )->first();
 
-                'success',
 
-                'Purchase Request '.$requestNo.' submitted successfully!'
 
-            );
+            if($lastRequest)
+            {
 
+                $number = intval(
+                    str_replace(
+                        'PR-',
+                        '',
+                        $lastRequest->request_no
+                    )
+                ) + 1;
+
+            }
+            else
+            {
+
+                $number = 1;
+
+            }
+
+
+
+            $requestNo =
+                'PR-' .
+                str_pad(
+                    $number,
+                    3,
+                    '0',
+                    STR_PAD_LEFT
+                );
+
+
+
+
+
+            PurchaseRequest::create([
+
+
+                'request_no'
+                    => $requestNo,
+
+
+                'customer_order_no'
+                    => $request->customer_order_no,
+
+
+                'supplier_name'
+                    => $request->supplier_name,
+
+
+                'material_item'
+                    => $request->material_item,
+
+
+                'quantity'
+                    => $request->quantity,
+
+                'received_quantity'
+                    => 0,
+
+
+                'delivery_status'
+                  => 'pending',
+
+                'unit'
+                    => $request->unit,
+
+
+                'estimated_cost'
+                    => $request->estimated_cost,
+
+
+                'finance_status'
+                    => 'pending',
+
+
+'approval_status'
+    => 'pending',
+
+'requested_by'
+    => Auth::id(),
+
+
+            ]);
+
+
+
+
+            DB::commit();
+
+
+
+            return redirect()
+
+                ->route('staff.dashboard')
+
+                ->with(
+
+                    'success',
+
+                    'Purchase Request '.$requestNo.' submitted successfully!'
+
+                );
+
+
+
+        }
+        catch(\Exception $e)
+        {
+
+            DB::rollBack();
+
+
+            return back()
+
+                ->with(
+
+                    'error',
+
+                    'Failed to submit Purchase Request: '.$e->getMessage()
+
+                );
+
+
+        }
 
 
     }
-    catch(\Exception $e)
-    {
 
 
-        DB::rollBack();
 
-
-        \Log::error(
-            'Purchase Request Error: '.$e->getMessage()
-        );
-
-
-        return back()
-
-            ->with(
-
-                'error',
-
-                'Failed to submit Purchase Request: '.$e->getMessage()
-
-            );
-
-
-    }
-
-
-}
 
 
 
@@ -214,11 +205,9 @@ public function store(Request $request)
     */
 
 
-
-    // Show Purchase Request for Finance Review
-
     public function showFinanceReview($id)
     {
+
 
         $pr = PurchaseRequest::findOrFail($id);
 
@@ -232,8 +221,11 @@ public function store(Request $request)
                 ->route('finance.dashboard')
 
                 ->with(
+
                     'error',
+
                     'This Purchase Request has already been reviewed.'
+
                 );
 
         }
@@ -241,8 +233,11 @@ public function store(Request $request)
 
 
         return view(
+
             'finance.review_pr',
+
             compact('pr')
+
         );
 
 
@@ -253,20 +248,29 @@ public function store(Request $request)
 
 
 
-    // Finance Approve
 
     public function financeApprove($id)
     {
 
+
         $pr = PurchaseRequest::findOrFail($id);
 
 
 
         $pr->update([
 
-            'finance_status' => 'approved'
+
+            'finance_status'
+                => 'approved',
+
+
+            'finance_remark'
+                => 'Approved by Finance'
+
 
         ]);
+
+
 
 
 
@@ -275,8 +279,11 @@ public function store(Request $request)
             ->route('finance.dashboard')
 
             ->with(
+
                 'success',
-                'Purchase Request '.$pr->request_no.' approved by Finance and forwarded to Admin.'
+
+                'Purchase Request forwarded to Admin approval.'
+
             );
 
 
@@ -287,20 +294,25 @@ public function store(Request $request)
 
 
 
-    // Finance Reject
 
     public function financeReject($id)
     {
 
+
         $pr = PurchaseRequest::findOrFail($id);
 
 
 
         $pr->update([
 
-            'finance_status' => 'rejected'
+
+            'finance_status'
+                => 'rejected'
+
 
         ]);
+
+
 
 
 
@@ -309,12 +321,17 @@ public function store(Request $request)
             ->route('finance.dashboard')
 
             ->with(
+
                 'success',
+
                 'Purchase Request '.$pr->request_no.' rejected by Finance.'
+
             );
 
 
     }
+
+
 
 
 
@@ -331,10 +348,9 @@ public function store(Request $request)
 
 
 
-    // Show Admin Review Page
-
     public function adminReview($id)
     {
+
 
         $pr = PurchaseRequest::findOrFail($id);
 
@@ -356,7 +372,8 @@ public function store(Request $request)
 
 
 
-    // Display Requests Waiting For Approval
+
+
 
     public function index()
     {
@@ -401,10 +418,28 @@ public function store(Request $request)
 
 
 
-    // Admin Approve
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ADMIN FINAL APPROVAL
+    |--------------------------------------------------------------------------
+    |
+    | Finance approved
+    |        ↓
+    | Admin approved
+    |        ↓
+    | Waiting for supplier delivery
+    |        ↓
+    | Inventory receiving updates stock
+    |
+    |--------------------------------------------------------------------------
+    */
+
 
     public function approve($id)
     {
+
 
         $pr = PurchaseRequest::findOrFail($id);
 
@@ -412,51 +447,27 @@ public function store(Request $request)
 
         $pr->update([
 
-            'approval_status' => 'approved'
+
+            'approval_status'
+                => 'approved'
+
 
         ]);
 
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | IMPORTANT CHANGE
-        |--------------------------------------------------------------------------
-        |
-        | Inventory update removed here.
-        |
-        | Reason:
-        |
-        | Approval does not mean material has arrived.
-        |
-        | Correct workflow:
-        |
-        | Purchase Request
-        |       ↓
-        | Finance Review
-        |       ↓
-        | Admin Approval
-        |       ↓
-        | Supplier Delivery
-        |       ↓
-        | Material Receiving
-        |       ↓
-        | Inventory Update
-        |
-        |--------------------------------------------------------------------------
-        */
 
 
 
         return redirect()
 
-            ->route('admin.purchase.requests')
+            ->route('admin.dashboard')
 
             ->with(
 
                 'success',
 
-                'Purchase Request approved successfully. Waiting for material receiving.'
+                'Purchase Request approved. Waiting for material receiving.'
 
             );
 
@@ -469,7 +480,7 @@ public function store(Request $request)
 
 
 
-    // Admin Reject
+
 
     public function reject($id)
     {
@@ -481,9 +492,14 @@ public function store(Request $request)
 
         $pr->update([
 
-            'approval_status' => 'rejected'
+
+            'approval_status'
+                => 'rejected'
+
 
         ]);
+
+
 
 
 
@@ -501,6 +517,7 @@ public function store(Request $request)
 
 
     }
+
 
 
 
