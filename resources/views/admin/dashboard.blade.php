@@ -3,19 +3,10 @@
 
 @php
 
-$pageTitle = 'Dashboard';
-
-$moduleTitle = 'Dashboard';
-
-$moduleSubtitle = 'Operational Overview';
-
-@endphp
-
-
-@php
-
 $pageTitle = "Dashboard | Beauty Kasih";
+
 $moduleTitle = "Dashboard";
+
 $moduleSubtitle = "Operational Overview";
 
 @endphp
@@ -29,7 +20,7 @@ $moduleSubtitle = "Operational Overview";
 <div class="page-header">
 
 
-<div class="d-flex justify-content-between align-items-start">
+<div class="d-flex justify-content-between align-items-start gap-4">
 
 
 <div>
@@ -56,23 +47,10 @@ Last updated:
 
 
 
-<div>
-
-<span class="badge bg-primary px-3 py-2">
-
-Executive Dashboard
-
-</span>
-
 </div>
 
 
 </div>
-
-
-</div>
-
-
 
 
 
@@ -92,6 +70,8 @@ data-bs-dismiss="alert">
 </div>
 
 @endif
+
+
 
 
 
@@ -162,6 +142,7 @@ ACTIVE ORDERS
 
 
 
+
 <div class="col-lg-3 col-md-6">
 
 
@@ -213,6 +194,7 @@ Healthy stock level
 
 
 </div>
+
 
 
 
@@ -278,6 +260,7 @@ Requires attention
 
 
 
+
 <div class="col-lg-3 col-md-6">
 
 
@@ -333,6 +316,7 @@ Current month
 
 
 </div>
+
 
 
 
@@ -567,6 +551,8 @@ Purchase requests requiring final administrator review
 
 
 </div>
+
+
 
 
 

@@ -1,43 +1,49 @@
 /* =====================================================
    BEAUTY KASIH MANAGEMENT SYSTEM
-   DESIGN SYSTEM v2
+   DESIGN SYSTEM v3
 ===================================================== */
+
+
+/* ================= VARIABLES ================= */
 
 
 :root {
 
-    --primary: #7c3aed;
-    --primary-hover: #6d28d9;
+    --primary:#7c3aed;
+    --primary-hover:#6d28d9;
 
-    --dark: #111827;
+    --dark:#111827;
 
-    --background: #f8fafc;
+    --background:#f8fafc;
 
-    --card: #ffffff;
+    --card:#ffffff;
 
-    --text: #172033;
+    --text:#172033;
 
-    --muted: #64748b;
+    --muted:#64748b;
 
-    --border: #e5e7eb;
+    --border:#e5e7eb;
 
-    --success: #16a34a;
+    --success:#16a34a;
 
-    --danger: #dc2626;
+    --danger:#dc2626;
 
 }
 
 
-/* =====================================================
-   GLOBAL
-===================================================== */
+
+
+/* ================= GLOBAL ================= */
 
 
 * {
 
-    font-family: 'Inter', sans-serif;
+    font-family:'Inter',sans-serif;
+
+    box-sizing:border-box;
 
 }
+
 
 
 body {
@@ -48,15 +54,14 @@ body {
 
     color:var(--text);
 
-    font-size:15px;
+    font-size:16px;
 
 }
 
 
 
-/* =====================================================
-   MAIN STRUCTURE
-===================================================== */
+
+/* ================= MAIN STRUCTURE ================= */
 
 
 .dashboard-wrapper {
@@ -69,14 +74,12 @@ body {
 
 
 
-/* =====================================================
-   SIDEBAR
-===================================================== */
+/* ================= SIDEBAR ================= */
 
 
 .sidebar {
 
-    width:250px;
+    width:260px;
 
     background:#111827;
 
@@ -88,25 +91,19 @@ body {
 
     top:0;
 
-    padding:28px 18px;
+    padding:32px 20px;
 
 }
 
-.sidebar .nav-link.active:hover {
 
-    background:#7c3aed;
-
-    color:white;
-
-}
 
 .sidebar-brand {
 
-    text-decoration:none;
-
     display:block;
 
-    margin-bottom:45px;
+    text-decoration:none;
+
+    margin-bottom:50px;
 
 }
 
@@ -116,13 +113,14 @@ body {
 
     color:white;
 
-    font-size:24px;
+    font-size:26px;
 
     font-weight:800;
 
     letter-spacing:-0.5px;
 
 }
+
 
 
 .sidebar-brand small {
@@ -137,8 +135,8 @@ body {
 
 
 
-
 .sidebar-menu-title {
+
 
     color:#64748b;
 
@@ -146,10 +144,11 @@ body {
 
     font-weight:700;
 
-    margin-bottom:12px;
+    text-transform:uppercase;
+
+    margin-bottom:14px;
 
 }
-
 
 
 
@@ -158,21 +157,15 @@ body {
 
     color:#cbd5e1;
 
+    padding:14px 16px;
 
-    padding:13px 14px;
-
-
-    border-radius:10px;
-
+    border-radius:12px;
 
     font-size:15px;
 
-
     font-weight:500;
 
-
-    margin-bottom:6px;
-
+    margin-bottom:8px;
 
     transition:.2s;
 
@@ -186,7 +179,6 @@ body {
 
     background:#1f2937;
 
-
     color:white;
 
 
@@ -197,8 +189,7 @@ body {
 .sidebar .nav-link.active {
 
 
-    background:#7c3aed;
-
+    background:var(--primary);
 
     color:white;
 
@@ -207,38 +198,49 @@ body {
 
 
 
-/* =====================================================
-   CONTENT
-===================================================== */
+.sidebar .nav-link.active:hover {
 
 
-.main-content {
-
-
-    margin-left:250px;
-
-
-    width:calc(100% - 250px);
+    background:var(--primary-hover);
 
 
 }
 
 
 
-/* =====================================================
-   TOP NAVBAR
-===================================================== */
+
+
+/* ================= MAIN CONTENT ================= */
+
+
+.main-content {
+
+
+    margin-left:260px;
+
+
+    width:calc(100% - 260px);
+
+
+}
+
+
+
+
+
+/* ================= TOP NAVBAR ================= */
 
 
 .top-navbar {
 
-    height:72px;
+
+    height:82px;
 
     background:white;
 
     border-bottom:1px solid var(--border);
 
-    padding:0 32px;
+    padding:0 38px;
 
     display:flex;
 
@@ -246,22 +248,17 @@ body {
 
     justify-content:space-between;
 
-}
-
-.top-navbar .badge {
-
-    font-size:13px;
 
 }
+
+
 
 .top-navbar-title {
 
 
-    font-size:22px;
+    font-size:24px;
 
-
-    font-weight:700;
-
+    font-weight:750;
 
     line-height:1.2;
 
@@ -272,31 +269,56 @@ body {
 
 .top-navbar-subtitle {
 
-    font-size:14px;
 
-    font-weight:400;
+    font-size:15px;
 
     color:var(--muted);
 
-    margin-top:3px;
+    margin-top:5px;
+
 
 }
 
 
 
-/* =====================================================
-   PAGE AREA
-===================================================== */
+
+.role-badge {
+
+
+    background:#ede9fe;
+
+    color:#6d28d9;
+
+    padding:8px 16px;
+
+    border-radius:20px;
+
+    font-size:14px;
+
+    font-weight:700;
+
+
+}
+
+
+
+
+
+/* ================= PAGE AREA ================= */
 
 
 .page-container {
 
 
-    padding:34px;
+    padding:38px;
 
 
 }
 
+
+
+
+/* PAGE HEADER */
 
 
 .page-header {
@@ -304,17 +326,13 @@ body {
 
     background:white;
 
-
     border:1px solid var(--border);
 
+    border-radius:20px;
 
-    border-radius:18px;
+    padding:32px;
 
-
-    padding:28px;
-
-
-    margin-bottom:25px;
+    margin-bottom:30px;
 
 
 }
@@ -324,16 +342,13 @@ body {
 .page-header h1 {
 
 
-    font-size:32px;
-
+    font-size:34px;
 
     font-weight:800;
 
+    margin:0 0 10px;
 
-    letter-spacing:-.5px;
-
-
-    margin-bottom:8px;
+    letter-spacing:-0.6px;
 
 
 }
@@ -345,6 +360,39 @@ body {
 
     color:var(--muted);
 
+    font-size:17px;
+
+    margin:0;
+
+
+}
+
+
+
+
+
+.section-page-title {
+
+
+    font-size:30px;
+
+    font-weight:800;
+
+    letter-spacing:-.5px;
+
+    margin:0;
+
+
+}
+
+
+
+.section-page-subtitle {
+
+
+    margin-top:8px;
+
+    color:var(--muted);
 
     font-size:16px;
 
@@ -353,9 +401,9 @@ body {
 
 
 
-/* =====================================================
-   CARDS
-===================================================== */
+
+
+/* ================= DASHBOARD CARDS ================= */
 
 
 .dashboard-card {
@@ -363,19 +411,19 @@ body {
 
     background:white;
 
+    border:1px solid var(--border);
 
-    border:1px solid #edf0f5;
+    border-radius:20px;
 
-
-    border-radius:18px;
-
-
-    padding:24px;
+    padding:26px;
 
 
     box-shadow:
 
-    0 8px 30px rgba(15,23,42,.05);
+    0 10px 30px rgba(15,23,42,.06);
+
+
+    height:100%;
 
 
 }
@@ -385,17 +433,13 @@ body {
 .card-title {
 
 
-    color:#64748b;
-
+    color:var(--muted);
 
     font-size:13px;
 
-
     font-weight:700;
 
-
-    letter-spacing:.4px;
-
+    letter-spacing:.5px;
 
 }
 
@@ -404,14 +448,11 @@ body {
 .card-value {
 
 
-    margin-top:10px;
+    margin-top:12px;
 
-
-    font-size:34px;
-
+    font-size:36px;
 
     font-weight:800;
-
 
     letter-spacing:-1px;
 
@@ -420,46 +461,57 @@ body {
 
 
 
-/* icon box */
+
+.stat-change {
 
 
-.stat-icon {
+    margin-top:8px;
 
+    font-size:14px;
 
-    width:48px;
-
-
-    height:48px;
-
-
-    background:#ede9fe;
-
-
-    border-radius:14px;
-
-
-    display:flex;
-
-
-    align-items:center;
-
-
-    justify-content:center;
-
-
-    color:#7c3aed;
-
-
-    font-size:22px;
+    color:var(--muted);
 
 
 }
 
 
 
-/* =====================================================
-   SECTION BOX
-===================================================== */
+
+
+.stat-icon {
+
+
+    width:52px;
+
+    height:52px;
+
+
+    background:#ede9fe;
+
+
+    border-radius:16px;
+
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+
+    color:var(--primary);
+
+
+    font-size:24px;
+
+
+}
+
+
+
+
+
+/* ================= SECTION CARD ================= */
 
 
 .section-card {
@@ -467,14 +519,13 @@ body {
 
     background:white;
 
-
-    border-radius:18px;
-
-
     border:1px solid var(--border);
 
+    border-radius:20px;
 
-    padding:24px;
+    padding:28px;
+
+    margin-bottom:28px;
 
 
 }
@@ -484,19 +535,30 @@ body {
 .section-title {
 
 
-    font-size:20px;
+    font-size:21px;
 
-
-    font-weight:700;
+    font-weight:750;
 
 
 }
 
 
 
-/* =====================================================
-   TABLE
-===================================================== */
+.section-subtitle {
+
+
+    color:var(--muted);
+
+    font-size:15px;
+
+
+}
+
+
+
+
+
+/* ================= TABLE ================= */
 
 
 .table {
@@ -524,13 +586,13 @@ body {
     text-transform:uppercase;
 
 
-    letter-spacing:.6px;
+    letter-spacing:.7px;
 
 
     font-weight:700;
 
 
-    padding:14px;
+    padding:16px;
 
 
 }
@@ -540,13 +602,23 @@ body {
 .table tbody td {
 
 
-    padding:15px;
+    padding:17px 16px;
 
 
     font-size:15px;
 
 
-    color:#334155;
+    vertical-align:middle;
+
+
+}
+
+
+
+.table tbody tr {
+
+
+    transition:.15s;
 
 
 }
@@ -563,21 +635,31 @@ body {
 
 
 
-/* =====================================================
-   BUTTONS
-===================================================== */
+
+
+/* ================= BUTTONS ================= */
+
+
+.btn {
+
+
+    border-radius:10px;
+
+    font-weight:600;
+
+    padding:9px 16px;
+
+
+}
+
 
 
 .btn-primary {
 
 
-    background:#7c3aed;
+    background:var(--primary);
 
-
-    border-color:#7c3aed;
-
-
-    font-weight:600;
+    border-color:var(--primary);
 
 
 }
@@ -587,19 +669,18 @@ body {
 .btn-primary:hover {
 
 
-    background:#6d28d9;
+    background:var(--primary-hover);
 
-
-    border-color:#6d28d9;
+    border-color:var(--primary-hover);
 
 
 }
 
 
 
-/* =====================================================
-   BADGES
-===================================================== */
+
+
+/* ================= BADGES ================= */
 
 
 .badge {
@@ -607,9 +688,7 @@ body {
 
     font-weight:600;
 
-
-    padding:6px 10px;
-
+    padding:7px 12px;
 
     border-radius:20px;
 
@@ -618,9 +697,139 @@ body {
 
 
 
-/* =====================================================
-   RESPONSIVE
-===================================================== */
+
+
+/* ================= FORMS ================= */
+
+
+.form-control,
+
+.form-select {
+
+
+    border-radius:10px;
+
+    padding:11px 14px;
+
+    border:1px solid var(--border);
+
+
+}
+
+
+
+.form-control:focus,
+
+.form-select:focus {
+
+
+    border-color:var(--primary);
+
+    box-shadow:0 0 0 .2rem rgba(124,58,237,.15);
+
+
+}
+
+
+
+
+.form-label {
+
+
+    font-size:14px;
+
+    color:#334155;
+
+
+}
+
+
+
+
+
+/* ================= ALERT ================= */
+
+
+.alert {
+
+
+    border-radius:14px;
+
+    border:none;
+
+
+}
+
+
+
+
+
+/* ================= MODAL ================= */
+
+
+.modal-content {
+
+
+    border-radius:20px;
+
+    border:none;
+
+    box-shadow:0 20px 50px rgba(0,0,0,.15);
+
+
+}
+
+
+.modal-header {
+
+
+    border-bottom:1px solid var(--border);
+
+
+}
+
+
+
+.modal-footer {
+
+
+    border-top:1px solid var(--border);
+
+
+}
+
+
+
+
+
+/* ================= PROGRESS ================= */
+
+
+.progress {
+
+
+    background:#e2e8f0;
+
+    border-radius:20px;
+
+
+}
+
+
+
+.progress-bar {
+
+
+    background:var(--primary);
+
+
+}
+
+
+
+
+
+/* ================= RESPONSIVE ================= */
 
 
 @media(max-width:992px){
@@ -628,93 +837,70 @@ body {
 
 .sidebar {
 
-    width:200px;
+
+    width:210px;
+
 
 }
+
 
 
 .main-content {
 
-    margin-left:200px;
 
-    width:calc(100% - 200px);
+    margin-left:210px;
 
-}
+    width:calc(100% - 210px);
 
-
-}
-
-/* ===================================
-   COMPONENT SYSTEM
-=================================== */
-
-
-.page-header {
-
-display:flex;
-
-justify-content:space-between;
-
-align-items:center;
-
-background:white;
-
-border:1px solid var(--border);
-
-border-radius:18px;
-
-padding:30px;
-
-margin-bottom:28px;
-
-}
-
-
-.page-header h1 {
-
-font-size:32px;
-
-font-weight:800;
-
-margin:0 0 8px;
-
-}
-
-
-.page-header p {
-
-font-size:16px;
-
-color:var(--muted);
-
-margin:0;
 
 }
 
 
 
-.section-card {
+.page-container {
 
-background:white;
 
-border:1px solid var(--border);
+    padding:25px;
 
-border-radius:18px;
-
-padding:26px;
-
-margin-bottom:25px;
 
 }
 
+
+
+}
+
+/* ===============================
+   TABLE FONT IMPROVEMENT
+================================ */
+
+
+.table thead th {
+
+    font-size:13px;
+
+    padding:16px;
+
+}
+
+
+.table tbody td {
+
+    font-size:16px;
+
+    padding:18px 16px;
+
+}
+
+
+.table tbody strong {
+
+    font-size:16px;
+
+}
 
 
 .section-title {
 
-font-size:20px;
-
-font-weight:700;
-
-color:var(--text);
+    font-size:22px;
 
 }
