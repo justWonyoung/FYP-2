@@ -4,7 +4,9 @@
 @php
 
 $pageTitle = "Financial Report | Beauty Kasih";
+
 $moduleTitle = "Financial Report";
+
 $moduleSubtitle = "Profitability & Expense Analysis";
 
 @endphp
@@ -14,79 +16,111 @@ $moduleSubtitle = "Profitability & Expense Analysis";
 @section('content')
 
 
+
 <style>
+
 
 @media print {
 
 
-    @page {
+@page {
 
-        size: A4 portrait;
+    size:A4 portrait;
 
-        margin: 15mm;
+    margin:20mm;
 
-    }
-
-
-
-    body {
-
-        background: white !important;
-
-    }
+}
 
 
 
-    .dashboard-wrapper {
+body {
 
-        display:block !important;
+    background:white !important;
 
-    }
-
-
-
-    .sidebar,
-    .top-navbar,
-    button,
-    .btn {
-
-        display:none !important;
-
-    }
+}
 
 
 
-    .main-content {
+.sidebar,
+.top-navbar,
+.no-print,
+button,
+.btn {
 
-        margin:0 !important;
+    display:none !important;
 
-        padding:0 !important;
-
-        width:100% !important;
-
-    }
-
-
-
-    .page-container {
-
-        padding:0 !important;
-
-        margin:0 !important;
-
-    }
+}
 
 
 
-    .print-report {
+.dashboard-wrapper,
+.main-content,
+.page-container {
 
-        width:100% !important;
+    margin:0!important;
 
-        box-shadow:none !important;
+    padding:0!important;
 
-        border:none !important;
+    width:100%!important;
 
-    }
+}
+
+
+
+.print-report {
+
+    width:100%!important;
+
+    padding:10mm!important;
+
+    border:none!important;
+
+    box-shadow:none!important;
+
+}
+
+
+
+.report-card {
+
+    break-inside:avoid;
+
+}
+
+
+
+.report-section {
+
+    break-inside:avoid;
+
+}
+
+
+
+table {
+
+    width:100%!important;
+
+    font-size:11px!important;
+
+}
+
+
+
+th,
+td {
+
+    padding:7px!important;
+
+}
+
+
+
+tr {
+
+    page-break-inside:auto;
+
+}
 
 
 
@@ -98,133 +132,234 @@ $moduleSubtitle = "Profitability & Expense Analysis";
 
 .print-report {
 
+background:white;
 
-    background:white;
+padding:35px;
 
-    padding:35px;
+border-radius:12px;
 
 }
+
+
 
 
 
 .report-header {
 
+border-bottom:2px solid #ddd;
 
-    border-bottom:2px solid #ddd;
+padding-bottom:15px;
 
-    padding-bottom:20px;
-
-    margin-bottom:25px;
+margin-bottom:20px;
 
 }
+
+
 
 
 
 .report-company {
 
+font-size:22px;
 
-    font-size:24px;
-
-    font-weight:800;
+font-weight:800;
 
 }
+
+
 
 
 
 .report-title {
 
+font-size:17px;
 
-    font-size:20px;
-
-    font-weight:700;
+font-weight:700;
 
 }
+
+
 
 
 
 .report-date {
 
+font-size:13px;
 
-    color:#666;
-
-    font-size:13px;
+color:#777;
 
 }
 
 
 
+
+
+
+/* SUMMARY CARD */
 
 
 .report-card {
 
 
-    border:1px solid #ddd;
+border:1px solid #ddd;
 
-    border-radius:12px;
+border-radius:14px;
 
-    padding:20px;
+padding:18px;
 
-    height:100%;
+height:100%;
+
+background:white;
 
 }
+
+
 
 
 
 .report-card-title {
 
 
-    font-size:12px;
+font-size:12px;
 
-    font-weight:700;
+font-weight:700;
 
-    color:#666;
+color:#666;
+
+letter-spacing:.5px;
 
 }
+
+
 
 
 
 .report-card-value {
 
 
-    font-size:24px;
+font-size:22px;
 
-    font-weight:800;
+font-weight:800;
 
-    margin-top:10px;
+margin-top:8px;
+
+white-space:nowrap;
 
 }
+
+
+
+
+
+.report-card small {
+
+
+display:block;
+
+margin-top:8px;
+
+color:#888;
+
+}
+
+
 
 
 
 .report-section {
 
 
-    border:1px solid #ddd;
+border:1px solid #ddd;
 
-    border-radius:12px;
+border-radius:12px;
 
-    padding:25px;
+padding:20px;
 
-    margin-top:25px;
+margin-top:25px;
+
+page-break-inside:avoid;
+
+break-inside:avoid;
+
 
 }
+
+
 
 
 
 .report-section-title {
 
 
-    font-size:18px;
+font-size:18px;
 
-    font-weight:700;
+font-weight:700;
 
-    margin-bottom:20px;
+margin-bottom:15px;
 
 }
 
 
 
+
+
+.report-footer {
+
+
+margin-top:25px;
+
+padding-top:10px;
+
+border-top:1px solid #ddd;
+
+text-align:center;
+
+font-size:10px;
+
+color:#777;
+
+page-break-inside:avoid;
+
+break-inside:avoid;
+
+
+}
+
+@media print {
+
+.report-footer {
+
+    position:relative;
+
+    margin-top:15px!important;
+
+}
+
+.report-section {
+
+    margin-top:15mm!important;
+
+}
+
+
+.report-card {
+
+    padding:12px!important;
+
+}
+
+
+.report-footer {
+
+    margin-top:15mm!important;
+
+}
+
+
+}
+
 </style>
+
 
 
 
@@ -234,10 +369,12 @@ $moduleSubtitle = "Profitability & Expense Analysis";
 
 
 <button onclick="window.print()"
+
 class="btn btn-outline-secondary">
 
 
 <i class="bi bi-printer me-1"></i>
+
 
 Print / Download PDF
 
@@ -268,37 +405,36 @@ Beauty Kasih Management System
 </div>
 
 
+
 <div class="report-title">
 
-Financial Report
+Financial Performance Report
 
 </div>
+
 
 
 <div class="report-date">
 
-Generated Date:
-{{ now()->format('d M Y') }}
+Generated {{ now()->format('d M Y') }}
+
+</div>
+
 
 </div>
 
 
 
-</div>
 
 
 
-
-
-
-
-
+<!-- SUMMARY CARDS -->
 
 <div class="row g-3">
 
 
 
-<div class="col-3">
+<div class="col-md-3">
 
 
 <div class="report-card">
@@ -306,9 +442,10 @@ Generated Date:
 
 <div class="report-card-title">
 
-TOTAL REVENUE (MTD)
+TOTAL REVENUE
 
 </div>
+
 
 
 <div class="report-card-value text-success">
@@ -318,17 +455,26 @@ RM {{ number_format($totalRevenue,2) }}
 </div>
 
 
-</div>
+
+<small>
+
+Monthly income tracking
+
+</small>
 
 
 </div>
 
 
+</div>
 
 
 
 
-<div class="col-3">
+
+
+
+<div class="col-md-3">
 
 
 <div class="report-card">
@@ -336,9 +482,10 @@ RM {{ number_format($totalRevenue,2) }}
 
 <div class="report-card-title">
 
-OPERATIONAL EXPENSES
+TOTAL EXPENSES
 
 </div>
+
 
 
 <div class="report-card-value text-danger">
@@ -348,17 +495,26 @@ RM {{ number_format($totalExpenses,2) }}
 </div>
 
 
-</div>
+
+<small>
+
+{{ $expenseCount }} expense records
+
+</small>
 
 
 </div>
 
 
+</div>
 
 
 
 
-<div class="col-3">
+
+
+
+<div class="col-md-3">
 
 
 <div class="report-card">
@@ -366,9 +522,10 @@ RM {{ number_format($totalExpenses,2) }}
 
 <div class="report-card-title">
 
-APPROVED PURCHASE COSTS
+PURCHASE COST
 
 </div>
+
 
 
 <div class="report-card-value text-warning">
@@ -378,17 +535,26 @@ RM {{ number_format($totalPurchases,2) }}
 </div>
 
 
-</div>
+
+<small>
+
+{{ $approvedPurchaseCount }} approved requests
+
+</small>
 
 
 </div>
 
 
+</div>
 
 
 
 
-<div class="col-3">
+
+
+
+<div class="col-md-3">
 
 
 <div class="report-card">
@@ -396,9 +562,10 @@ RM {{ number_format($totalPurchases,2) }}
 
 <div class="report-card-title">
 
-ESTIMATED NET PROFIT
+NET PROFIT
 
 </div>
+
 
 
 <div class="report-card-value text-primary">
@@ -408,10 +575,128 @@ RM {{ number_format($netProfit,2) }}
 </div>
 
 
+
 <small>
 
 Margin:
-{{ number_format($profitMargin,1) }}%
+{{ number_format($profitMargin,2) }}%
+
+</small>
+
+
+
+@if($netProfit > 0)
+
+<span class="badge bg-success mt-2">
+
+Profitable
+
+</span>
+
+
+@else
+
+
+<span class="badge bg-danger mt-2">
+
+Loss
+
+</span>
+
+
+@endif
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+<!-- EXTRA SUMMARY -->
+
+
+<div class="row g-3 mt-2">
+
+
+<div class="col-md-6">
+
+
+<div class="report-card py-3">
+
+
+<div class="report-card-title">
+
+TOTAL EXPENSE RECORDS
+
+</div>
+
+
+
+<div class="report-card-value">
+
+{{ $expenseCount }}
+
+</div>
+
+
+
+<small>
+
+Operational spending activities
+
+</small>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+<div class="col-md-6">
+
+
+<div class="report-card py-3">
+
+
+<div class="report-card-title">
+
+APPROVED PURCHASE REQUESTS
+
+</div>
+
+
+
+<div class="report-card-value">
+
+{{ $approvedPurchaseCount }}
+
+</div>
+
+
+
+<small>
+
+Procurement activities completed
 
 </small>
 
@@ -433,6 +718,7 @@ Margin:
 
 
 
+<!-- EXPENSE BREAKDOWN -->
 
 
 <div class="report-section">
@@ -440,7 +726,7 @@ Margin:
 
 <div class="report-section-title">
 
-Expense Breakdown by Category
+Expense Breakdown By Category
 
 </div>
 
@@ -458,17 +744,23 @@ Expense Breakdown by Category
 
 
 <th>
+
 CATEGORY
+
 </th>
 
 
 <th>
+
 TOTAL AMOUNT
+
 </th>
 
 
 <th>
-SHARE OF TOTAL
+
+SHARE
+
 </th>
 
 
@@ -479,10 +771,13 @@ SHARE OF TOTAL
 
 
 
+
 <tbody>
 
 
-@forelse($expensesByCategory as $cat=>$amt)
+
+@forelse($expensesByCategory as $category=>$amount)
+
 
 
 <tr>
@@ -490,20 +785,26 @@ SHARE OF TOTAL
 
 <td>
 
+
 <strong>
 
-{{ $cat }}
+{{ $category }}
 
 </strong>
 
+
 </td>
+
+
 
 
 <td>
 
-RM {{ number_format($amt,2) }}
+RM {{ number_format($amount,2) }}
 
 </td>
+
+
 
 
 
@@ -512,19 +813,24 @@ RM {{ number_format($amt,2) }}
 
 @if($grandTotalCost > 0)
 
-{{ number_format(($amt/$grandTotalCost)*100,1) }}%
+{{ number_format(($amount/$grandTotalCost)*100,2) }}%
+
 
 @else
 
 0%
 
+
 @endif
+
 
 
 </td>
 
 
 </tr>
+
+
 
 
 @empty
@@ -532,17 +838,24 @@ RM {{ number_format($amt,2) }}
 
 <tr>
 
-<td colspan="3"
-class="text-center">
 
-No financial expenses recorded.
+<td colspan="3"
+
+class="text-center text-muted">
+
+
+No expense data available.
+
 
 </td>
+
 
 </tr>
 
 
+
 @endforelse
+
 
 
 
@@ -553,8 +866,204 @@ No financial expenses recorded.
 
 
 
+</div>
+
+
+
+
+
+
+
+
+
+<!-- RECENT EXPENSE -->
+
+
+<div class="report-section">
+
+
+<div class="report-section-title">
+
+Recent Expense Transactions
 
 </div>
+
+
+
+
+
+<table class="table table-bordered align-middle">
+
+
+<thead>
+
+
+<tr>
+
+
+<th>
+
+DATE
+
+</th>
+
+
+<th>
+
+CATEGORY
+
+</th>
+
+
+<th>
+
+DESCRIPTION
+
+</th>
+
+
+<th>
+
+AMOUNT
+
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+
+
+
+
+<tbody>
+
+
+
+
+@forelse($recentExpenses as $expense)
+
+
+
+
+<tr>
+
+
+
+<td>
+
+{{ $expense->expense_date }}
+
+</td>
+
+
+
+
+<td>
+
+{{ $expense->expense_category }}
+
+</td>
+
+
+
+
+<td>
+
+{{ $expense->description }}
+
+</td>
+
+
+
+
+<td>
+
+
+<strong class="text-danger">
+
+RM {{ number_format($expense->amount,2) }}
+
+</strong>
+
+
+</td>
+
+
+
+
+</tr>
+
+
+
+
+@empty
+
+
+
+
+<tr>
+
+
+<td colspan="4"
+
+class="text-center text-muted">
+
+
+No expense transactions recorded.
+
+
+</td>
+
+
+</tr>
+
+
+
+
+@endforelse
+
+
+
+
+</tbody>
+
+
+</table>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="report-footer">
+
+
+Beauty Kasih Management System
+
+<br>
+
+Confidential Internal Document
+
+<br>
+
+Generated {{ now()->format('d M Y H:i') }}
+
+
+
+</div>
+
+
 
 
 

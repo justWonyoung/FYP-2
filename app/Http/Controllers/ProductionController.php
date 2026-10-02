@@ -936,7 +936,79 @@ class ProductionController extends Controller
 
     }
 
+/*
+|--------------------------------------------------------------------------
+| PRODUCTION REPORT
+|--------------------------------------------------------------------------
+*/
 
+public function report()
+{
+
+    $batches = Production::with([
+        'wastes',
+        'materialUsages.material'
+    ])
+    ->orderBy(
+        'created_at',
+        'desc'
+    )
+    ->get();
+
+
+
+    $totalBatches = $batches->count();
+
+
+
+    $completedBatches = $batches
+        ->where('status','completed')
+        ->count();
+
+
+
+    $inProgress = $batches
+        ->where('status','in_progress')
+        ->count();
+
+
+
+    $totalPlanned = $batches
+        ->sum('planned_output');
+
+
+
+    $totalActual = $batches
+        ->sum('actual_output');
+
+
+
+    $yield = 0;
+
+
+    if($totalPlanned > 0)
+    {
+
+        $yield = ($totalActual / $totalPlanned) * 100;
+
+    }
+
+
+
+    return view(
+        'production.report',
+        compact(
+            'batches',
+            'totalBatches',
+            'completedBatches',
+            'inProgress',
+            'totalPlanned',
+            'totalActual',
+            'yield'
+        )
+    );
+
+}
 
 
 

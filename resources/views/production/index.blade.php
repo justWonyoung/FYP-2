@@ -19,25 +19,36 @@ $moduleSubtitle = "Batch Processing & Yield Monitoring";
 
 <!-- ACTION HEADER -->
 
-<div class="d-flex justify-content-end align-items-center mb-4">
+<div class="d-flex justify-content-end mb-4">
 
 
-<a href="{{ route('production.create') }}" 
-class="btn btn-primary fw-bold">
+    <a href="{{ route('production.report') }}"
+       class="btn btn-outline-primary me-2">
 
 
-<i class="bi bi-gear-wide-connected me-1"></i>
+        <i class="bi bi-file-earmark-text me-1"></i>
+
+        Production Report
 
 
-Start New Batch
+    </a>
 
 
-</a>
+
+
+    <a href="{{ route('production.create') }}"
+       class="btn btn-primary">
+
+
+        <i class="bi bi-plus-circle me-1"></i>
+
+        Start New Batch
+
+
+    </a>
 
 
 </div>
-
-
 
 
 
@@ -49,17 +60,18 @@ Start New Batch
 <div class="alert alert-success alert-dismissible fade show">
 
 
-<i class="bi bi-check-circle me-2"></i>
+    <i class="bi bi-check-circle me-2"></i>
 
 
-{{ session('success') }}
+    {{ session('success') }}
 
 
-<button 
-type="button"
-class="btn-close"
-data-bs-dismiss="alert">
-</button>
+
+    <button 
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert">
+    </button>
 
 
 </div>
@@ -74,6 +86,7 @@ data-bs-dismiss="alert">
 
 
 <div class="section-card">
+
 
 
 <div class="section-title mb-3">
@@ -103,6 +116,7 @@ Track manufacturing batches, output performance and material efficiency.
 
 
 <thead>
+
 
 <tr>
 
@@ -165,16 +179,13 @@ ACTION
 
 <td>
 
-
 <strong>
 
 {{ $batch->batch_number }}
 
 </strong>
 
-
 </td>
-
 
 
 
@@ -185,7 +196,6 @@ ACTION
 {{ $batch->customer_order_no }}
 
 </td>
-
 
 
 
@@ -209,11 +219,8 @@ ACTION
 
 
 
-
-<!-- OUTPUT -->
-
-
 <td>
+
 
 
 <div>
@@ -234,9 +241,7 @@ Planned Output
 {{ $batch->unit }}
 
 
-
 </div>
-
 
 
 
@@ -255,12 +260,14 @@ Actual Output
 <br>
 
 
+
 <strong class="text-success">
 
 
 {{ number_format($batch->actual_output,2) }}
 
 {{ $batch->unit }}
+
 
 
 </strong>
@@ -283,13 +290,7 @@ if($batch->planned_output > 0)
 
 {
 
-$yield =
-
-($batch->actual_output /
-
-$batch->planned_output)
-
-*100;
+$yield = ($batch->actual_output / $batch->planned_output) * 100;
 
 }
 
@@ -315,6 +316,7 @@ Yield Performance
 
 
 
+
 @if($yield >= 90)
 
 
@@ -326,7 +328,7 @@ Yield Performance
 
 
 
-@elseif($yield >=70)
+@elseif($yield >= 70)
 
 
 <span class="badge bg-warning text-dark">
@@ -355,8 +357,6 @@ Yield Performance
 
 
 
-
-
 </td>
 
 
@@ -364,10 +364,6 @@ Yield Performance
 
 
 
-
-
-
-<!-- WASTE -->
 
 
 <td>
@@ -428,15 +424,11 @@ Wasted
 
 
 
-<!-- STATUS -->
-
-
 <td>
 
 
 
 @if($batch->status === 'in_progress')
-
 
 
 <span class="badge bg-warning text-dark">
@@ -452,10 +444,7 @@ In Progress
 
 
 
-
-
 @else
-
 
 
 <span class="badge bg-success">
@@ -468,7 +457,6 @@ Completed
 
 
 </span>
-
 
 
 @endif
@@ -485,15 +473,11 @@ Completed
 
 
 
-<!-- ACTION -->
-
-
 <td>
 
 
 
-<a 
-href="{{ route('production.log',$batch->production_id) }}"
+<a href="{{ route('production.log',$batch->production_id) }}"
 class="btn btn-outline-primary btn-sm mb-2">
 
 
@@ -511,14 +495,14 @@ Log Material/Waste
 
 
 
+
 @if($batch->status === 'in_progress')
 
 
 
+
 <form method="POST"
-
 action="{{ route('production.output',$batch->production_id) }}"
-
 class="mb-2">
 
 
@@ -530,25 +514,17 @@ class="mb-2">
 
 
 <input
-
 type="number"
-
 step="0.01"
-
 name="actual_output"
-
 class="form-control"
-
 placeholder="Actual Output"
-
 required>
 
 
 <button class="btn btn-success">
 
-
 Update
-
 
 </button>
 
@@ -565,9 +541,7 @@ Update
 
 
 
-
 <form method="POST"
-
 action="{{ route('production.complete',$batch->production_id) }}">
 
 
@@ -576,9 +550,7 @@ action="{{ route('production.complete',$batch->production_id) }}">
 
 
 <button
-
 class="btn btn-dark btn-sm"
-
 onclick="return confirm('Complete this production batch?')">
 
 
@@ -595,6 +567,9 @@ Complete Batch
 
 
 
+
+
+
 @else
 
 
@@ -608,8 +583,8 @@ Production Completed
 </span>
 
 
-@endif
 
+@endif
 
 
 
@@ -625,6 +600,7 @@ Production Completed
 
 
 
+
 @empty
 
 
@@ -633,7 +609,6 @@ Production Completed
 
 
 <td colspan="7"
-
 class="text-center text-muted py-5">
 
 
@@ -651,6 +626,7 @@ No production batches created.
 
 
 
+
 @endforelse
 
 
@@ -659,14 +635,16 @@ No production batches created.
 </tbody>
 
 
+
 </table>
 
 
-</div>
-
 
 </div>
 
+
+
+</div>
 
 
 

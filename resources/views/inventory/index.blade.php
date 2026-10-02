@@ -4,10 +4,14 @@
 @php
 
 $pageTitle = "Inventory | Beauty Kasih";
+
 $moduleTitle = "Inventory Management";
+
 $moduleSubtitle = "Material Stock & Availability Monitoring";
 
 @endphp
+
+
 
 
 
@@ -15,14 +19,35 @@ $moduleSubtitle = "Material Stock & Availability Monitoring";
 
 
 
+
+
 <div class="d-flex justify-content-end mb-4">
 
 
-    <a href="{{ route('inventory.receiving.history') }}"
+
+    <a href="{{ route('inventory.report') }}"
        class="btn btn-outline-primary me-2">
 
 
+        <i class="bi bi-file-earmark-bar-graph me-1"></i>
+
+
+        Inventory Report
+
+
+    </a>
+
+
+
+
+
+
+    <a href="{{ route('inventory.receiving.history') }}"
+       class="btn btn-outline-secondary me-2">
+
+
         <i class="bi bi-clock-history me-1"></i>
+
 
         Receiving History
 
@@ -33,20 +58,29 @@ $moduleSubtitle = "Material Stock & Availability Monitoring";
 
 
 
+
+
     <button class="btn btn-primary"
             data-bs-toggle="modal"
             data-bs-target="#receiveMaterialModal">
 
 
+
         <i class="bi bi-box-seam me-1"></i>
 
+
         Receive Material
+
 
 
     </button>
 
 
+
 </div>
+
+
+
 
 
 
@@ -61,8 +95,10 @@ $moduleSubtitle = "Material Stock & Availability Monitoring";
 {{ session('success') }}
 
 
+
 <button class="btn-close"
 data-bs-dismiss="alert">
+
 </button>
 
 
@@ -80,6 +116,7 @@ data-bs-dismiss="alert">
 <!-- ============================= -->
 <!-- RECEIVE MATERIAL MODAL -->
 <!-- ============================= -->
+
 
 
 <div class="modal fade"
@@ -101,6 +138,7 @@ action="{{ route('inventory.store') }}">
 
 
 @csrf
+
 
 
 
@@ -132,7 +170,6 @@ data-bs-dismiss="modal">
 
 
 <div class="modal-body">
-
 
 
 
@@ -173,6 +210,7 @@ Supplier Name
 </label>
 
 
+
 <input type="text"
 name="supplier_name"
 class="form-control"
@@ -181,7 +219,6 @@ required>
 
 
 </div>
-
 
 
 
@@ -215,7 +252,6 @@ required>
 
 
 
-
 <div class="mb-3">
 
 
@@ -234,27 +270,17 @@ required>
 
 
 <option value="kg">
-
 kg
-
 </option>
-
-
 
 
 <option value="L">
-
 L
-
 </option>
 
 
-
-
 <option value="pcs">
-
 pcs
-
 </option>
 
 
@@ -263,8 +289,6 @@ pcs
 
 
 </div>
-
-
 
 
 
@@ -282,6 +306,7 @@ Received Date
 </label>
 
 
+
 <input type="date"
 name="received_date"
 class="form-control"
@@ -290,7 +315,6 @@ required>
 
 
 </div>
-
 
 
 
@@ -341,7 +365,9 @@ placeholder="Optional notes"></textarea>
 class="btn btn-secondary"
 data-bs-dismiss="modal">
 
+
 Cancel
+
 
 </button>
 
@@ -368,7 +394,6 @@ Receive Material
 
 
 
-
 </form>
 
 
@@ -378,7 +403,9 @@ Receive Material
 
 
 
+
 </div>
+
 
 
 
@@ -398,16 +425,19 @@ Receive Material
 
 
 
+
+
 <div class="section-card">
 
 
 
 <div class="section-title mb-4">
 
+
 Current Stock Levels
 
-</div>
 
+</div>
 
 
 
@@ -457,6 +487,7 @@ STATUS
 </th>
 
 
+
 </tr>
 
 
@@ -488,9 +519,7 @@ STATUS
 
 
 
-
 <td>
-
 
 
 <strong>
@@ -502,7 +531,6 @@ STATUS
 </strong>
 
 
-
 </td>
 
 
@@ -510,9 +538,7 @@ STATUS
 
 
 
-
 <td>
-
 
 
 <span class="badge bg-secondary">
@@ -524,9 +550,7 @@ STATUS
 </span>
 
 
-
 </td>
-
 
 
 
@@ -537,9 +561,7 @@ STATUS
 <td>
 
 
-
 <strong class="text-primary">
-
 
 
 {{ number_format($item->current_stock,2) }}
@@ -548,9 +570,7 @@ STATUS
 {{ $item->unit }}
 
 
-
 </strong>
-
 
 
 </td>
@@ -561,9 +581,7 @@ STATUS
 
 
 
-
 <td>
-
 
 
 {{ number_format($item->minimum_stock,2) }}
@@ -581,17 +599,12 @@ STATUS
 
 
 
-
-
 <td>
 
 
 
 
-
 @if($item->current_stock <= $item->minimum_stock)
-
-
 
 
 
@@ -606,10 +619,7 @@ Low Stock
 
 
 
-
 @else
-
-
 
 
 
@@ -621,7 +631,6 @@ In Stock
 
 
 </span>
-
 
 
 
@@ -638,9 +647,8 @@ In Stock
 
 
 
-
-
 </tr>
+
 
 
 
@@ -656,7 +664,6 @@ In Stock
 <tr>
 
 
-
 <td colspan="5"
 class="text-center text-muted py-5">
 
@@ -665,7 +672,6 @@ No materials registered.
 
 
 </td>
-
 
 
 </tr>
@@ -694,7 +700,11 @@ No materials registered.
 
 
 
+
+
 </div>
+
+
 
 
 

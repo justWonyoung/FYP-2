@@ -437,6 +437,12 @@ Route::get(
 )
 ->name('inventory.receiving.history');
 
+Route::get(
+    '/inventory/report',
+    [InventoryController::class,'report']
+)
+->name('inventory.report');
+
     Route::get(
     '/production/{id}/log',
     [ProductionController::class,'log']
@@ -465,7 +471,11 @@ Route::get(
 )
 ->name('production.index');
 
-
+Route::get(
+    '/production/report',
+    [ProductionController::class,'report']
+)
+->name('production.report');
 
 Route::get(
     '/production/create',

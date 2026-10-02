@@ -76,22 +76,14 @@ class FinancialController extends Controller
 
 
 
-    public function report()
+public function report()
 {
 
-    // Total Revenue (temporary value)
-    // Later can be connected with customer orders
     $totalRevenue = 87000;
 
 
-
-    // Total Expenses
-
     $totalExpenses = Expense::sum('amount');
-
-
-
-    // Approved Purchase Cost
+    $expenseCount = Expense::count();
 
     $totalPurchases = PurchaseRequest::where(
         'approval_status',
@@ -99,9 +91,11 @@ class FinancialController extends Controller
     )
     ->sum('estimated_cost');
 
-
-
-    // Net Profit
+    $approvedPurchaseCount = PurchaseRequest::where(
+    'approval_status',
+    'approved'
+)
+->count();
 
     $netProfit =
         $totalRevenue
@@ -112,59 +106,80 @@ class FinancialController extends Controller
 
 
 
-    // Profit Margin
-
     $profitMargin = 0;
 
 
     if($totalRevenue > 0)
     {
+
         $profitMargin =
-            ($netProfit / $totalRevenue) * 100;
+        ($netProfit / $totalRevenue) * 100;
+
     }
 
 
-
-
-    // Expense Breakdown
 
     $expensesByCategory = Expense::selectRaw(
         'expense_category, SUM(amount) as total'
     )
     ->groupBy('expense_category')
-    ->pluck('total','expense_category');
+    ->pluck(
+        'total',
+        'expense_category'
+    );
 
 
-
-
-    // Used by percentage calculation in blade
 
     $grandTotalCost = $totalExpenses;
 
+$recentExpenses = Expense::latest()
+    ->take(10)
+    ->get();
+
+    $expenseCount = Expense::count();
+
+
+
+    $approvedPurchaseCount = PurchaseRequest::where(
+        'approval_status',
+        'approved'
+    )
+    ->count();
+
+
+
+    $recentExpenses = Expense::latest()
+        ->take(10)
+        ->get();
 
 
 
     return view(
-        'finance.report',
-        compact(
+    'finance.report',
+    compact(
 
-            'totalRevenue',
+        'totalRevenue',
 
-            'totalExpenses',
+        'totalExpenses',
 
-            'totalPurchases',
+        'totalPurchases',
 
-            'netProfit',
+        'netProfit',
 
-            'profitMargin',
+        'profitMargin',
 
-            'expensesByCategory',
+        'expensesByCategory',
 
-            'grandTotalCost'
+        'grandTotalCost',
 
-        )
-    );
+        'expenseCount',
 
+        'approvedPurchaseCount',
+
+        'recentExpenses'
+
+    )
+);
 
 }
 

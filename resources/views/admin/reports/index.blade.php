@@ -3,11 +3,11 @@
 
 @php
 
-$pageTitle = "Reports | Beauty Kasih";
+$pageTitle = "Analytics | Beauty Kasih";
 
-$moduleTitle = "Reports";
+$moduleTitle = "Analytics";
 
-$moduleSubtitle = "Operational Summary & Analysis";
+$moduleSubtitle = "Operational Summary & Business Performance";
 
 @endphp
 
@@ -17,16 +17,22 @@ $moduleSubtitle = "Operational Summary & Analysis";
 
 
 
+
+
 <div class="page-header">
 
 
 <h1>
-Admin Reports
+
+Business Analytics
+
 </h1>
 
 
 <p>
-Operational monitoring and business performance summary.
+
+Management overview and operational performance summary.
+
 </p>
 
 
@@ -36,32 +42,54 @@ Operational monitoring and business performance summary.
 
 
 
+
+
+
+
 <div class="row g-4">
 
 
 
+
+
 <div class="col-lg-3 col-md-6">
+
 
 <div class="dashboard-card">
 
+
 <div class="card-title">
+
 Inventory Items
+
 </div>
 
 
+
 <div class="card-value">
+
 {{ $totalMaterials }}
+
 </div>
 
 
+
 <div class="stat-change">
+
 {{ $lowStockItems }} Low Stock Items
+
 </div>
+
 
 
 </div>
 
+
 </div>
+
+
+
+
 
 
 
@@ -69,26 +97,42 @@ Inventory Items
 
 <div class="col-lg-3 col-md-6">
 
+
 <div class="dashboard-card">
 
+
 <div class="card-title">
+
 Purchase Requests
+
 </div>
 
 
+
 <div class="card-value">
+
 {{ $totalPurchaseRequests }}
+
 </div>
+
 
 
 <div class="stat-change">
+
 {{ $approvedPurchaseRequests }} Approved
+
 </div>
+
 
 
 </div>
 
+
 </div>
+
+
+
+
 
 
 
@@ -96,26 +140,42 @@ Purchase Requests
 
 <div class="col-lg-3 col-md-6">
 
+
 <div class="dashboard-card">
 
+
 <div class="card-title">
+
 Production Batches
+
 </div>
+
 
 
 <div class="card-value">
+
 {{ $totalProduction }}
+
 </div>
+
 
 
 <div class="stat-change">
+
 {{ $completedProduction }} Completed
+
 </div>
+
 
 
 </div>
 
+
 </div>
+
+
+
+
 
 
 
@@ -123,11 +183,16 @@ Production Batches
 
 <div class="col-lg-3 col-md-6">
 
+
 <div class="dashboard-card">
 
+
 <div class="card-title">
-Total Expenses
+
+Operating Cost
+
 </div>
+
 
 
 <div class="card-value">
@@ -137,6 +202,7 @@ RM {{ number_format($totalExpense,2) }}
 </div>
 
 
+
 <div class="stat-change">
 
 Recorded Expenses
@@ -144,13 +210,23 @@ Recorded Expenses
 </div>
 
 
-</div>
 
 </div>
 
 
+</div>
+
+
+
+
 
 </div>
+
+
+
+
+
+
 
 
 
@@ -161,18 +237,22 @@ Recorded Expenses
 <div class="section-card mt-4">
 
 
+
 <div class="section-title">
 
-Report Categories
+Business Overview
 
 </div>
+
 
 
 <div class="section-subtitle mb-4">
 
-Detailed operational reports
+Current operational status across all departments.
 
 </div>
+
+
 
 
 
@@ -182,31 +262,49 @@ Detailed operational reports
 
 
 
-<div class="col-md-3">
-
-<a href="{{ route('admin.reports.inventory') }}"
-class="btn btn-outline-primary w-100">
-
-Inventory Report
-
-</a>
-
-</div>
-
 
 
 
 
 <div class="col-md-3">
 
-<a href="{{ route('admin.reports.purchase') }}"
-class="btn btn-outline-primary w-100">
 
-Purchase Report
+<div class="dashboard-card">
 
-</a>
+
+
+<div class="card-title">
+
+Inventory Status
 
 </div>
+
+
+
+<div class="card-value">
+
+{{ $totalMaterials }}
+
+</div>
+
+
+
+<small>
+
+Material Items
+
+</small>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
 
 
 
@@ -214,14 +312,43 @@ Purchase Report
 
 <div class="col-md-3">
 
-<a href="{{ route('admin.reports.production') }}"
-class="btn btn-outline-primary w-100">
 
-Production Report
+<div class="dashboard-card">
 
-</a>
+
+
+<div class="card-title">
+
+Purchase Activity
 
 </div>
+
+
+
+<div class="card-value">
+
+{{ $totalPurchaseRequests }}
+
+</div>
+
+
+
+<small>
+
+Requests Recorded
+
+</small>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
 
 
 
@@ -229,21 +356,99 @@ Production Report
 
 <div class="col-md-3">
 
-<a href="{{ route('admin.reports.financial') }}"
-class="btn btn-outline-primary w-100">
 
-Financial Report
+<div class="dashboard-card">
 
-</a>
+
+
+<div class="card-title">
+
+Production Activity
+
+</div>
+
+
+
+<div class="card-value">
+
+{{ $totalProduction }}
 
 </div>
 
 
 
+<small>
+
+Production Batches
+
+</small>
+
+
+
 </div>
 
 
 </div>
+
+
+
+
+
+
+
+
+
+<div class="col-md-3">
+
+
+<div class="dashboard-card">
+
+
+
+<div class="card-title">
+
+Operating Cost
+
+</div>
+
+
+
+<div class="card-value">
+
+RM {{ number_format($totalExpense,2) }}
+
+</div>
+
+
+
+<small>
+
+Total Expenses
+
+</small>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+</div>
+
+
+
+
+
+</div>
+
+
+
+
 
 
 

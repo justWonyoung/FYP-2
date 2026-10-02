@@ -37,6 +37,7 @@
 
 <!-- ================= SIDEBAR ================= -->
 
+
 <aside class="sidebar">
 
 
@@ -86,9 +87,10 @@ MAIN
 @if(Auth::user()->role == 'admin')
 
 
+
 <li>
 
-<a href="{{route('admin.dashboard')}}"
+<a href="{{ route('admin.dashboard') }}"
 class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active':'' }}">
 
 Dashboard
@@ -100,9 +102,10 @@ Dashboard
 
 
 
+
 <li>
 
-<a href="{{route('admin.users.index')}}"
+<a href="{{ route('admin.users.index') }}"
 class="nav-link {{ request()->routeIs('admin.users.*') ? 'active':'' }}">
 
 User Management
@@ -121,7 +124,7 @@ User Management
 
 
 
-<!-- ================= STAFF / ADMIN / FINANCE SHARED ================= -->
+<!-- ================= OPERATION MODULE ================= -->
 
 
 @if(in_array(Auth::user()->role,['admin','staff','finance']))
@@ -130,7 +133,7 @@ User Management
 
 <li>
 
-<a href="{{route('inventory.index')}}"
+<a href="{{ route('inventory.index') }}"
 class="nav-link {{ request()->routeIs('inventory.*') ? 'active':'' }}">
 
 Inventory
@@ -142,9 +145,10 @@ Inventory
 
 
 
+
 <li>
 
-<a href="{{route('production.index')}}"
+<a href="{{ route('production.index') }}"
 class="nav-link {{ request()->routeIs('production.*') ? 'active':'' }}">
 
 Production
@@ -163,7 +167,7 @@ Production
 
 
 
-<!-- ================= FINANCE / ADMIN MENU ================= -->
+<!-- ================= FINANCE MODULE ================= -->
 
 
 @if(in_array(Auth::user()->role,['admin','finance']))
@@ -172,10 +176,10 @@ Production
 
 <li>
 
-<a href="{{route('finance.report')}}"
+<a href="{{ route('finance.expenses') }}"
 class="nav-link {{ request()->routeIs('finance.*') ? 'active':'' }}">
 
-Financial Report
+Finance
 
 </a>
 
@@ -191,7 +195,7 @@ Financial Report
 
 
 
-<!-- ================= ADMIN REPORT MENU ================= -->
+<!-- ================= ADMIN ANALYTICS ================= -->
 
 
 @if(Auth::user()->role == 'admin')
@@ -200,10 +204,10 @@ Financial Report
 
 <li>
 
-<a href="{{route('admin.reports')}}"
-class="nav-link {{ request()->routeIs('admin.reports*') ? 'active':'' }}">
+<a href="{{ route('admin.reports') }}"
+class="nav-link {{ request()->routeIs('admin.reports') ? 'active':'' }}">
 
-Reports
+Analytics
 
 </a>
 
@@ -242,8 +246,7 @@ Reports
 
 
 
-
-<!-- TOP NAVBAR -->
+<!-- ================= TOP NAVBAR ================= -->
 
 
 <header class="top-navbar">
@@ -286,6 +289,8 @@ Reports
 
 
 
+
+
 <div class="d-flex align-items-center gap-3">
 
 
@@ -300,7 +305,8 @@ Reports
 
 
 
-<form action="{{route('logout.custom')}}" method="POST">
+
+<form action="{{ route('logout.custom') }}" method="POST">
 
 @csrf
 
@@ -313,6 +319,7 @@ Logout
 
 
 </form>
+
 
 
 
@@ -333,8 +340,7 @@ Logout
 
 
 
-
-<!-- PAGE CONTENT -->
+<!-- ================= PAGE CONTENT ================= -->
 
 
 <main class="page-container">
@@ -349,13 +355,16 @@ Logout
 
 
 
-</div>
-
-
-
-
 
 </div>
+
+
+
+
+
+
+</div>
+
 
 
 
@@ -366,15 +375,12 @@ Logout
 
 
 
-
 @yield('content')
 
 
 
 
-
 @endauth
-
 
 
 

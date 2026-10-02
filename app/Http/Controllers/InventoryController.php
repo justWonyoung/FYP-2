@@ -219,6 +219,47 @@ public function receivingHistory()
 
     }
 
+    public function report()
+{
+
+    $materials = Material::orderBy(
+        'material_name',
+        'asc'
+    )
+    ->get();
+
+
+
+    $totalMaterials = Material::count();
+
+
+
+    $lowStock = Material::whereColumn(
+        'current_stock',
+        '<=',
+        'minimum_stock'
+    )
+    ->count();
+
+
+
+    $totalStock = Material::sum(
+        'current_stock'
+    );
+
+
+
+    return view(
+        'inventory.report',
+        compact(
+            'materials',
+            'totalMaterials',
+            'lowStock',
+            'totalStock'
+        )
+    );
+
+}
 
 
 
