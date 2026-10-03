@@ -3,7 +3,7 @@
 
 @php
 
-$pageTitle = "Dashboard | Beauty Kasih";
+$pageTitle = "Dashboard | NEXORA";
 
 $moduleTitle = "Dashboard";
 
@@ -31,7 +31,7 @@ Welcome back, Administrator
 
 
 <p>
-Here is today's Beauty Kasih operational overview.
+Here is today's NEXORA operational overview.
 </p>
 
 

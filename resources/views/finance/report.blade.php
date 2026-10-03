@@ -3,7 +3,7 @@
 
 @php
 
-$pageTitle = "Financial Report | Beauty Kasih";
+$pageTitle = "Financial Report | NEXORA";
 
 $moduleTitle = "Financial Report";
 
@@ -400,7 +400,7 @@ Print / Download PDF
 
 <div class="report-company">
 
-Beauty Kasih Management System
+NEXORA DIGITAL MANAGEMENT SYSTEM
 
 </div>
 
@@ -1049,7 +1049,7 @@ No expense transactions recorded.
 <div class="report-footer">
 
 
-Beauty Kasih Management System
+NEXORA DIGITAL MANAGEMENT SYSTEM
 
 <br>
 

@@ -3,7 +3,7 @@
 
 @php
 
-$pageTitle = "Production Report | Beauty Kasih";
+$pageTitle = "Production Report | NEXORA";
 
 $moduleTitle = "Production Report";
 
@@ -304,7 +304,7 @@ Print / Download PDF
 
 <div class="company-name">
 
-Beauty Kasih Management System
+NEXORA DIGITAL MANAGEMENT SYSTEM
 
 </div>
 
@@ -1034,7 +1034,7 @@ YIELD %
 <div class="report-footer">
 
 
-Beauty Kasih Management System
+NEXORA DIGITAL MANAGEMENT SYSTEM
 
 <br>
 

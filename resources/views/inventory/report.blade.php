@@ -3,7 +3,7 @@
 
 @php
 
-$pageTitle = "Inventory Report | Beauty Kasih";
+$pageTitle = "Inventory Report | NEXORA";
 
 $moduleTitle = "Inventory Report";
 
@@ -441,7 +441,7 @@ Print / Download PDF
 
 <div class="company-name">
 
-Beauty Kasih Management System
+NEXORA Management System
 
 </div>
 
@@ -766,7 +766,7 @@ No material records found.
 <div class="report-footer">
 
 
-Beauty Kasih Management System
+NEXORA Management System
 
 <br>
 

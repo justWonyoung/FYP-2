@@ -440,8 +440,8 @@ Route::middleware(['auth'])
     Route::get(
     '/inventory/pr-details/{id}',
     [InventoryController::class,'getPRDetails']
-)
-->name('inventory.pr.details');
+    )
+    ->name('inventory.pr.details');
 
     Route::get(
     '/inventory/receiving-history',
@@ -539,5 +539,26 @@ Route::post(
 });
 
 
+
+});
+
+use Illuminate\Support\Facades\Mail;
+
+
+Route::get('/test-email', function(){
+
+    Mail::raw(
+        'NEXORA email system is working.',
+        function($message){
+
+            $message
+            ->to('yeenjpn@gmail.com')
+            ->subject('NEXORA Test Email');
+
+        }
+    );
+
+
+    return "Email sent successfully";
 
 });

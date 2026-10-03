@@ -3,7 +3,7 @@
 
 @php
 
-$pageTitle = "Analytics | Beauty Kasih";
+$pageTitle = "Analytics | NEXORA";
 
 $moduleTitle = "Analytics";
 

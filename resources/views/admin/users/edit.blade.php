@@ -3,7 +3,7 @@
 
 @php
 
-$pageTitle = "Edit User | Beauty Kasih";
+$pageTitle = "Edit User | NEXORA";
 
 $moduleTitle = "User Management";
 

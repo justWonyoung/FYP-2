@@ -3,7 +3,7 @@
 
 @php
 
-$pageTitle = "Production Report | Beauty Kasih";
+$pageTitle = "Production Report | NEXORA";
 
 $moduleTitle = "Production Report";
 
@@ -299,7 +299,7 @@ color:#777;
 
 <div class="company-name">
 
-Beauty Kasih Management System
+NEXORA Management System
 
 </div>
 
@@ -631,7 +631,7 @@ No production records found.
 <div class="report-footer">
 
 
-Beauty Kasih Management System
+NEXORA Digital Management System
 
 <br>
 

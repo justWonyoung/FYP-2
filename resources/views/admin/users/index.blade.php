@@ -3,7 +3,7 @@
 
 @php
 
-$pageTitle = "User Management | Beauty Kasih";
+$pageTitle = "User Management | NEXORA";
 $moduleTitle = "User Management";
 $moduleSubtitle = "Staff Account & Access Control";
 

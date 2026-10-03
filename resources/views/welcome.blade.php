@@ -4,7 +4,7 @@
 <head>
 
 <title>
-Beauty Kasih Management System
+NEXORA DIGITAL MANAGEMENT SYSTEM
 </title>
 
 
@@ -78,7 +78,7 @@ body{
 
 <div class="logo mb-3">
 
-Beauty Kasih
+NEXORA
 
 </div>
 
