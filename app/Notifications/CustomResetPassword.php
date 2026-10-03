@@ -53,7 +53,7 @@ class CustomResetPassword extends Notification
     return (new MailMessage)
 
         ->subject(
-            'NEXORA Password Reset'
+            'DBFM Password Reset'
         )
 
 
@@ -63,7 +63,7 @@ class CustomResetPassword extends Notification
 
 
         ->line(
-            'We received a request to reset your NEXORA account password.'
+            'We received a request to reset your DBFM account password.'
         )
 
 
@@ -89,7 +89,7 @@ class CustomResetPassword extends Notification
 
 
         ->salutation(
-            'Regards, NEXORA Operational System'
+            'Regards, DBFM Operational System'
         );
 
 

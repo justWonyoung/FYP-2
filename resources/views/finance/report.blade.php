@@ -3,7 +3,7 @@
 
 @php
 
-$pageTitle = "Financial Report | NEXORA";
+$pageTitle = "Financial Report | DBFM";
 
 $moduleTitle = "Financial Report";
 
@@ -400,7 +400,7 @@ Print / Download PDF
 
 <div class="report-company">
 
-NEXORA DIGITAL MANAGEMENT SYSTEM
+DBFM DIGITAL MANAGEMENT SYSTEM
 
 </div>
 
@@ -1049,7 +1049,7 @@ No expense transactions recorded.
 <div class="report-footer">
 
 
-NEXORA DIGITAL MANAGEMENT SYSTEM
+DBFM DIGITAL MANAGEMENT SYSTEM
 
 <br>
 

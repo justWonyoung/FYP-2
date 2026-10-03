@@ -3,7 +3,7 @@
 
 @php
 
-$pageTitle = "Inventory Report | NEXORA";
+$pageTitle = "Inventory Report | DBFM";
 
 $moduleTitle = "Inventory Report";
 
@@ -441,7 +441,7 @@ Print / Download PDF
 
 <div class="company-name">
 
-NEXORA Management System
+DBFM Management System
 
 </div>
 
@@ -766,7 +766,7 @@ No material records found.
 <div class="report-footer">
 
 
-NEXORA Management System
+DBFM Management System
 
 <br>
 

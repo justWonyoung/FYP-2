@@ -3,7 +3,7 @@
 
 @php
 
-$pageTitle = "Start Production Batch | NEXORA";
+$pageTitle = "Start Production Batch | DBFM";
 
 $moduleTitle = "Production Control";
 

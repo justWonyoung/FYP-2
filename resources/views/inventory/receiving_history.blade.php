@@ -3,7 +3,7 @@
 
 @php
 
-$pageTitle = "Receiving History | NEXORA";
+$pageTitle = "Receiving History | DBFM";
 
 $moduleTitle = "Material Receiving History";
 

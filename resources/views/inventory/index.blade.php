@@ -3,7 +3,7 @@
 
 @php
 
-$pageTitle = "Inventory | NEXORA";
+$pageTitle = "Inventory | DBFM";
 
 $moduleTitle = "Inventory Management";
 

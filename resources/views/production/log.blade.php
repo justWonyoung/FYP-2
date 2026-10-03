@@ -3,7 +3,7 @@
 
 @php
 
-$pageTitle = "Material Usage | NEXORA";
+$pageTitle = "Material Usage | DBFM";
 
 $moduleTitle = "Production Control";
 

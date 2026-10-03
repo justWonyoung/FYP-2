@@ -548,12 +548,12 @@ use Illuminate\Support\Facades\Mail;
 Route::get('/test-email', function(){
 
     Mail::raw(
-        'NEXORA email system is working.',
+        'DBFM email system is working.',
         function($message){
 
             $message
             ->to('yeenjpn@gmail.com')
-            ->subject('NEXORA Test Email');
+            ->subject('DBFM Test Email');
 
         }
     );

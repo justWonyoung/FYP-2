@@ -9,7 +9,7 @@
 
 
 <title>
-{{ $pageTitle ?? 'NEXORA DIGITAL MANAGEMENT SYSTEM' }}
+{{ $pageTitle ?? 'DBFM DIGITAL MANAGEMENT SYSTEM' }}
 </title>
 
 
@@ -47,7 +47,7 @@
 
 <div class="brand-title">
 
-NEXORA
+DBFM
 
 </div>
 

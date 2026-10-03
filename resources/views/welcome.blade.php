@@ -4,7 +4,7 @@
 <head>
 
 <title>
-NEXORA DIGITAL MANAGEMENT SYSTEM
+DBFM DIGITAL MANAGEMENT SYSTEM
 </title>
 
 
@@ -78,7 +78,7 @@ body{
 
 <div class="logo mb-3">
 
-NEXORA
+DBFM
 
 </div>
 

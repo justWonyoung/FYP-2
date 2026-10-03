@@ -3,7 +3,7 @@
 
 @php
 
-$pageTitle = "Production Report | NEXORA";
+$pageTitle = "Production Report | DBFM";
 
 $moduleTitle = "Production Report";
 
@@ -304,7 +304,7 @@ Print / Download PDF
 
 <div class="company-name">
 
-NEXORA DIGITAL MANAGEMENT SYSTEM
+DBFM DIGITAL MANAGEMENT SYSTEM
 
 </div>
 
@@ -1034,7 +1034,7 @@ YIELD %
 <div class="report-footer">
 
 
-NEXORA DIGITAL MANAGEMENT SYSTEM
+DBFM DIGITAL MANAGEMENT SYSTEM
 
 <br>
 

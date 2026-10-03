@@ -3,7 +3,7 @@
 
 @php
 
-$pageTitle = "Financial Report | NEXORA";
+$pageTitle = "Financial Report | DBFM";
 
 $moduleTitle = "Financial Report";
 
