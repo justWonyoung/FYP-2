@@ -10,9 +10,21 @@ class PurchaseRequest extends Model
     use HasFactory;
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | Primary Key
+    |--------------------------------------------------------------------------
+    */
+
     protected $primaryKey = 'purchase_request_id';
 
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Mass Assignment
+    |--------------------------------------------------------------------------
+    */
 
     protected $fillable = [
 
@@ -30,6 +42,8 @@ class PurchaseRequest extends Model
 
         'received_quantity',
 
+        'delivery_status',
+
         'unit',
 
         'estimated_cost',
@@ -37,8 +51,6 @@ class PurchaseRequest extends Model
         'finance_status',
 
         'approval_status',
-
-        'delivery_status',
 
         'finance_remark',
 
@@ -48,9 +60,18 @@ class PurchaseRequest extends Model
 
 
 
+
+
     /*
     |--------------------------------------------------------------------------
-    | Purchase Request Items
+    | Staff / Requester Relationship
+    |--------------------------------------------------------------------------
+    |
+    | purchase_requests.requested_by
+    |              |
+    |              v
+    | users.user_id
+    |
     |--------------------------------------------------------------------------
     */
 
@@ -65,6 +86,16 @@ class PurchaseRequest extends Model
 
 
 
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Purchase Request Items Relationship
+    |--------------------------------------------------------------------------
+    */
+
     public function items()
     {
         return $this->hasMany(
@@ -74,42 +105,6 @@ class PurchaseRequest extends Model
         );
     }
 
-
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Supplier Relationship
-    |--------------------------------------------------------------------------
-    */
-
-    public function supplier()
-    {
-        return $this->belongsTo(
-            Supplier::class,
-            'supplier_id',
-            'id'
-        );
-    }
-
-
-
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | User Relationship
-    |--------------------------------------------------------------------------
-    */
-
-    public function requester()
-    {
-        return $this->belongsTo(
-            User::class,
-            'requested_by',
-            'id'
-        );
-    }
 
 
 }

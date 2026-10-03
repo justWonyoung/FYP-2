@@ -18,150 +18,148 @@ class DashboardController extends Controller
     |--------------------------------------------------------------------------
     */
 
-public function admin()
-{
+    public function admin()
+    {
 
-    /*
-    |--------------------------------------------------------------------------
-    | PURCHASE REQUEST APPROVAL
-    |--------------------------------------------------------------------------
-    */
+        /*
+        |--------------------------------------------------------------------------
+        | PURCHASE REQUEST APPROVAL
+        |--------------------------------------------------------------------------
+        */
 
-    $pendingApprovals = PurchaseRequest::where(
-        'finance_status',
-        'approved'
-    )
-    ->where(
-        'approval_status',
-        'pending'
-    )
-    ->get();
-
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | INVENTORY
-    |--------------------------------------------------------------------------
-    */
-
-    $totalMaterials = Material::count();
-
-
-
-    $lowStockItems = Material::whereColumn(
-        'current_stock',
-        '<=',
-        'minimum_stock'
-    )
-    ->count();
-
-
-
-    $criticalItems = Material::where(
-        'current_stock',
-        '<=',
-        0
-    )
-    ->count();
-
-
-
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | FINANCE
-    |--------------------------------------------------------------------------
-    */
-
-
-    $monthlyExpense = Expense::whereMonth(
-        'expense_date',
-        now()->month
-    )
-    ->whereYear(
-        'expense_date',
-        now()->year
-    )
-    ->sum('amount');
-
-
-
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | PRODUCTION
-    |--------------------------------------------------------------------------
-    */
-
-
-    $completedProduction = Production::where(
-        'status',
-        'Completed'
-    )
-    ->count();
-
-
-
-    $runningProduction = Production::where(
-        'status',
-        'In Progress'
-    )
-    ->count();
-
-
-
-    $pendingProduction = Production::where(
-        'status',
-        'Pending'
-    )
-    ->count();
-
-
-
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | ACTIVE ORDERS
-    |--------------------------------------------------------------------------
-    |
-    | Currently production is your operational order source.
-    |
-    */
-
-    $activeOrders = Production::whereIn(
-        'status',
-        [
-            'Pending',
-            'In Progress'
-        ]
-    )
-    ->count();
-
-
-
-
-
-    return view(
-        'admin.dashboard',
-        compact(
-            'pendingApprovals',
-            'totalMaterials',
-            'activeOrders',
-            'monthlyExpense',
-            'completedProduction',
-            'runningProduction',
-            'pendingProduction',
-            'lowStockItems',
-            'criticalItems'
+        $pendingApprovals = PurchaseRequest::where(
+            'finance_status',
+            'approved'
         )
-    );
+        ->where(
+            'approval_status',
+            'pending'
+        )
+        ->get();
 
 
-}
+
+        /*
+        |--------------------------------------------------------------------------
+        | INVENTORY
+        |--------------------------------------------------------------------------
+        */
+
+        $totalMaterials = Material::count();
+
+
+
+        $lowStockItems = Material::whereColumn(
+            'current_stock',
+            '<=',
+            'minimum_stock'
+        )
+        ->count();
+
+
+
+        $criticalItems = Material::where(
+            'current_stock',
+            '<=',
+            0
+        )
+        ->count();
+
+
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | FINANCE
+        |--------------------------------------------------------------------------
+        */
+
+        $monthlyExpense = Expense::whereMonth(
+            'expense_date',
+            now()->month
+        )
+        ->whereYear(
+            'expense_date',
+            now()->year
+        )
+        ->sum('amount');
+
+
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | PRODUCTION
+        |--------------------------------------------------------------------------
+        */
+
+        $completedProduction = Production::where(
+            'status',
+            'Completed'
+        )
+        ->count();
+
+
+
+        $runningProduction = Production::where(
+            'status',
+            'In Progress'
+        )
+        ->count();
+
+
+
+        $pendingProduction = Production::where(
+            'status',
+            'Pending'
+        )
+        ->count();
+
+
+
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | ACTIVE ORDERS
+        |--------------------------------------------------------------------------
+        */
+
+        $activeOrders = Production::whereIn(
+            'status',
+            [
+                'Pending',
+                'In Progress'
+            ]
+        )
+        ->count();
+
+
+
+
+
+        return view(
+            'admin.dashboard',
+            compact(
+                'pendingApprovals',
+                'totalMaterials',
+                'activeOrders',
+                'monthlyExpense',
+                'completedProduction',
+                'runningProduction',
+                'pendingProduction',
+                'lowStockItems',
+                'criticalItems'
+            )
+        );
+
+
+    }
+
+
+
 
 
 
@@ -175,43 +173,145 @@ public function admin()
     */
 
     public function staff()
-    {
+{
 
-        $requests = PurchaseRequest::latest()->get();
+    /*
+    |--------------------------------------------------------------------------
+    | STAFF ONLY PURCHASE REQUESTS
+    |--------------------------------------------------------------------------
+    */
 
-
-        $pendingPRs = PurchaseRequest::where(
-            'approval_status',
-            'pending'
+    $requests = PurchaseRequest::with('staff')
+        ->where(
+            'requested_by',
+            auth()->id()
         )
+        ->latest()
         ->get();
 
 
 
-        $materials = Material::all();
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | DASHBOARD SUMMARY
+    |--------------------------------------------------------------------------
+    */
+
+
+    $totalRequests = PurchaseRequest::where(
+        'requested_by',
+        auth()->id()
+    )
+    ->count();
 
 
 
-        $productions = Production::orderBy(
-            'created_at',
-            'desc'
+
+
+    $pendingRequests = PurchaseRequest::where(
+        'requested_by',
+        auth()->id()
+    )
+    ->where(
+        'approval_status',
+        'pending'
+    )
+    ->count();
+
+
+
+
+
+    $approvedRequests = PurchaseRequest::where(
+        'requested_by',
+        auth()->id()
+    )
+    ->where(
+        'approval_status',
+        'approved'
+    )
+    ->count();
+
+
+
+
+
+    $rejectedRequests = PurchaseRequest::where(
+        'requested_by',
+        auth()->id()
+    )
+    ->where(
+        'approval_status',
+        'rejected'
+    )
+    ->count();
+
+
+
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | RECENT DATA
+    |--------------------------------------------------------------------------
+    */
+
+
+    $pendingPRs = PurchaseRequest::where(
+        'requested_by',
+        auth()->id()
+    )
+    ->where(
+        'approval_status',
+        'pending'
+    )
+    ->get();
+
+
+
+
+
+    $materials = Material::all();
+
+
+
+
+
+    $productions = Production::orderBy(
+        'created_at',
+        'desc'
+    )
+    ->take(5)
+    ->get();
+
+
+
+
+
+
+
+    return view(
+        'staff.dashboard',
+        compact(
+            'requests',
+            'pendingPRs',
+            'materials',
+            'productions',
+            'totalRequests',
+            'pendingRequests',
+            'approvedRequests',
+            'rejectedRequests'
         )
-        ->take(5)
-        ->get();
+    );
 
 
+}
 
-        return view(
-            'staff.dashboard',
-            compact(
-                'requests',
-                'pendingPRs',
-                'materials',
-                'productions'
-            )
-        );
 
-    }
 
 
 
@@ -237,13 +337,19 @@ public function admin()
 
 
 
+
+
         $totalRevenue = 87000;
+
+
 
 
 
         $totalExpense = Expense::sum(
             'amount'
         );
+
+
 
 
 
@@ -258,6 +364,8 @@ public function admin()
 
 
 
+
+
         $netProfit =
             $totalRevenue
             -
@@ -267,12 +375,16 @@ public function admin()
 
 
 
+
+
         $expenses = Expense::orderBy(
             'expense_date',
             'desc'
         )
         ->take(5)
         ->get();
+
+
 
 
 

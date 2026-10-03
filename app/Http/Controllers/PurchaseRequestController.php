@@ -27,8 +27,12 @@ class PurchaseRequestController extends Controller
 
 
 
+
+
+
     public function store(Request $request)
     {
+
 
         $request->validate([
 
@@ -48,7 +52,11 @@ class PurchaseRequestController extends Controller
 
 
 
+
+
         DB::beginTransaction();
+
+
 
 
 
@@ -56,9 +64,20 @@ class PurchaseRequestController extends Controller
         {
 
 
-            $lastRequest = PurchaseRequest::latest(
-                'purchase_request_id'
-            )->first();
+            /*
+            |--------------------------------------------------------------------------
+            | Generate Purchase Request Number
+            |--------------------------------------------------------------------------
+            */
+
+
+            $lastRequest = PurchaseRequest::orderBy(
+                'purchase_request_id',
+                'desc'
+            )
+            ->first();
+
+
 
 
 
@@ -73,6 +92,7 @@ class PurchaseRequestController extends Controller
                     )
                 ) + 1;
 
+
             }
             else
             {
@@ -80,6 +100,8 @@ class PurchaseRequestController extends Controller
                 $number = 1;
 
             }
+
+
 
 
 
@@ -96,11 +118,21 @@ class PurchaseRequestController extends Controller
 
 
 
+
+
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Create Purchase Request
+            |--------------------------------------------------------------------------
+            */
+
+
             PurchaseRequest::create([
 
 
-                'request_no'
-                    => $requestNo,
+                'request_no' => $requestNo,
 
 
                 'customer_order_no'
@@ -111,6 +143,10 @@ class PurchaseRequestController extends Controller
                     => $request->supplier_name,
 
 
+                'requested_by'
+                    => Auth::id(),
+
+
                 'material_item'
                     => $request->material_item,
 
@@ -118,12 +154,14 @@ class PurchaseRequestController extends Controller
                 'quantity'
                     => $request->quantity,
 
+
                 'received_quantity'
                     => 0,
 
 
                 'delivery_status'
-                  => 'pending',
+                    => 'pending',
+
 
                 'unit'
                     => $request->unit,
@@ -137,14 +175,12 @@ class PurchaseRequestController extends Controller
                     => 'pending',
 
 
-'approval_status'
-    => 'pending',
-
-'requested_by'
-    => Auth::id(),
+                'approval_status'
+                    => 'pending',
 
 
             ]);
+
 
 
 
@@ -153,35 +189,33 @@ class PurchaseRequestController extends Controller
 
 
 
+
+
             return redirect()
 
                 ->route('staff.dashboard')
 
                 ->with(
-
                     'success',
-
                     'Purchase Request '.$requestNo.' submitted successfully!'
-
                 );
-
 
 
         }
         catch(\Exception $e)
         {
 
+
             DB::rollBack();
+
+
 
 
             return back()
 
                 ->with(
-
                     'error',
-
                     'Failed to submit Purchase Request: '.$e->getMessage()
-
                 );
 
 
@@ -205,11 +239,15 @@ class PurchaseRequestController extends Controller
     */
 
 
+
     public function showFinanceReview($id)
     {
 
 
-        $pr = PurchaseRequest::findOrFail($id);
+        $pr = PurchaseRequest::with('staff')
+            ->findOrFail($id);
+
+
 
 
 
@@ -221,27 +259,24 @@ class PurchaseRequestController extends Controller
                 ->route('finance.dashboard')
 
                 ->with(
-
                     'error',
-
                     'This Purchase Request has already been reviewed.'
-
                 );
 
         }
 
 
 
+
+
         return view(
-
             'finance.review_pr',
-
             compact('pr')
-
         );
 
 
     }
+
 
 
 
@@ -254,6 +289,21 @@ class PurchaseRequestController extends Controller
 
 
         $pr = PurchaseRequest::findOrFail($id);
+
+
+
+
+
+        if($pr->finance_status !== 'pending')
+        {
+
+            return redirect()
+
+                ->route('finance.dashboard');
+
+        }
+
+
 
 
 
@@ -279,15 +329,13 @@ class PurchaseRequestController extends Controller
             ->route('finance.dashboard')
 
             ->with(
-
                 'success',
-
                 'Purchase Request forwarded to Admin approval.'
-
             );
 
 
     }
+
 
 
 
@@ -303,11 +351,17 @@ class PurchaseRequestController extends Controller
 
 
 
+
+
         $pr->update([
 
 
             'finance_status'
-                => 'rejected'
+                => 'rejected',
+
+
+            'finance_remark'
+                => 'Rejected by Finance'
 
 
         ]);
@@ -321,16 +375,12 @@ class PurchaseRequestController extends Controller
             ->route('finance.dashboard')
 
             ->with(
-
                 'success',
-
                 'Purchase Request '.$pr->request_no.' rejected by Finance.'
-
             );
 
 
     }
-
 
 
 
@@ -352,21 +402,20 @@ class PurchaseRequestController extends Controller
     {
 
 
-        $pr = PurchaseRequest::findOrFail($id);
+        $pr = PurchaseRequest::with('staff')
+            ->findOrFail($id);
+
+
 
 
 
         return view(
-
             'admin.review_pr',
-
             compact('pr')
-
         );
 
 
     }
-
 
 
 
@@ -386,7 +435,6 @@ class PurchaseRequestController extends Controller
             'approved'
 
         )
-
         ->where(
 
             'approval_status',
@@ -394,19 +442,17 @@ class PurchaseRequestController extends Controller
             'pending'
 
         )
-
         ->latest()
 
         ->get();
 
 
 
+
+
         return view(
-
             'admin.approve_pr',
-
             compact('requests')
-
         );
 
 
@@ -424,17 +470,8 @@ class PurchaseRequestController extends Controller
     |--------------------------------------------------------------------------
     | ADMIN FINAL APPROVAL
     |--------------------------------------------------------------------------
-    |
-    | Finance approved
-    |        ↓
-    | Admin approved
-    |        ↓
-    | Waiting for supplier delivery
-    |        ↓
-    | Inventory receiving updates stock
-    |
-    |--------------------------------------------------------------------------
     */
+
 
 
     public function approve($id)
@@ -445,11 +482,31 @@ class PurchaseRequestController extends Controller
 
 
 
+
+
+        if($pr->approval_status !== 'pending')
+        {
+
+            return redirect()
+
+                ->route('admin.dashboard');
+
+        }
+
+
+
+
+
+
         $pr->update([
 
 
             'approval_status'
-                => 'approved'
+                => 'approved',
+
+
+            'admin_remark'
+                => 'Approved by Admin'
 
 
         ]);
@@ -464,11 +521,8 @@ class PurchaseRequestController extends Controller
             ->route('admin.dashboard')
 
             ->with(
-
                 'success',
-
                 'Purchase Request approved. Waiting for material receiving.'
-
             );
 
 
@@ -490,11 +544,17 @@ class PurchaseRequestController extends Controller
 
 
 
+
+
         $pr->update([
 
 
             'approval_status'
-                => 'rejected'
+                => 'rejected',
+
+
+            'admin_remark'
+                => 'Rejected by Admin'
 
 
         ]);
@@ -508,11 +568,8 @@ class PurchaseRequestController extends Controller
             ->route('admin.purchase.requests')
 
             ->with(
-
                 'success',
-
-                'Purchase Request rejected'
-
+                'Purchase Request rejected.'
             );
 
 
