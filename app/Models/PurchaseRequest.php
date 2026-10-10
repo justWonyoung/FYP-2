@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PurchaseRequest extends Model
 {
     use HasFactory;
-
 
     /*
     |--------------------------------------------------------------------------
@@ -17,8 +17,6 @@ class PurchaseRequest extends Model
     */
 
     protected $primaryKey = 'purchase_request_id';
-
-
 
     /*
     |--------------------------------------------------------------------------
@@ -58,9 +56,14 @@ class PurchaseRequest extends Model
 
     ];
 
-
-
-
+    public function customerOrder(): BelongsTo
+    {
+        return $this->belongsTo(
+            CustomerOrder::class,
+            'customer_order_no',
+            'order_no'
+        );
+    }
 
     /*
     |--------------------------------------------------------------------------
@@ -84,12 +87,6 @@ class PurchaseRequest extends Model
         );
     }
 
-
-
-
-
-
-
     /*
     |--------------------------------------------------------------------------
     | Purchase Request Items Relationship
@@ -104,7 +101,4 @@ class PurchaseRequest extends Model
             'purchase_request_id'
         );
     }
-
-
-
 }

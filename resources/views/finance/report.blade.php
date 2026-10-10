@@ -420,6 +420,13 @@ Generated {{ now()->format('d M Y') }}
 
 </div>
 
+<form method="GET" action="{{ route('finance.report') }}" class="row g-2 align-items-end mb-4 no-print">
+    <div class="col-md-4"><label class="form-label">Date From</label><input type="date" name="date_from" class="form-control" value="{{ $dateFrom?->toDateString() }}"></div>
+    <div class="col-md-4"><label class="form-label">Date To</label><input type="date" name="date_to" class="form-control" value="{{ $dateTo?->toDateString() }}"></div>
+    <div class="col-md-2"><button class="btn btn-primary w-100">Filter</button></div>
+    <div class="col-md-2"><a href="{{ route('finance.report') }}" class="btn btn-outline-secondary w-100">Reset</a></div>
+</form>
+
 
 </div>
 
@@ -431,6 +438,8 @@ Generated {{ now()->format('d M Y') }}
 <!-- SUMMARY CARDS -->
 
 <div class="row g-3">
+
+<div class="col-12"><div class="report-card"><div class="report-card-title">FINANCIAL SUMMARY</div><div style="height:240px"><canvas id="financeSummaryChart"></canvas></div></div></div>
 
 
 
@@ -568,7 +577,7 @@ NET PROFIT
 
 
 
-<div class="report-card-value text-primary">
+<div class="report-card-value {{ $netProfit < 0 ? 'text-danger' : 'text-success' }}">
 
 RM {{ number_format($netProfit,2) }}
 
@@ -1076,3 +1085,14 @@ Generated {{ now()->format('d M Y H:i') }}
 
 
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script>
+new Chart(document.getElementById('financeSummaryChart'), {
+    type: 'bar',
+    data: { labels: ['Revenue', 'Expenses', 'Net Profit', 'Purchase Costs'], datasets: [{ label: 'RM', data: [@json($totalRevenue), @json($totalExpenses), @json($netProfit), @json($totalPurchases)], backgroundColor: ['#16A34A', '#DC2626', @json($netProfit < 0 ? '#DC2626' : '#16A34A'), '#F59E0B'], borderRadius: 8 }] },
+    options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false } }, scales:{ y:{ beginAtZero:true } } }
+});
+</script>
+@endpush

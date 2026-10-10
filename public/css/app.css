@@ -8,24 +8,26 @@
 
 :root {
 
-    --primary:#7c3aed;
-    --primary-hover:#6d28d9;
+    --primary:#7C3AED;
+    --primary-hover:#5B21B6;
 
-    --dark:#111827;
+    --dark:#0F172A;
 
-    --background:#f8fafc;
+    --background:#F8FAFC;
 
     --card:#ffffff;
 
     --text:#172033;
 
-    --muted:#64748b;
+    --muted:#64748B;
 
-    --border:#e5e7eb;
+    --border:#E2E8F0;
 
     --success:#16a34a;
 
-    --danger:#dc2626;
+    --danger:#DC2626;
+    --soft-purple:#EDE9FE;
+    --warning:#F59E0B;
 
 }
 
@@ -50,6 +52,7 @@ body {
     color:var(--text);
 
     font-size:14px;
+    line-height:1.5;
 
 }
 
@@ -75,7 +78,7 @@ body {
 
     width:230px;
 
-    background:#111827;
+    background:var(--dark);
 
     min-height:100vh;
 
@@ -86,6 +89,7 @@ body {
     top:0;
 
     padding:25px 18px;
+    z-index:1020;
 
 }
 
@@ -226,6 +230,7 @@ body {
     align-items:center;
 
     justify-content:space-between;
+    gap:20px;
 
 }
 
@@ -278,9 +283,16 @@ body {
 
 .page-container {
 
-    padding:28px;
+    padding:30px;
+    max-width:1600px;
 
 }
+
+/* Restrained identity colors for user roles (roles are not status badges). */
+.role-badge { border: 1px solid transparent; font-weight: 600; }
+.role-badge-admin { background: var(--soft-purple) !important; color: var(--primary-hover) !important; border-color: #DDD6FE; }
+.role-badge-staff { background: #E2E8F0 !important; color: #475569 !important; border-color: #CBD5E1; }
+.role-badge-finance { background: #FEF3C7 !important; color: #92400E !important; border-color: #FDE68A; }
 
 
 
@@ -318,6 +330,7 @@ body {
     color:var(--muted);
 
     font-size:15px;
+    margin-bottom:0;
 
 }
 
@@ -429,6 +442,21 @@ body {
 
 }
 
+.stat-icon-svg { width:24px; height:24px; flex:0 0 24px; fill:none; stroke:#5b21b6; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; display:block; }
+
+.stat-icon-svg { stroke:var(--primary-hover); }
+
+/* Bootstrap semantic colors mapped to the DBFM status palette. */
+.bg-primary { background-color:var(--primary) !important; }
+.bg-success { background-color:var(--success) !important; }
+.bg-warning { background-color:var(--warning) !important; }
+.bg-danger { background-color:var(--danger) !important; }
+.bg-secondary { background-color:var(--muted) !important; }
+.text-primary { color:var(--primary) !important; }
+.text-success { color:var(--success) !important; }
+.text-warning { color:#B45309 !important; }
+.text-danger { color:var(--danger) !important; }
+
 
 
 
@@ -446,6 +474,7 @@ body {
     padding:22px;
 
     margin-bottom:25px;
+    overflow:hidden;
 
 }
 
@@ -477,8 +506,20 @@ body {
 .table {
 
     margin-bottom:0;
+    min-width:680px;
 
 }
+
+.table-responsive {
+    border:1px solid var(--border);
+    border-radius:14px;
+    background:var(--card);
+    overflow-x:auto;
+}
+
+.chart-card { min-height:320px; }
+.chart-container { position:relative; height:250px; min-height:250px; }
+.chart-container-sm { height:250px; min-height:250px; }
 
 
 
@@ -551,6 +592,7 @@ body {
     padding:8px 14px;
 
     font-size:14px;
+    white-space:nowrap;
 
 }
 
@@ -586,6 +628,9 @@ body {
     border-radius:20px;
 
 }
+
+.badge.bg-warning { color:#713f12 !important; }
+.badge.bg-light { color:#334155 !important; border:1px solid var(--border); }
 
 
 
@@ -638,6 +683,7 @@ body {
     border-radius:14px;
 
     border:none;
+    box-shadow:0 4px 14px rgba(15,23,42,.04);
 
 }
 
@@ -691,6 +737,29 @@ body {
 
     width:200px;
 
+}
+
+@media(max-width:768px){
+    .dashboard-wrapper { display:block; }
+    .sidebar {
+        position:relative;
+        width:100%;
+        min-height:auto;
+        padding:16px;
+    }
+    .sidebar-brand { margin-bottom:18px; }
+    .sidebar .nav { flex-direction:row !important; flex-wrap:wrap; gap:4px; }
+    .sidebar .nav-link { margin-bottom:0; padding:9px 11px; font-size:13px; }
+    .sidebar-menu-title { margin-bottom:8px; }
+    .main-content { margin-left:0; width:100%; }
+    .top-navbar { height:auto; min-height:72px; padding:16px 20px; align-items:flex-start; }
+    .top-navbar-title { font-size:18px; }
+    .role-badge { padding:6px 10px; font-size:12px; }
+    .page-container { padding:18px 14px; }
+    .page-header { padding:20px; border-radius:14px; }
+    .page-header h1 { font-size:24px; }
+    .section-card, .dashboard-card { border-radius:14px; padding:16px; }
+    .table { min-width:620px; }
 }
 
 

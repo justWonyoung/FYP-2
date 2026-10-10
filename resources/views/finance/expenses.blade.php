@@ -451,6 +451,8 @@ RM {{ number_format($exp->amount, 2) }}
 
 </strong>
 
+<a href="{{ route('finance.expenses.edit', $exp) }}" class="btn btn-sm btn-outline-secondary ms-2">Edit</a>
+
 
 </td>
 

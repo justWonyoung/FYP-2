@@ -111,7 +111,7 @@
                         Finance Status
                     </small>
 
-                    <span class="badge bg-info text-dark">
+                    <span class="badge {{ $pr->finance_status === 'approved' ? 'bg-success' : ($pr->finance_status === 'rejected' ? 'bg-danger' : 'bg-warning text-dark') }}">
                         {{ ucfirst($pr->finance_status) }}
                     </span>
 
@@ -125,7 +125,7 @@
                         Admin Approval Status
                     </small>
 
-                    <span class="badge bg-warning text-dark">
+                    <span class="badge {{ $pr->approval_status === 'approved' ? 'bg-success' : ($pr->approval_status === 'rejected' ? 'bg-danger' : 'bg-warning text-dark') }}">
                         {{ ucfirst($pr->approval_status) }}
                     </span>
 

@@ -2,6 +2,10 @@
 
 @section('content')
 <div class="container-fluid">
+    @if($errors->any())
+        <div class="alert alert-danger"><ul class="mb-0">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>
+    @endif
+    @if(session('error'))<div class="alert alert-danger">{{ session('error') }}</div>@endif
     <div class="card stat-card p-4">
         <h5 class="fw-bold mb-4"><i class="bi bi-file-earmark-plus me-2"></i>New Purchase Request</h5>
 
@@ -9,11 +13,16 @@
             @csrf
             <div class="row g-3 mb-3">
                 <div class="col-md-6">
-                    <label class="form-label fw-bold">Linked Customer Order</label>
-                    <select name="customer_order_no" class="form-select" required>
-                        <option value="CO-089 - Siti Enterprise (Body Lotion 500ml x200)">CO-089 - Siti Enterprise (Body Lotion 500ml x200)</option>
-                        <option value="CO-090 - Beauty Secret (Face Cream 50g x100)">CO-090 - Beauty Secret (Face Cream 50g x100)</option>
+                    <label class="form-label fw-bold" for="customer_order_no">Linked Customer Order</label>
+                    <select id="customer_order_no" name="customer_order_no" class="form-select" required @disabled($customerOrders->isEmpty())>
+                        <option value="">Select customer order</option>
+                        @foreach($customerOrders as $customerOrder)
+                            <option value="{{ $customerOrder->order_no }}" @selected(old('customer_order_no') === $customerOrder->order_no)>
+                                {{ $customerOrder->order_no }} - {{ $customerOrder->customer->customer_name }}
+                            </option>
+                        @endforeach
                     </select>
+                    @if($customerOrders->isEmpty())<div class="form-text text-danger">No active customer orders are available.</div>@endif
                 </div>
                 <div class="col-md-6">
                     <label class="form-label fw-bold">Supplier</label>

@@ -150,7 +150,7 @@ $moduleSubtitle = "Staff Account & Access Control";
                         @if($user->role == 'admin')
 
 
-                            <span class="badge bg-primary">
+                            <span class="badge role-badge role-badge-admin">
 
                                 Admin
 
@@ -160,7 +160,7 @@ $moduleSubtitle = "Staff Account & Access Control";
                         @elseif($user->role == 'finance')
 
 
-                            <span class="badge bg-warning text-dark">
+                            <span class="badge role-badge role-badge-finance">
 
                                 Finance
 
@@ -170,7 +170,7 @@ $moduleSubtitle = "Staff Account & Access Control";
                         @else
 
 
-                            <span class="badge bg-info text-dark">
+                            <span class="badge role-badge role-badge-staff">
 
                                 Staff
 

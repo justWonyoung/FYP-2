@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerOrderController;
@@ -24,14 +25,13 @@ Route::get('/', function () {
     return view('welcome');
 
 });
-
 /*
 |--------------------------------------------------------------------------
 | AUTH
 |--------------------------------------------------------------------------
 */
 
-Auth::routes();
+Auth::routes(['register' => false]);
 
 /*
 |--------------------------------------------------------------------------
@@ -127,10 +127,8 @@ Route::middleware(['auth'])->group(function () {
                 UserController::class
             );
 
-            Route::resource(
-                'suppliers',
-                SupplierController::class
-            );
+            Route::get('/activity-logs', [ActivityLogController::class, 'index'])
+                ->name('activity-logs.index');
 
             /*
     |--------------------------------------------------------------------------
@@ -216,7 +214,7 @@ Route::middleware(['auth'])->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::middleware(['role:staff,admin'])
+    Route::middleware(['role:staff'])
         ->prefix('staff')
         ->name('staff.')
         ->group(function () {
@@ -251,7 +249,7 @@ Route::middleware(['auth'])->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::middleware(['role:finance,admin'])
+    Route::middleware(['role:finance'])
         ->prefix('finance')
         ->name('finance.')
         ->group(function () {
@@ -273,6 +271,12 @@ Route::middleware(['auth'])->group(function () {
                 [FinancialController::class, 'storeExpense']
             )
                 ->name('expenses.store');
+
+            Route::get('/expenses/{expense}/edit', [FinancialController::class, 'editExpense'])
+                ->name('expenses.edit');
+
+            Route::put('/expenses/{expense}', [FinancialController::class, 'updateExpense'])
+                ->name('expenses.update');
 
             Route::get(
                 '/report',
@@ -309,17 +313,23 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['auth'])
         ->group(function () {
 
+            // Admin may monitor operational summaries, but cannot perform
+            // receiving, inventory updates, production, or usage actions.
+            Route::middleware(['role:staff,admin'])->group(function () {
+                Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
+                Route::get('/inventory/receiving-history', [InventoryController::class, 'receivingHistory'])->name('inventory.receiving.history');
+                Route::get('/inventory/report', [InventoryController::class, 'report'])->name('inventory.report');
+                Route::get('/production', [ProductionController::class, 'index'])->name('production.index');
+                Route::get('/production/report', [ProductionController::class, 'report'])->name('production.report');
+            });
+
+            Route::middleware(['role:staff'])->group(function () {
+
             /*
     |--------------------------------------------------------------------------
     | Inventory
     |--------------------------------------------------------------------------
     */
-
-            Route::get(
-                '/inventory',
-                [InventoryController::class, 'index']
-            )
-                ->name('inventory.index');
 
             Route::get(
                 '/inventory/receive',
@@ -332,18 +342,6 @@ Route::middleware(['auth'])->group(function () {
                 [InventoryController::class, 'getPRDetails']
             )
                 ->name('inventory.pr.details');
-
-            Route::get(
-                '/inventory/receiving-history',
-                [InventoryController::class, 'receivingHistory']
-            )
-                ->name('inventory.receiving.history');
-
-            Route::get(
-                '/inventory/report',
-                [InventoryController::class, 'report']
-            )
-                ->name('inventory.report');
 
             Route::get(
                 '/production/{id}/log',
@@ -362,18 +360,6 @@ Route::middleware(['auth'])->group(function () {
     | Production
     |--------------------------------------------------------------------------
     */
-
-            Route::get(
-                '/production',
-                [ProductionController::class, 'index']
-            )
-                ->name('production.index');
-
-            Route::get(
-                '/production/report',
-                [ProductionController::class, 'report']
-            )
-                ->name('production.report');
 
             Route::get(
                 '/production/create',
@@ -411,31 +397,7 @@ Route::middleware(['auth'])->group(function () {
             )
                 ->name('production.output');
 
-            Route::post(
-                '/production/{id}/complete',
-                [ProductionController::class, 'complete']
-            )
-                ->name('production.complete');
+            });
 
         });
-
-});
-
-use Illuminate\Support\Facades\Mail;
-
-Route::get('/test-email', function () {
-
-    Mail::raw(
-        'DBFM email system is working.',
-        function ($message) {
-
-            $message
-                ->to('yeenjpn@gmail.com')
-                ->subject('DBFM Test Email');
-
-        }
-    );
-
-    return 'Email sent successfully';
-
 });

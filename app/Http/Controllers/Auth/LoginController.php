@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\ActivityLog;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -19,6 +21,23 @@ class LoginController extends Controller
     */
 
     use AuthenticatesUsers;
+
+    /**
+     * Only active users may authenticate.
+     */
+    protected function credentials(Request $request): array
+    {
+        return [
+            'email' => $request->input('email'),
+            'password' => $request->input('password'),
+            'status' => 'active',
+        ];
+    }
+
+    protected function authenticated(Request $request, $user): void
+    {
+        ActivityLog::record($user, 'logged_in', 'Authentication', 'Successful login.');
+    }
 
     /**
      * Where to redirect users after login.

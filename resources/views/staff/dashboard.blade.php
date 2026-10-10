@@ -290,7 +290,7 @@
 
                         @if($pr->finance_status == 'approved')
 
-                            <span class="badge bg-warning text-dark">
+                            <span class="badge bg-success">
                                 Approved
                             </span>
 
@@ -302,7 +302,7 @@
 
                         @else
 
-                            <span class="badge bg-secondary">
+                            <span class="badge bg-warning text-dark">
                                 Pending
                             </span>
 
@@ -321,7 +321,7 @@
                         @if($pr->approval_status == 'approved')
 
 
-                            <span class="badge bg-secondary">
+                            <span class="badge bg-success">
                                 Approved
                             </span>
 
@@ -337,7 +337,7 @@
                         @else
 
 
-                            <span class="badge bg-secondary">
+                            <span class="badge bg-warning text-dark">
                                 Pending
                             </span>
 

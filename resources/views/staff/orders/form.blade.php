@@ -14,7 +14,10 @@ $items = old('items', $customerOrder?->items?->map(fn ($item) => ['product_name'
             <div class="col-md-4"><label class="form-label" for="order_date">Order Date</label><input id="order_date" type="date" name="order_date" class="form-control" value="{{ old('order_date', $customerOrder?->order_date?->toDateString() ?? now()->toDateString()) }}" required></div>
             <div class="col-md-4">
                 <label class="form-label" for="status">Status</label>
-                @if($customerOrder?->status === 'completed')
+                @if($customerOrder === null)
+                    <input id="status" class="form-control" value="Pending" readonly>
+                    <div class="form-text">New customer orders always start as Pending.</div>
+                @elseif($customerOrder?->status === 'completed')
                     <input id="status" class="form-control" value="Completed" readonly>
                     <input type="hidden" name="status" value="completed">
                     <div class="form-text">Completed orders must remain completed.</div>

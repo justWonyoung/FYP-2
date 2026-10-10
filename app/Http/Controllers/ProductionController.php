@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 
 use App\Models\Production;
+use App\Models\CustomerOrder;
 use App\Models\Material;
 use App\Models\MaterialUsage;
 use App\Models\MaterialWaste;
 use App\Models\ProductionYield;
+use App\Models\ActivityLog;
 
 
 use Illuminate\Http\Request;
@@ -79,13 +81,14 @@ class ProductionController extends Controller
 
     public function create()
     {
+        $customerOrders = CustomerOrder::query()
+            ->with(['customer:id,customer_name', 'items:id,customer_order_id,product_name,quantity'])
+            ->where('status', '!=', 'cancelled')
+            ->orderByDesc('order_date')
+            ->orderByDesc('id')
+            ->get(['id', 'customer_id', 'order_no', 'order_date', 'status']);
 
-
-        return view(
-
-            'production.create'
-
-        );
+        return view('production.create', compact('customerOrders'));
 
 
     }
@@ -109,7 +112,7 @@ class ProductionController extends Controller
 
 
 
-        $request->validate([
+        $validated = $request->validate([
 
 
 
@@ -122,21 +125,13 @@ class ProductionController extends Controller
 
 
 
-            'customer_order_no'
-
-            =>
-
-            'required',
+            'customer_order_no' => ['required', 'string', 'max:255'],
 
 
 
 
 
-            'product_name'
-
-            =>
-
-            'required',
+            'product_name' => ['required', 'string', 'max:255'],
 
 
 
@@ -172,48 +167,50 @@ class ProductionController extends Controller
 
         ]);
 
+        $customerOrder = CustomerOrder::query()
+            ->with('items:id,customer_order_id,product_name,quantity')
+            ->where('order_no', $validated['customer_order_no'])
+            ->where('status', '!=', 'cancelled')
+            ->first();
+
+        if (! $customerOrder) {
+            return back()->withErrors([
+                'customer_order_no' => 'The selected customer order does not exist or is cancelled.',
+            ])->withInput();
+        }
+
+        if (! $customerOrder->items->contains('product_name', $validated['product_name'])) {
+            return back()->withErrors([
+                'product_name' => 'The selected product does not belong to the selected customer order.',
+            ])->withInput();
+        }
 
 
 
 
 
 
-        Production::create([
+
+        $production = Production::create([
 
 
 
-            'batch_number'
-
-            =>
-
-            $request->batch_number,
-
-
-
-
-            'customer_order_no'
-
-            =>
-
-            $request->customer_order_no,
+            'batch_number' => $validated['batch_number'],
 
 
 
 
-            'product_name'
-
-            =>
-
-            $request->product_name,
+            'customer_order_no' => $validated['customer_order_no'],
 
 
 
 
-            'planned_output'
+            'product_name' => $validated['product_name'],
 
-            =>
 
-            $request->planned_output,
+
+
+            'planned_output' => $validated['planned_output'],
 
 
 
@@ -227,11 +224,7 @@ class ProductionController extends Controller
 
 
 
-            'unit'
-
-            =>
-
-            $request->unit,
+            'unit' => $validated['unit'],
 
 
 
@@ -245,15 +238,18 @@ class ProductionController extends Controller
 
 
 
-            'start_date'
-
-            =>
-
-            $request->start_date,
+            'start_date' => $validated['start_date'],
 
 
 
         ]);
+
+        ActivityLog::record(
+            $request->user(),
+            'created',
+            'Production',
+            "Created production batch {$production->batch_number}."
+        );
 
 
 
@@ -907,6 +903,13 @@ class ProductionController extends Controller
 
 
         });
+
+        ActivityLog::record(
+            request()->user(),
+            'completed',
+            'Production',
+            "Completed production batch {$production->batch_number}."
+        );
 
 
 

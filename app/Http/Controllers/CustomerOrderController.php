@@ -61,7 +61,7 @@ class CustomerOrderController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $validated = $this->validatedOrder($request);
+        $validated = $this->validatedOrder($request, false);
 
         $order = DB::transaction(function () use ($validated): CustomerOrder {
             $lastOrder = CustomerOrder::query()->lockForUpdate()->orderByDesc('id')->first();
@@ -71,7 +71,7 @@ class CustomerOrderController extends Controller
                 'customer_id' => $validated['customer_id'],
                 'order_no' => 'CO-'.str_pad((string) $nextNumber, 3, '0', STR_PAD_LEFT),
                 'order_date' => $validated['order_date'],
-                'status' => $validated['status'],
+                'status' => 'pending',
                 'total_amount' => $this->storeItems(null, $validated['items']),
             ]);
 
@@ -142,17 +142,22 @@ class CustomerOrderController extends Controller
     /**
      * @return array{customer_id: int, order_date: string, status: string, items: array<int, array{product_name: string, quantity: int, price: numeric}>}
      */
-    private function validatedOrder(Request $request): array
+    private function validatedOrder(Request $request, bool $forUpdate = true): array
     {
-        return $request->validate([
+        $rules = [
             'customer_id' => ['required', 'exists:customers,id'],
             'order_date' => ['required', 'date'],
-            'status' => ['required', 'in:pending,production,completed,cancelled'],
             'items' => ['required', 'array', 'min:1'],
             'items.*.product_name' => ['required', 'string', 'max:255'],
             'items.*.quantity' => ['required', 'integer', 'min:1'],
             'items.*.price' => ['required', 'numeric', 'min:0'],
-        ]);
+        ];
+
+        if ($forUpdate) {
+            $rules['status'] = ['required', 'in:pending,production,completed,cancelled'];
+        }
+
+        return $request->validate($rules);
     }
 
     /**

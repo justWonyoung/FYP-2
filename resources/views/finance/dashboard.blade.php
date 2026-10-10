@@ -22,7 +22,7 @@
         <div class="col-md-3">
             <div class="card stat-card p-3 border-start border-4 border-success">
                 <span class="text-muted small text-uppercase fw-bold">Total Revenue (MTD)</span>
-                <h3 class="fw-bold text-success my-1">RM {{ number_format($totalRevenue ?? 87000, 2) }}</h3>
+        <h3 class="fw-bold text-success my-1">RM {{ number_format($totalRevenue ?? 0, 2) }}</h3>
             </div>
         </div>
         <div class="col-md-3">
@@ -40,10 +40,17 @@
         <div class="col-md-3">
             <div class="card stat-card p-3 border-start border-4 border-primary">
                 <span class="text-muted small text-uppercase fw-bold">Estimated Net Profit</span>
-                <h3 class="fw-bold text-primary my-1">RM {{ number_format($netProfit ?? 0, 2) }}</h3>
+                <h3 class="fw-bold {{ ($netProfit ?? 0) < 0 ? 'text-danger' : 'text-success' }} my-1">RM {{ number_format($netProfit ?? 0, 2) }}</h3>
             </div>
         </div>
     </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-lg-8"><div class="card border-0 shadow-sm rounded-3 p-3 chart-card"><div class="fw-bold mb-2">Financial Summary</div><div class="text-muted small mb-2">Completed-order revenue, expenses, and net profit</div><div class="chart-container"><canvas id="financeDashboardChart" aria-label="Finance summary chart"></canvas></div></div></div>
+        <div class="col-lg-4"><div class="card border-0 shadow-sm rounded-3 p-3 chart-card"><div class="fw-bold mb-2">Expense Categories</div><div class="text-muted small mb-2">Recorded operational expenses</div><div class="chart-container"><canvas id="expenseCategoryChart" aria-label="Expense category chart"></canvas></div></div></div>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-3 mb-4 p-3 chart-card"><div class="fw-bold mb-2">Purchase Request Review</div><div class="text-muted small mb-2">Current Finance review status</div><div class="chart-container chart-container-sm"><canvas id="purchaseReviewChart" aria-label="Purchase request review chart"></canvas></div></div>
 
     <!-- Pending Reviews -->
     <div class="card border-0 shadow-sm rounded-3 mb-4">
@@ -90,4 +97,15 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script>
+const dbfmChartFont = { family: 'Inter, sans-serif' };
+const dbfmChartBase = { responsive:true, maintainAspectRatio:false, animation:{ duration:850, easing:'easeOutQuart' }, plugins:{ legend:{ position:'bottom', labels:{ usePointStyle:true, padding:16, font:dbfmChartFont } }, tooltip:{ padding:10, cornerRadius:8 } } };
+new Chart(document.getElementById('financeDashboardChart'), { type:'bar', data:{ labels:['Revenue','Expenses','Net Profit'], datasets:[{ data:[@json($totalRevenue),@json($totalExpense),@json($netProfit)], backgroundColor:['#16A34A','#DC2626',@json(($netProfit ?? 0) < 0 ? '#DC2626' : '#16A34A')], borderRadius:8, maxBarThickness:52 }] }, options:{...dbfmChartBase, plugins:{...dbfmChartBase.plugins, legend:{display:false}}, scales:{x:{grid:{display:false}},y:{beginAtZero:true, grid:{color:'#e5e7eb'}}}} });
+new Chart(document.getElementById('expenseCategoryChart'), { type:'doughnut', data:{ labels:@json($expenseCategorySummary->keys()), datasets:[{ data:@json($expenseCategorySummary->values()), backgroundColor:['#7C3AED','#5B21B6','#A78BFA','#64748B','#CBD5E1'], borderWidth:3, borderColor:'#fff' }] }, options:dbfmChartBase });
+new Chart(document.getElementById('purchaseReviewChart'), { type:'bar', data:{ labels:@json($purchaseStatusSummary->keys()), datasets:[{ label:'Requests', data:@json($purchaseStatusSummary->values()), backgroundColor:@json($purchaseStatusSummary->keys()->map(fn ($status) => match (strtolower($status)) { 'approved' => '#16A34A', 'rejected' => '#DC2626', default => '#F59E0B' })->values()), borderRadius:8, maxBarThickness:46 }] }, options:{...dbfmChartBase, indexAxis:'y', scales:{x:{beginAtZero:true, grid:{color:'#e5e7eb'}, ticks:{precision:0}},y:{grid:{display:false}}}} });
+</script>
+@endpush
 @endsection

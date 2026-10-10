@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\ActivityLog;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -39,7 +40,8 @@ class CustomerController extends Controller
     {
         $validated = $this->validatedCustomer($request);
 
-        Customer::create($validated);
+        $customer = Customer::create($validated);
+        ActivityLog::record($request->user(), 'created', 'Customer', "Created customer {$customer->customer_name}.");
 
         return redirect()->route('staff.customers.index')->with('success', 'Customer added successfully.');
     }
@@ -63,11 +65,12 @@ class CustomerController extends Controller
         $validated = $this->validatedCustomer($request, $customer);
 
         $customer->update($validated);
+        ActivityLog::record($request->user(), 'updated', 'Customer', "Updated customer {$customer->customer_name}.");
 
         return redirect()->route('staff.customers.index')->with('success', 'Customer updated successfully.');
     }
 
-    public function destroy(Customer $customer): RedirectResponse
+    public function destroy(Request $request, Customer $customer): RedirectResponse
     {
         if ($customer->orders()->exists()) {
             return redirect()
@@ -76,6 +79,7 @@ class CustomerController extends Controller
         }
 
         $customer->delete();
+        ActivityLog::record($request->user(), 'deleted', 'Customer', "Deleted customer {$customer->customer_name}.");
 
         return redirect()
             ->route('staff.customers.index')

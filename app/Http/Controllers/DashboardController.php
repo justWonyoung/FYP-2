@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\PurchaseRequest;
 use App\Models\Material;
 use App\Models\Expense;
+use App\Models\CustomerOrder;
 use App\Models\Production;
 
 
@@ -136,6 +137,15 @@ class DashboardController extends Controller
         )
         ->count();
 
+        $orderSummary = CustomerOrder::query()
+            ->selectRaw('status, COUNT(*) as total')
+            ->groupBy('status')
+            ->pluck('total', 'status');
+        $purchaseSummary = PurchaseRequest::query()
+            ->selectRaw('approval_status, COUNT(*) as total')
+            ->groupBy('approval_status')
+            ->pluck('total', 'approval_status');
+
 
 
 
@@ -152,6 +162,8 @@ class DashboardController extends Controller
                 'pendingProduction',
                 'lowStockItems',
                 'criticalItems'
+                , 'orderSummary'
+                , 'purchaseSummary'
             )
         );
 
@@ -339,7 +351,9 @@ class DashboardController extends Controller
 
 
 
-        $totalRevenue = 87000;
+        $totalRevenue = CustomerOrder::query()
+            ->where('status', 'completed')
+            ->sum('total_amount');
 
 
 
@@ -366,12 +380,16 @@ class DashboardController extends Controller
 
 
 
-        $netProfit =
-            $totalRevenue
-            -
-            $totalExpense
-            -
-            $approvedPurchaseCosts;
+        $netProfit = $totalRevenue - $totalExpense;
+
+        $expenseCategorySummary = Expense::query()
+            ->selectRaw('expense_category, SUM(amount) as total')
+            ->groupBy('expense_category')
+            ->pluck('total', 'expense_category');
+        $purchaseStatusSummary = PurchaseRequest::query()
+            ->selectRaw('finance_status, COUNT(*) as total')
+            ->groupBy('finance_status')
+            ->pluck('total', 'finance_status');
 
 
 
@@ -397,6 +415,8 @@ class DashboardController extends Controller
                 'approvedPurchaseCosts',
                 'netProfit',
                 'expenses'
+                , 'expenseCategorySummary'
+                , 'purchaseStatusSummary'
             )
         );
 

@@ -60,6 +60,7 @@ $moduleSubtitle = "Material Stock & Availability Monitoring";
 
 
 
+@if(Auth::user()->role === 'staff')
 <a href="{{ route('inventory.receive') }}"
    class="btn btn-primary">
 
@@ -71,6 +72,7 @@ $moduleSubtitle = "Material Stock & Availability Monitoring";
 
 
 </a>
+@endif
 
 
 

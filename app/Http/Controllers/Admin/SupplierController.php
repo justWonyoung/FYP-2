@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Supplier;
+use App\Models\ActivityLog;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -49,7 +50,8 @@ class SupplierController extends Controller
             'address' => 'nullable|string',
         ]);
 
-        Supplier::create($validated);
+        $supplier = Supplier::create($validated);
+        ActivityLog::record($request->user(), 'created', 'Supplier', "Created supplier {$supplier->supplier_name}.");
 
         return redirect()
             ->route($this->supplierRoutePrefix($request).'.suppliers.index')
@@ -88,6 +90,7 @@ class SupplierController extends Controller
         }
 
         $supplier->update($validated);
+        ActivityLog::record($request->user(), 'updated', 'Supplier', "Updated supplier {$supplier->supplier_name}.");
 
         return redirect()
             ->route($this->supplierRoutePrefix($request).'.suppliers.index')
@@ -103,6 +106,7 @@ class SupplierController extends Controller
         }
 
         $supplier->delete();
+        ActivityLog::record($request->user(), 'deleted', 'Supplier', "Deleted supplier {$supplier->supplier_name}.");
 
         return redirect()
             ->route($this->supplierRoutePrefix($request).'.suppliers.index')

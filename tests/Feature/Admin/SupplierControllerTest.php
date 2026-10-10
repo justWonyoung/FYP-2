@@ -14,7 +14,7 @@ class SupplierControllerTest extends TestCase
 
     public function test_unauthenticated_user_is_redirected_from_supplier_management(): void
     {
-        $response = $this->get(route('admin.suppliers.index'));
+        $response = $this->get(route('staff.suppliers.index'));
 
         $response->assertRedirect(route('login'));
     }
@@ -22,23 +22,23 @@ class SupplierControllerTest extends TestCase
     public function test_finance_user_is_forbidden_from_admin_supplier_management(): void
     {
         $response = $this->actingAs($this->createUser('finance'))
-            ->get(route('admin.suppliers.index'));
+            ->get(route('staff.suppliers.index'));
 
         $response->assertForbidden();
     }
 
-    public function test_admin_can_create_update_and_delete_a_supplier(): void
+    public function test_staff_can_create_update_and_delete_a_supplier(): void
     {
-        $admin = $this->createUser('admin');
+        $admin = $this->createUser('staff');
 
         $this->actingAs($admin)
-            ->post(route('admin.suppliers.store'), [
+            ->post(route('staff.suppliers.store'), [
                 'supplier_name' => 'Azalea Chemical Sdn Bhd',
                 'phone' => '03-1234 5678',
                 'email' => 'contact@azalea.test',
                 'address' => 'Shah Alam, Selangor',
             ])
-            ->assertRedirect(route('admin.suppliers.index'))
+            ->assertRedirect(route('staff.suppliers.index'))
             ->assertSessionHas('success', 'Supplier added successfully.');
 
         $this->assertDatabaseHas('suppliers', [
@@ -51,13 +51,13 @@ class SupplierControllerTest extends TestCase
         $supplier = Supplier::query()->where('supplier_name', 'Azalea Chemical Sdn Bhd')->firstOrFail();
 
         $this->actingAs($admin)
-            ->put(route('admin.suppliers.update', $supplier), [
+            ->put(route('staff.suppliers.update', $supplier), [
                 'supplier_name' => 'Azalea Chemical Supplies Sdn Bhd',
                 'phone' => '03-9876 5432',
                 'email' => 'sales@azalea.test',
                 'address' => 'Klang, Selangor',
             ])
-            ->assertRedirect(route('admin.suppliers.index'))
+            ->assertRedirect(route('staff.suppliers.index'))
             ->assertSessionHas('success', 'Supplier updated successfully.');
 
         $this->assertDatabaseHas('suppliers', [
@@ -69,8 +69,8 @@ class SupplierControllerTest extends TestCase
         ]);
 
         $this->actingAs($admin)
-            ->delete(route('admin.suppliers.destroy', $supplier))
-            ->assertRedirect(route('admin.suppliers.index'))
+            ->delete(route('staff.suppliers.destroy', $supplier))
+            ->assertRedirect(route('staff.suppliers.index'))
             ->assertSessionHas('success', 'Supplier deleted successfully.');
 
         $this->assertDatabaseMissing('suppliers', ['id' => $supplier->id]);
@@ -80,33 +80,33 @@ class SupplierControllerTest extends TestCase
     {
         Supplier::query()->create(['supplier_name' => 'Azalea Chemical Sdn Bhd']);
 
-        $response = $this->actingAs($this->createUser('admin'))
-            ->from(route('admin.suppliers.create'))
-            ->post(route('admin.suppliers.store'), [
+        $response = $this->actingAs($this->createUser('staff'))
+            ->from(route('staff.suppliers.create'))
+            ->post(route('staff.suppliers.store'), [
                 'supplier_name' => '',
                 'email' => 'not-an-email-address',
             ]);
 
-        $response->assertRedirect(route('admin.suppliers.create'))
+        $response->assertRedirect(route('staff.suppliers.create'))
             ->assertSessionHasErrors([
                 'supplier_name' => 'The supplier name field is required.',
                 'email' => 'The email field must be a valid email address.',
             ]);
 
-        $this->actingAs($this->createUser('admin'))
-            ->from(route('admin.suppliers.create'))
-            ->post(route('admin.suppliers.store'), [
+        $this->actingAs($this->createUser('staff'))
+            ->from(route('staff.suppliers.create'))
+            ->post(route('staff.suppliers.store'), [
                 'supplier_name' => 'Azalea Chemical Sdn Bhd',
             ])
-            ->assertRedirect(route('admin.suppliers.create'))
+            ->assertRedirect(route('staff.suppliers.create'))
             ->assertSessionHasErrors([
                 'supplier_name' => 'The supplier name has already been taken.',
             ]);
     }
 
-    public function test_admin_cannot_delete_a_supplier_referenced_by_purchase_requests(): void
+    public function test_staff_cannot_delete_a_supplier_referenced_by_purchase_requests(): void
     {
-        $admin = $this->createUser('admin');
+        $admin = $this->createUser('staff');
         $supplier = Supplier::query()->create(['supplier_name' => 'Referenced Supplier']);
 
         PurchaseRequest::query()->create([
@@ -125,8 +125,8 @@ class SupplierControllerTest extends TestCase
         ]);
 
         $this->actingAs($admin)
-            ->delete(route('admin.suppliers.destroy', $supplier))
-            ->assertRedirect(route('admin.suppliers.index'))
+            ->delete(route('staff.suppliers.destroy', $supplier))
+            ->assertRedirect(route('staff.suppliers.index'))
             ->assertSessionHas('error', 'Supplier cannot be deleted because it is referenced by existing purchase requests.');
 
         $this->assertModelExists($supplier);

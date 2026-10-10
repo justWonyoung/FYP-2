@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Expense;
 use App\Models\PurchaseRequest;
 use App\Models\Production;
+use App\Models\CustomerOrder;
+use App\Models\ActivityLog;
 
 
 class FinancialController extends Controller
@@ -46,7 +48,7 @@ class FinancialController extends Controller
 
 
 
-        Expense::create([
+        $expense = Expense::create([
 
             'expense_category'=>$request->expense_category,
 
@@ -57,6 +59,13 @@ class FinancialController extends Controller
             'description'=>$request->description,
 
         ]);
+
+        ActivityLog::record(
+            $request->user(),
+            'created',
+            'Finance',
+            "Recorded {$expense->expense_category} expense."
+        );
 
 
 
@@ -71,38 +80,66 @@ class FinancialController extends Controller
 
     }
 
+    public function editExpense(Expense $expense)
+    {
+        return view('finance.expense-edit', compact('expense'));
+    }
+
+    public function updateExpense(Request $request, Expense $expense)
+    {
+        $validated = $request->validate([
+            'expense_category' => 'required|string|in:Raw Materials,Packaging,Labor / Utility,Logistics',
+            'amount' => 'required|numeric|min:0.01',
+            'expense_date' => 'required|date',
+            'description' => 'required|string|max:255',
+        ]);
+
+        $expense->update($validated);
+
+        ActivityLog::record(
+            $request->user(),
+            'updated',
+            'Finance',
+            "Updated {$expense->expense_category} expense."
+        );
+
+        return redirect()->route('finance.expenses')->with('success', 'Expense updated successfully');
+    }
 
 
 
 
 
-public function report()
+
+public function report(Request $request)
 {
+    $dateFrom = $request->date('date_from');
+    $dateTo = $request->date('date_to');
 
-    $totalRevenue = 87000;
+    $withinPeriod = static function ($query, string $column) use ($dateFrom, $dateTo) {
+        return $query
+            ->when($dateFrom, fn ($q) => $q->whereDate($column, '>=', $dateFrom))
+            ->when($dateTo, fn ($q) => $q->whereDate($column, '<=', $dateTo));
+    };
+
+    $totalRevenue = CustomerOrder::query()
+        ->where('status', 'completed')
+        ->tap(fn ($q) => $withinPeriod($q, 'order_date'))
+        ->sum('total_amount');
 
 
-    $totalExpenses = Expense::sum('amount');
-    $expenseCount = Expense::count();
+    $expenseQuery = Expense::query();
+    $withinPeriod($expenseQuery, 'expense_date');
+    $totalExpenses = (clone $expenseQuery)->sum('amount');
+    $expenseCount = (clone $expenseQuery)->count();
 
-    $totalPurchases = PurchaseRequest::where(
-        'approval_status',
-        'approved'
-    )
-    ->sum('estimated_cost');
+    $purchaseQuery = PurchaseRequest::where('approval_status', 'approved');
+    $withinPeriod($purchaseQuery, 'created_at');
+    $totalPurchases = (clone $purchaseQuery)->sum('estimated_cost');
 
-    $approvedPurchaseCount = PurchaseRequest::where(
-    'approval_status',
-    'approved'
-)
-->count();
+    $approvedPurchaseCount = (clone $purchaseQuery)->count();
 
-    $netProfit =
-        $totalRevenue
-        -
-        $totalExpenses
-        -
-        $totalPurchases;
+    $netProfit = $totalRevenue - $totalExpenses;
 
 
 
@@ -119,7 +156,7 @@ public function report()
 
 
 
-    $expensesByCategory = Expense::selectRaw(
+    $expensesByCategory = (clone $expenseQuery)->selectRaw(
         'expense_category, SUM(amount) as total'
     )
     ->groupBy('expense_category')
@@ -132,27 +169,9 @@ public function report()
 
     $grandTotalCost = $totalExpenses;
 
-$recentExpenses = Expense::latest()
+$recentExpenses = (clone $expenseQuery)->latest()
     ->take(10)
     ->get();
-
-    $expenseCount = Expense::count();
-
-
-
-    $approvedPurchaseCount = PurchaseRequest::where(
-        'approval_status',
-        'approved'
-    )
-    ->count();
-
-
-
-    $recentExpenses = Expense::latest()
-        ->take(10)
-        ->get();
-
-
 
     return view(
     'finance.report',
@@ -176,7 +195,9 @@ $recentExpenses = Expense::latest()
 
         'approvedPurchaseCount',
 
-        'recentExpenses'
+        'recentExpenses',
+        'dateFrom',
+        'dateTo'
 
     )
 );

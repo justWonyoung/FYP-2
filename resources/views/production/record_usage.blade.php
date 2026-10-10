@@ -20,7 +20,15 @@
                 <div class="col-6"><strong>Product:</strong> {{ $batch->product_name }}</div>
                 <div class="col-6"><strong>Order:</strong> {{ $batch->customer_order_no }}</div>
                 <div class="col-6"><strong>Planned Target:</strong> {{ $batch->planned_output }} {{ $batch->unit }}</div>
-                <div class="col-6"><strong>Status:</strong> <span class="badge bg-warning text-dark">{{ ucfirst($batch->status) }}</span></div>
+                @php
+                    $statusClass = match (strtolower((string) $batch->status)) {
+                        'completed' => 'bg-success',
+                        'in_progress', 'running', 'production' => 'bg-primary',
+                        'cancelled', 'rejected' => 'bg-danger',
+                        default => 'bg-warning text-dark',
+                    };
+                @endphp
+                <div class="col-6"><strong>Status:</strong> <span class="badge {{ $statusClass }}">{{ ucfirst(str_replace('_', ' ', $batch->status)) }}</span></div>
             </div>
         </div>
 

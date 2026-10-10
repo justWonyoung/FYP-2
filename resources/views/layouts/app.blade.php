@@ -124,10 +124,19 @@ User Management
 
 
 
+@if(Auth::user()->role === 'staff')
+<li>
+<a href="{{ route('staff.dashboard') }}"
+class="nav-link {{ request()->routeIs('staff.dashboard') ? 'active':'' }}">
+Dashboard
+</a>
+</li>
+@endif
+
 <!-- ================= OPERATION MODULE ================= -->
 
 
-@if(in_array(Auth::user()->role,['admin','staff','finance']))
+@if(in_array(Auth::user()->role,['admin','staff']))
 
 
 
@@ -162,7 +171,7 @@ Production
 @endif
 
 
-@if(in_array(Auth::user()->role,['admin','staff']))
+@if(Auth::user()->role === 'staff')
 
 <li>
 
@@ -199,16 +208,38 @@ Supplier Management
 <!-- ================= FINANCE MODULE ================= -->
 
 
-@if(in_array(Auth::user()->role,['admin','finance']))
+@if(Auth::user()->role === 'finance')
 
 
 
 <li>
 
-<a href="{{ route('finance.expenses') }}"
-class="nav-link {{ request()->routeIs('finance.*') ? 'active':'' }}">
+<a href="{{ route('finance.dashboard') }}"
+class="nav-link {{ request()->routeIs('finance.dashboard') ? 'active':'' }}">
 
-Finance
+Dashboard
+
+</a>
+
+</li>
+
+<li>
+
+<a href="{{ route('finance.expenses') }}"
+class="nav-link {{ request()->routeIs('finance.expenses*') ? 'active':'' }}">
+
+Expense Management
+
+</a>
+
+</li>
+
+<li>
+
+<a href="{{ route('finance.report') }}"
+class="nav-link {{ request()->routeIs('finance.report') ? 'active':'' }}">
+
+Financial Report
 
 </a>
 
@@ -237,6 +268,17 @@ Finance
 class="nav-link {{ request()->routeIs('admin.reports') ? 'active':'' }}">
 
 Analytics
+
+</a>
+
+</li>
+
+<li>
+
+<a href="{{ route('admin.activity-logs.index') }}"
+class="nav-link {{ request()->routeIs('admin.activity-logs.*') ? 'active':'' }}">
+
+Activity Log
 
 </a>
 
@@ -418,6 +460,8 @@ Logout
 
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+@stack('scripts')
 
 
 

@@ -161,7 +161,7 @@ RM {{ number_format($pr->estimated_cost,2) }}
 <td>
 
 
-<span class="badge bg-info text-dark">
+<span class="badge {{ $pr->finance_status === 'approved' ? 'bg-success' : ($pr->finance_status === 'rejected' ? 'bg-danger' : 'bg-warning text-dark') }}">
 
 {{ ucfirst($pr->finance_status) }}
 

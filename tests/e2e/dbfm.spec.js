@@ -90,6 +90,50 @@ test('staff and admin can trace a customer order while finance remains restricte
     await financePage.close();
 });
 
+test('staff can manage customers and finance cannot access customer management', async ({ browser }) => {
+    const staffPage = await browser.newPage();
+    await login(staffPage, 'staff');
+    const customerName = 'Playwright Customer Management';
+    const updatedName = 'Playwright Customer Updated';
+
+    await staffPage.goto('/staff/customers/create');
+    await staffPage.getByLabel('Customer Name').fill(customerName);
+    await staffPage.getByLabel('Phone Number').fill('0199999999');
+    await staffPage.getByLabel('Email').fill('customer-management@example.test');
+    await staffPage.getByLabel('Address').fill('Customer Test Address');
+    await staffPage.getByRole('button', { name: 'Create Customer' }).click();
+    await expect(staffPage.locator('body')).toContainText('Customer added successfully.');
+
+    await staffPage.getByLabel('Search customers').fill('customer-management@example.test');
+    await staffPage.getByRole('button', { name: 'Search' }).click();
+    await expect(staffPage.locator('body')).toContainText(customerName);
+    await staffPage.getByRole('link', { name: 'View' }).click();
+    await expect(staffPage.locator('body')).toContainText('Customer Information');
+    await expect(staffPage.locator('body')).toContainText('customer-management@example.test');
+
+    await staffPage.getByRole('link', { name: 'Edit Customer' }).click();
+    await staffPage.getByLabel('Customer Name').fill(updatedName);
+    await staffPage.getByRole('button', { name: 'Update Customer' }).click();
+    await expect(staffPage.locator('body')).toContainText('Customer updated successfully.');
+    await expect(staffPage.locator('body')).toContainText(updatedName);
+
+    pageDialog(staffPage);
+    const disposableCustomerRow = staffPage.locator('tr').filter({ hasText: updatedName });
+    await disposableCustomerRow.getByRole('button', { name: 'Delete' }).click();
+    await expect(staffPage.locator('body')).toContainText('Customer deleted successfully.');
+    await staffPage.close();
+
+    const financePage = await browser.newPage();
+    await login(financePage, 'finance');
+    const response = await financePage.goto('/staff/customers');
+    expect(response?.status()).toBe(403);
+    await financePage.close();
+});
+
+function pageDialog(page) {
+    page.once('dialog', (dialog) => dialog.accept());
+}
+
 test('admin can create, view, update, validate, and delete a supplier', async ({ page }) => {
     const supplierName = 'Playwright Test Supplier';
     const updatedSupplierName = 'Playwright Updated Supplier';
@@ -124,6 +168,8 @@ test('staff request is approved by finance and then admin', async ({ browser }) 
     const staffPage = await browser.newPage();
     await login(staffPage, 'staff');
     await staffPage.goto('/staff/pr/create');
+    await staffPage.getByLabel('Linked Customer Order').selectOption('CO-001');
+    await expect(staffPage.locator('select[name="customer_order_no"] option').filter({ hasText: 'CO-001 - Playwright Order Customer' })).toHaveCount(1);
     await staffPage.locator('input[name="material_item"]').fill('Playwright Workflow Material');
     await staffPage.locator('input[name="quantity"]').fill('5');
     await staffPage.locator('input[name="estimated_cost"]').fill('125');

@@ -57,7 +57,7 @@ Create a new manufacturing production record.
 <div class="col-md-6">
 
 
-<label class="form-label">
+<label class="form-label" for="customer_order_no">
 
 Batch Number
 
@@ -88,12 +88,18 @@ Customer Order No
 </label>
 
 
-<input 
-type="text"
-name="customer_order_no"
-class="form-control"
-placeholder="CO-091"
-required>
+<select id="customer_order_no" name="customer_order_no" class="form-select" required @disabled($customerOrders->isEmpty())>
+<option value="">Select customer order</option>
+@foreach($customerOrders as $customerOrder)
+<option value="{{ $customerOrder->order_no }}" @selected(old('customer_order_no') === $customerOrder->order_no)>
+{{ $customerOrder->order_no }} - {{ $customerOrder->customer?->customer_name ?? 'Unnamed customer' }}
+</option>
+@endforeach
+</select>
+@if($customerOrders->isEmpty())
+<div class="form-text text-danger">No eligible customer orders are available.</div>
+@endif
+@error('customer_order_no')<div class="text-danger small">{{ $message }}</div>@enderror
 
 
 </div>
@@ -105,19 +111,18 @@ required>
 <div class="col-md-6">
 
 
-<label class="form-label">
+<label class="form-label" for="product_name">
 
 Product Name
 
 </label>
 
 
-<input 
-type="text"
-name="product_name"
-class="form-control"
-placeholder="Body Lotion 500ml"
-required>
+<select id="product_name" name="product_name" class="form-select" required @disabled($customerOrders->isEmpty())>
+<option value="">Select product</option>
+</select>
+<div class="form-text">Products are limited to the selected customer order.</div>
+@error('product_name')<div class="text-danger small">{{ $message }}</div>@enderror
 
 
 </div>
@@ -257,3 +262,28 @@ Cancel
 
 
 @endsection
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const orderSelect = document.getElementById('customer_order_no');
+    const productSelect = document.getElementById('product_name');
+    const orders = @json($customerOrders->mapWithKeys(fn ($order) => [$order->order_no => $order->items->map(fn ($item) => ['product_name' => $item->product_name, 'quantity' => $item->quantity])])->all());
+    const oldProduct = @json(old('product_name'));
+
+    function refreshProducts() {
+        const items = orders[orderSelect.value] || [];
+        productSelect.innerHTML = '<option value="">Select product</option>';
+        items.forEach(item => {
+            const option = document.createElement('option');
+            option.value = item.product_name;
+            option.textContent = `${item.product_name} (ordered: ${item.quantity})`;
+            option.selected = item.product_name === oldProduct;
+            productSelect.appendChild(option);
+        });
+        productSelect.disabled = items.length === 0;
+    }
+
+    orderSelect.addEventListener('change', refreshProducts);
+    refreshProducts();
+});
+</script>

@@ -36,6 +36,7 @@ $moduleSubtitle = "Batch Processing & Yield Monitoring";
 
 
 
+    @if(Auth::user()->role === 'staff')
     <a href="{{ route('production.create') }}"
        class="btn btn-primary">
 
@@ -46,6 +47,7 @@ $moduleSubtitle = "Batch Processing & Yield Monitoring";
 
 
     </a>
+    @endif
 
 
 </div>
@@ -477,6 +479,7 @@ Completed
 
 
 
+@if(Auth::user()->role === 'staff')
 <a href="{{ route('production.log',$batch->production_id) }}"
 class="btn btn-outline-primary btn-sm mb-2">
 
@@ -583,6 +586,8 @@ Production Completed
 </span>
 
 
+
+@endif
 
 @endif
 

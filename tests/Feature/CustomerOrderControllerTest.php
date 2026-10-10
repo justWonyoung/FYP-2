@@ -65,7 +65,39 @@ class CustomerOrderControllerTest extends TestCase
             ->post(route('staff.orders.store'), []);
 
         $response->assertRedirect(route('staff.orders.create'))
-            ->assertSessionHasErrors(['customer_id', 'order_date', 'status', 'items']);
+            ->assertSessionHasErrors(['customer_id', 'order_date', 'items'])
+            ->assertSessionDoesntHaveErrors('status');
+    }
+
+    public function test_new_customer_orders_always_start_as_pending(): void
+    {
+        $staff = $this->createUser('staff');
+        $customer = Customer::query()->create(['customer_name' => 'Pending Customer']);
+
+        $this->actingAs($staff)
+            ->post(route('staff.orders.store'), [
+                'customer_id' => $customer->id,
+                'order_date' => '2026-10-10',
+                'status' => 'completed',
+                'items' => [
+                    ['product_name' => 'Pending Product', 'quantity' => 1, 'price' => 10],
+                ],
+            ])
+            ->assertRedirect(route('staff.orders.index'));
+
+        $this->assertDatabaseHas('customer_orders', [
+            'customer_id' => $customer->id,
+            'status' => 'pending',
+        ]);
+    }
+
+    public function test_create_form_hides_status_control_and_shows_pending(): void
+    {
+        $this->actingAs($this->createUser('staff'))
+            ->get(route('staff.orders.create'))
+            ->assertOk()
+            ->assertSee('New customer orders always start as Pending.')
+            ->assertDontSee('name="status"');
     }
 
     public function test_finance_user_is_forbidden_from_customer_order_management(): void
@@ -76,7 +108,7 @@ class CustomerOrderControllerTest extends TestCase
         $response->assertForbidden();
     }
 
-    public function test_staff_and_admin_can_view_customer_order_details_with_item_totals(): void
+    public function test_staff_can_view_customer_order_details_with_item_totals(): void
     {
         $customer = Customer::query()->create([
             'customer_name' => 'Traceable Customer',
@@ -92,15 +124,13 @@ class CustomerOrderControllerTest extends TestCase
             'subtotal' => 37.50,
         ]);
 
-        foreach (['staff', 'admin'] as $role) {
-            $this->actingAs($this->createUser($role))
-                ->get(route('staff.orders.show', $order))
-                ->assertOk()
-                ->assertSee('CO-DETAIL')
-                ->assertSee('Traceable Customer')
-                ->assertSee('Traceable Product')
-                ->assertSee('RM 37.50');
-        }
+        $this->actingAs($this->createUser('staff'))
+            ->get(route('staff.orders.show', $order))
+            ->assertOk()
+            ->assertSee('CO-DETAIL')
+            ->assertSee('Traceable Customer')
+            ->assertSee('Traceable Product')
+            ->assertSee('RM 37.50');
     }
 
     public function test_order_list_filters_by_order_number_customer_status_date_and_paginates(): void
