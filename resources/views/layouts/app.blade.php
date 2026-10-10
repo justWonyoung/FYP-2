@@ -162,6 +162,35 @@ Production
 @endif
 
 
+@if(in_array(Auth::user()->role,['admin','staff']))
+
+<li>
+
+<a href="{{ route('staff.orders.index') }}"
+class="nav-link {{ request()->routeIs('staff.orders.*') || request()->routeIs('staff.customers.*') ? 'active':'' }}">
+
+Customer Orders
+
+</a>
+
+</li>
+
+
+<li>
+
+<a href="{{ route(Auth::user()->role.'.suppliers.index') }}"
+class="nav-link {{ request()->routeIs('admin.suppliers.*') || request()->routeIs('staff.suppliers.*') ? 'active':'' }}">
+
+Supplier Management
+
+</a>
+
+</li>
+
+
+@endif
+
+
 
 
 

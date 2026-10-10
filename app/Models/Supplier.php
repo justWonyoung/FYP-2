@@ -4,29 +4,32 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Supplier extends Model
 {
-
     use HasFactory;
-
 
     protected $fillable = [
 
         'supplier_name',
         'phone',
         'email',
-        'address'
+        'address',
 
     ];
 
-
-    public function purchaseRequests()
+    public function purchaseRequests(): HasMany
     {
         return $this->hasMany(
-            PurchaseRequest::class
+            PurchaseRequest::class,
+            'supplier_name',
+            'supplier_name'
         );
     }
 
+    public function isReferencedByPurchaseRequests(): bool
+    {
+        return $this->purchaseRequests()->exists();
+    }
 }

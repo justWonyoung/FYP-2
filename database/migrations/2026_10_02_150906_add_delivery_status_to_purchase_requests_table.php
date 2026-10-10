@@ -1,3 +1,4 @@
+
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -6,33 +7,29 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-
     public function up(): void
     {
-        Schema::table('purchase_requests', function (Blueprint $table) {
+        // Avoid adding the same column twice.
+        if (!Schema::hasColumn('purchase_requests', 'delivery_status')) {
 
-            $table->enum(
-                'delivery_status',
-                [
+            Schema::table('purchase_requests', function (Blueprint $table) {
+
+                $table->enum('delivery_status', [
                     'pending',
-                    'received'
-                ]
-            )
-            ->default('pending')
-            ->after('approval_status');
+                    'partial',
+                    'received',
+                ])
+                ->default('pending')
+                ->after('approval_status');
 
-        });
+            });
+        }
     }
-
-
 
     public function down(): void
     {
-        Schema::table('purchase_requests', function (Blueprint $table) {
-
-            $table->dropColumn('delivery_status');
-
-        });
+        // Keep this column because it is already defined
+        // in the original purchase_requests migration.
+        // This also protects existing delivery data.
     }
-
 };

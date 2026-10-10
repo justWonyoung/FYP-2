@@ -21,6 +21,9 @@
 /storage/*.key
 /storage/pail
 /vendor
+/database/playwright.sqlite
+/playwright-report
+/test-results
 _ide_helper.php
 Homestead.json
 Homestead.yaml
