@@ -190,6 +190,8 @@ color:#777;
 
 }
 
+.print-only { display:none; }
+
 
 
 
@@ -358,6 +360,36 @@ break-inside:avoid;
 
 }
 
+@media print {
+    @page { size: A4 portrait; margin: 11mm 12mm 12mm; }
+    html, body { background:#fff !important; color:#172033 !important; font-size:11pt; }
+    .print-report { padding:0 3mm !important; border:0 !important; border-radius:0 !important; box-shadow:none !important; }
+    .print-page-one, .print-page-two { display:contents !important; }
+    .report-header { padding-bottom:8mm; margin-bottom:7mm; border-bottom:2px solid #E2E8F0; }
+    .report-company { font-size:19pt; color:#0F172A; }
+    .report-title { margin-top:2mm; font-size:15pt; color:#5B21B6; }
+    .report-date { margin-top:2mm; font-size:10pt; color:#64748B; }
+    .print-only { display:block !important; }
+    .report-card, .report-section { border:1px solid #E2E8F0; border-radius:8px; box-shadow:none !important; background:#fff !important; }
+    .report-card { padding:4mm !important; break-inside:avoid; page-break-inside:avoid; }
+    .financial-summary-chart { height:190px !important; width:100%; max-width:100%; min-width:0; padding:0 4mm 3mm; box-sizing:border-box; overflow:hidden; }
+    .financial-summary-chart canvas { display:block; width:100% !important; max-width:100%; height:100% !important; }
+    .report-card-title { font-size:9pt; color:#64748B; }
+    .report-card-value { font-size:16pt; }
+    .report-card small { font-size:8.5pt; }
+    .row { break-inside:avoid; page-break-inside:avoid; }
+    .report-section { margin-top:0 !important; margin-bottom:8mm; padding:5mm !important; }
+    .report-section-title { margin-bottom:4mm; font-size:13pt; color:#0F172A; }
+    table { width:100% !important; table-layout:fixed; font-size:9.5pt !important; }
+    th, td { padding:2.5mm !important; vertical-align:top !important; overflow-wrap:anywhere; }
+    th { color:#334155; background:#F8FAFC !important; }
+    tr { break-inside:avoid; page-break-inside:avoid; }
+    .report-section:first-of-type th:nth-child(1), .report-section:first-of-type td:nth-child(1) { width:42%; }
+    .report-section:last-of-type th:nth-child(1), .report-section:last-of-type td:nth-child(1) { width:17%; }
+    .report-section:last-of-type th:nth-child(2), .report-section:last-of-type td:nth-child(2) { width:22%; }
+    .report-section:last-of-type th:nth-child(3), .report-section:last-of-type td:nth-child(3) { width:43%; }
+    .report-footer { margin-top:12mm !important; padding-top:4mm; border-top:1px solid #CBD5E1; color:#64748B; font-size:8.5pt; break-inside:avoid; page-break-inside:avoid; }
+}
 </style>
 
 
@@ -420,6 +452,10 @@ Generated {{ now()->format('d M Y') }}
 
 </div>
 
+@if($dateFrom || $dateTo)
+<div class="report-date print-only">Period: {{ $dateFrom?->format('d M Y') ?? 'Beginning' }} – {{ $dateTo?->format('d M Y') ?? 'Present' }}</div>
+@endif
+
 <form method="GET" action="{{ route('finance.report') }}" class="row g-2 align-items-end mb-4 no-print">
     <div class="col-md-4"><label class="form-label">Date From</label><input type="date" name="date_from" class="form-control" value="{{ $dateFrom?->toDateString() }}"></div>
     <div class="col-md-4"><label class="form-label">Date To</label><input type="date" name="date_to" class="form-control" value="{{ $dateTo?->toDateString() }}"></div>
@@ -435,11 +471,13 @@ Generated {{ now()->format('d M Y') }}
 
 
 
+<div class="print-page print-page-one">
+
 <!-- SUMMARY CARDS -->
 
 <div class="row g-3">
 
-<div class="col-12"><div class="report-card"><div class="report-card-title">FINANCIAL SUMMARY</div><div style="height:240px"><canvas id="financeSummaryChart"></canvas></div></div></div>
+<div class="col-12"><div class="report-card"><div class="report-card-title">FINANCIAL SUMMARY</div><div class="financial-summary-chart" style="height:240px"><canvas id="financeSummaryChart"></canvas></div></div></div>
 
 
 
@@ -726,6 +764,11 @@ Procurement activities completed
 
 
 
+
+<!-- END PAGE ONE SUMMARY -->
+</div>
+
+<div class="print-page print-page-two">
 
 <!-- EXPENSE BREAKDOWN -->
 
@@ -1072,6 +1115,9 @@ Generated {{ now()->format('d M Y H:i') }}
 
 </div>
 
+<!-- END PAGE TWO -->
+</div>
+
 
 
 
@@ -1089,10 +1135,22 @@ Generated {{ now()->format('d M Y H:i') }}
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <script>
-new Chart(document.getElementById('financeSummaryChart'), {
+const financeSummaryChart = new Chart(document.getElementById('financeSummaryChart'), {
     type: 'bar',
     data: { labels: ['Revenue', 'Expenses', 'Net Profit', 'Purchase Costs'], datasets: [{ label: 'RM', data: [@json($totalRevenue), @json($totalExpenses), @json($netProfit), @json($totalPurchases)], backgroundColor: ['#16A34A', '#DC2626', @json($netProfit < 0 ? '#DC2626' : '#16A34A'), '#F59E0B'], borderRadius: 8 }] },
     options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false } }, scales:{ y:{ beginAtZero:true } } }
+});
+
+window.addEventListener('beforeprint', () => {
+    const wrapper = document.querySelector('.financial-summary-chart');
+    if (wrapper) wrapper.style.height = '190px';
+    financeSummaryChart.resize();
+});
+
+window.addEventListener('afterprint', () => {
+    const wrapper = document.querySelector('.financial-summary-chart');
+    if (wrapper) wrapper.style.height = '240px';
+    financeSummaryChart.resize();
 });
 </script>
 @endpush

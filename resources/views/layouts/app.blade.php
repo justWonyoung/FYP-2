@@ -19,13 +19,13 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
 
-<link href="{{ asset('css/app.css') }}" rel="stylesheet">
+<link href="{{ asset('css/app.css') }}?v=auth-ui-4" rel="stylesheet">
 
 
 </head>
 
 
-<body>
+<body class="{{ Auth::check() ? 'app-shell' : 'auth-shell' }}">
 
 
 @auth
@@ -446,7 +446,13 @@ Logout
 
 
 
-@yield('content')
+<div class="auth-page-shell">
+    <div class="auth-glow auth-glow-one" aria-hidden="true"></div>
+    <div class="auth-glow auth-glow-two" aria-hidden="true"></div>
+    <div class="auth-content">
+        @yield('content')
+    </div>
+</div>
 
 
 
