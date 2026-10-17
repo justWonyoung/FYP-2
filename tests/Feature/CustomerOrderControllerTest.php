@@ -91,6 +91,74 @@ class CustomerOrderControllerTest extends TestCase
         ]);
     }
 
+    public function test_staff_can_create_an_order_with_a_due_date_and_priority(): void
+    {
+        $staff = $this->createUser('staff');
+        $customer = Customer::query()->create(['customer_name' => 'Scheduling Customer']);
+
+        $this->actingAs($staff)
+            ->post(route('staff.orders.store'), [
+                'customer_id' => $customer->id,
+                'order_date' => '2026-10-10',
+                'due_date' => '2026-10-15',
+                'priority' => 'urgent',
+                'items' => [
+                    ['product_name' => 'Priority Product', 'quantity' => 10, 'price' => 12.50],
+                ],
+            ])
+            ->assertRedirect(route('staff.orders.index'));
+
+        $order = CustomerOrder::query()->firstOrFail();
+
+        $this->assertSame($customer->id, $order->customer_id);
+        $this->assertSame('2026-10-15', $order->due_date?->toDateString());
+        $this->assertSame('urgent', $order->priority);
+        $this->assertSame('pending', $order->status);
+    }
+
+    public function test_new_order_defaults_to_normal_priority_when_omitted(): void
+    {
+        $staff = $this->createUser('staff');
+        $customer = Customer::query()->create(['customer_name' => 'Default Priority Customer']);
+
+        $this->actingAs($staff)
+            ->post(route('staff.orders.store'), [
+                'customer_id' => $customer->id,
+                'order_date' => '2026-10-10',
+                'items' => [
+                    ['product_name' => 'Default Priority Product', 'quantity' => 1, 'price' => 10],
+                ],
+            ])
+            ->assertRedirect(route('staff.orders.index'));
+
+        $this->assertDatabaseHas('customer_orders', [
+            'customer_id' => $customer->id,
+            'priority' => 'normal',
+            'due_date' => null,
+        ]);
+    }
+
+    public function test_customer_order_rejects_invalid_priority_and_due_date_before_order_date(): void
+    {
+        $staff = $this->createUser('staff');
+        $customer = Customer::query()->create(['customer_name' => 'Validation Customer']);
+        $payload = [
+            'customer_id' => $customer->id,
+            'order_date' => '2026-10-10',
+            'due_date' => '2026-10-09',
+            'priority' => 'immediate',
+            'items' => [
+                ['product_name' => 'Validation Product', 'quantity' => 1, 'price' => 10],
+            ],
+        ];
+
+        $this->actingAs($staff)
+            ->from(route('staff.orders.create'))
+            ->post(route('staff.orders.store'), $payload)
+            ->assertRedirect(route('staff.orders.create'))
+            ->assertSessionHasErrors(['priority', 'due_date']);
+    }
+
     public function test_create_form_hides_status_control_and_shows_pending(): void
     {
         $this->actingAs($this->createUser('staff'))
@@ -178,6 +246,15 @@ class CustomerOrderControllerTest extends TestCase
             ->assertOk()
             ->assertSee('CO-001')
             ->assertSee('status=pending');
+
+        $priorityOrder = $this->createOrder($customer, 'CO-URGENT', 'pending');
+        $priorityOrder->update(['priority' => 'urgent']);
+
+        $this->actingAs($staff)
+            ->get(route('staff.orders.index', ['priority' => 'urgent']))
+            ->assertOk()
+            ->assertSee('CO-URGENT')
+            ->assertDontSee('CO-010');
     }
 
     public function test_staff_can_change_an_order_status_when_no_active_operations_are_linked(): void

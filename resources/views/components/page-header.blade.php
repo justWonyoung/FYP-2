@@ -1,44 +1,19 @@
-<div class="page-header">
+@props(['title', 'subtitle' => null, 'date' => null])
 
+<header {{ $attributes->merge(['class' => 'page-header d-flex flex-column flex-md-row justify-content-between align-items-md-start gap-3']) }}>
     <div>
+        <h1>{{ $title }}</h1>
 
-        <h1>
-            {{ $title }}
-        </h1>
-
-
-        @if(isset($subtitle))
-
-        <p>
-            {{ $subtitle }}
-        </p>
-
+        @if($subtitle)
+            <p>{{ $subtitle }}</p>
         @endif
 
-
-        @if(isset($date))
-
-        <div class="text-muted small">
-
-            {{ $date }}
-
-        </div>
-
+        @if($date)
+            <div class="text-muted small mt-2">{{ $date }}</div>
         @endif
-
-
     </div>
 
-
-    @if(isset($action))
-
-    <div>
-
-        {!! $action !!}
-
-    </div>
-
-    @endif
-
-
-</div>
+    @isset($action)
+        <div class="flex-shrink-0">{{ $action }}</div>
+    @endisset
+</header>

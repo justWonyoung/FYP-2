@@ -31,6 +31,9 @@ class CustomerOrderController extends Controller
             ->when($request->filled('status'), function ($query) use ($request): void {
                 $query->where('status', $request->string('status')->toString());
             })
+            ->when($request->filled('priority'), function ($query) use ($request): void {
+                $query->where('priority', $request->string('priority')->toString());
+            })
             ->when($request->filled('date_from'), function ($query) use ($request): void {
                 $query->whereDate('order_date', '>=', $request->date('date_from'));
             })
@@ -71,6 +74,8 @@ class CustomerOrderController extends Controller
                 'customer_id' => $validated['customer_id'],
                 'order_no' => 'CO-'.str_pad((string) $nextNumber, 3, '0', STR_PAD_LEFT),
                 'order_date' => $validated['order_date'],
+                'due_date' => $validated['due_date'] ?? null,
+                'priority' => $validated['priority'] ?? 'normal',
                 'status' => 'pending',
                 'total_amount' => $this->storeItems(null, $validated['items']),
             ]);
@@ -128,6 +133,8 @@ class CustomerOrderController extends Controller
             $order->update([
                 'customer_id' => $validated['customer_id'],
                 'order_date' => $validated['order_date'],
+                'due_date' => $validated['due_date'] ?? null,
+                'priority' => $validated['priority'] ?? $order->priority ?? 'normal',
                 'status' => $validated['status'],
                 'total_amount' => $totalAmount,
             ]);
@@ -140,13 +147,15 @@ class CustomerOrderController extends Controller
     }
 
     /**
-     * @return array{customer_id: int, order_date: string, status: string, items: array<int, array{product_name: string, quantity: int, price: numeric}>}
+     * @return array{customer_id: int, order_date: string, due_date?: string|null, priority?: string, status?: string, items: array<int, array{product_name: string, quantity: int, price: numeric}>}
      */
     private function validatedOrder(Request $request, bool $forUpdate = true): array
     {
         $rules = [
             'customer_id' => ['required', 'exists:customers,id'],
             'order_date' => ['required', 'date'],
+            'due_date' => ['nullable', 'date', 'after_or_equal:order_date'],
+            'priority' => ['nullable', 'in:normal,high,urgent'],
             'items' => ['required', 'array', 'min:1'],
             'items.*.product_name' => ['required', 'string', 'max:255'],
             'items.*.quantity' => ['required', 'integer', 'min:1'],

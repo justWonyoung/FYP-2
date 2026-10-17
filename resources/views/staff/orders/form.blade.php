@@ -12,6 +12,8 @@ $items = old('items', $customerOrder?->items?->map(fn ($item) => ['product_name'
         <div class="row g-4 mb-4">
             <div class="col-md-4"><label class="form-label" for="customer_id">Customer</label><select id="customer_id" name="customer_id" class="form-select" required @disabled($customers->isEmpty())><option value="">Select customer</option>@foreach($customers as $customer)<option value="{{ $customer->id }}" @selected(old('customer_id', $customerOrder?->customer_id) == $customer->id)>{{ $customer->customer_name }}</option>@endforeach</select></div>
             <div class="col-md-4"><label class="form-label" for="order_date">Order Date</label><input id="order_date" type="date" name="order_date" class="form-control" value="{{ old('order_date', $customerOrder?->order_date?->toDateString() ?? now()->toDateString()) }}" required></div>
+            <div class="col-md-4"><label class="form-label" for="due_date">Due Date</label><input id="due_date" type="date" name="due_date" class="form-control" value="{{ old('due_date', $customerOrder?->due_date?->toDateString()) }}"><div class="form-text">Optional. Must be on or after the order date.</div></div>
+            <div class="col-md-4"><label class="form-label" for="priority">Priority</label><select id="priority" name="priority" class="form-select" required>@foreach(['normal' => 'Normal', 'high' => 'High', 'urgent' => 'Urgent'] as $value => $label)<option value="{{ $value }}" @selected(old('priority', $customerOrder?->priority ?? 'normal') === $value)>{{ $label }}</option>@endforeach</select></div>
             <div class="col-md-4">
                 <label class="form-label" for="status">Status</label>
                 @if($customerOrder === null)

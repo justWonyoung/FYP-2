@@ -10,6 +10,11 @@ $badgeClass = match ($customerOrder->status) {
     'completed' => 'bg-success',
     'cancelled' => 'bg-danger',
 };
+$priorityBadgeClass = match ($customerOrder->priority) {
+    'high' => 'bg-warning text-dark',
+    'urgent' => 'bg-danger',
+    default => 'bg-secondary',
+};
 @endphp
 
 @section('content')
@@ -36,6 +41,8 @@ $badgeClass = match ($customerOrder->status) {
             <dl class="row mb-0">
                 <dt class="col-sm-4">Order Number</dt><dd class="col-sm-8">{{ $customerOrder->order_no }}</dd>
                 <dt class="col-sm-4">Order Date</dt><dd class="col-sm-8">{{ $customerOrder->order_date->format('d M Y') }}</dd>
+                <dt class="col-sm-4">Due Date</dt><dd class="col-sm-8">{{ $customerOrder->due_date?->format('d M Y') ?? '-' }}</dd>
+                <dt class="col-sm-4">Priority</dt><dd class="col-sm-8"><span class="badge {{ $priorityBadgeClass }}">{{ ucfirst($customerOrder->priority ?? 'normal') }}</span></dd>
                 <dt class="col-sm-4">Status</dt><dd class="col-sm-8"><span class="badge {{ $badgeClass }}">{{ ucfirst($customerOrder->status) }}</span></dd>
                 <dt class="col-sm-4">Total Amount</dt><dd class="col-sm-8 fw-bold">RM {{ number_format((float) $customerOrder->total_amount, 2) }}</dd>
             </dl>

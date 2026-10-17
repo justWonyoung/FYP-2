@@ -1,5 +1,3 @@
-<div class="dashboard-card">
-
+<div {{ $attributes->merge(['class' => 'dashboard-card']) }}>
     {{ $slot }}
-
 </div>

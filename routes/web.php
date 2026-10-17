@@ -1,15 +1,17 @@
 <?php
 
+use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\ActivityLogController;
-use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerOrderController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FinancialController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\ProductionController;
+use App\Http\Controllers\ProductionSchedulingRecommendationController;
+use App\Http\Controllers\ProductionSchedulingSettingController;
 use App\Http\Controllers\PurchaseRequestController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -321,81 +323,90 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('/inventory/report', [InventoryController::class, 'report'])->name('inventory.report');
                 Route::get('/production', [ProductionController::class, 'index'])->name('production.index');
                 Route::get('/production/report', [ProductionController::class, 'report'])->name('production.report');
+                Route::get('/production/capacity', [ProductionSchedulingSettingController::class, 'index'])->name('production.capacity.index');
+                Route::get('/production/schedule-recommendations', [ProductionSchedulingRecommendationController::class, 'index'])
+                    ->name('production.schedule-recommendations.index');
             });
 
             Route::middleware(['role:staff'])->group(function () {
 
-            /*
+                /*
     |--------------------------------------------------------------------------
     | Inventory
     |--------------------------------------------------------------------------
     */
 
-            Route::get(
-                '/inventory/receive',
-                [InventoryController::class, 'receive']
-            )
-                ->name('inventory.receive');
+                Route::get(
+                    '/inventory/receive',
+                    [InventoryController::class, 'receive']
+                )
+                    ->name('inventory.receive');
 
-            Route::get(
-                '/inventory/pr-details/{id}',
-                [InventoryController::class, 'getPRDetails']
-            )
-                ->name('inventory.pr.details');
+                Route::get(
+                    '/inventory/pr-details/{id}',
+                    [InventoryController::class, 'getPRDetails']
+                )
+                    ->name('inventory.pr.details');
 
-            Route::get(
-                '/production/{id}/log',
-                [ProductionController::class, 'log']
-            )
-                ->name('production.log');
+                Route::get(
+                    '/production/{id}/log',
+                    [ProductionController::class, 'log']
+                )
+                    ->name('production.log');
 
-            Route::post(
-                '/inventory/store',
-                [InventoryController::class, 'store']
-            )
-                ->name('inventory.store');
+                Route::post(
+                    '/inventory/store',
+                    [InventoryController::class, 'store']
+                )
+                    ->name('inventory.store');
 
-            /*
+                /*
     |--------------------------------------------------------------------------
     | Production
     |--------------------------------------------------------------------------
     */
 
-            Route::get(
-                '/production/create',
-                [ProductionController::class, 'create']
-            )
-                ->name('production.create');
+                Route::get(
+                    '/production/create',
+                    [ProductionController::class, 'create']
+                )
+                    ->name('production.create');
 
-            Route::post(
-                '/production/store',
-                [ProductionController::class, 'store']
-            )
-                ->name('production.store');
+                Route::post(
+                    '/production/store',
+                    [ProductionController::class, 'store']
+                )
+                    ->name('production.store');
 
-            Route::post(
-                '/production/{id}/usage',
-                [ProductionController::class, 'storeUsage']
-            )
-                ->name('production.usage');
+                Route::put(
+                    '/production/capacity',
+                    [ProductionSchedulingSettingController::class, 'update']
+                )
+                    ->name('production.capacity.update');
 
-            Route::post(
-                '/production/{id}/waste',
-                [ProductionController::class, 'storeWaste']
-            )
-                ->name('production.waste');
+                Route::post(
+                    '/production/{id}/usage',
+                    [ProductionController::class, 'storeUsage']
+                )
+                    ->name('production.usage');
 
-            Route::post(
-                '/production/{id}/complete',
-                [ProductionController::class, 'complete']
-            )
-                ->name('production.complete');
+                Route::post(
+                    '/production/{id}/waste',
+                    [ProductionController::class, 'storeWaste']
+                )
+                    ->name('production.waste');
 
-            Route::post(
-                '/production/{id}/output',
-                [ProductionController::class, 'updateOutput']
-            )
-                ->name('production.output');
+                Route::post(
+                    '/production/{id}/complete',
+                    [ProductionController::class, 'complete']
+                )
+                    ->name('production.complete');
+
+                Route::post(
+                    '/production/{id}/output',
+                    [ProductionController::class, 'updateOutput']
+                )
+                    ->name('production.output');
 
             });
 

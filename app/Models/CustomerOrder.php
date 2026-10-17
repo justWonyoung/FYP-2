@@ -16,6 +16,8 @@ class CustomerOrder extends Model
         'customer_id',
         'order_no',
         'order_date',
+        'due_date',
+        'priority',
         'status',
         'total_amount',
 
@@ -25,6 +27,7 @@ class CustomerOrder extends Model
     {
         return [
             'order_date' => 'date',
+            'due_date' => 'date',
             'total_amount' => 'decimal:2',
         ];
     }

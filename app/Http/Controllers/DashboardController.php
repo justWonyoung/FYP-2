@@ -7,6 +7,7 @@ use App\Models\Material;
 use App\Models\Expense;
 use App\Models\CustomerOrder;
 use App\Models\Production;
+use App\Services\ProductionSchedulingService;
 
 
 class DashboardController extends Controller
@@ -184,7 +185,7 @@ class DashboardController extends Controller
     |--------------------------------------------------------------------------
     */
 
-    public function staff()
+    public function staff(ProductionSchedulingService $productionSchedulingService)
 {
 
     /*
@@ -289,6 +290,44 @@ class DashboardController extends Controller
 
     $materials = Material::all();
 
+    $activeCustomerOrders = CustomerOrder::query()
+        ->whereNotIn('status', ['completed', 'cancelled'])
+        ->count();
+
+    $lowStockItems = Material::query()
+        ->whereColumn('current_stock', '<=', 'minimum_stock')
+        ->count();
+
+    $criticalItems = Material::query()
+        ->where('current_stock', '<=', 0)
+        ->count();
+
+    $activeProduction = Production::query()
+        ->whereIn('status', ['Pending', 'In Progress', 'pending', 'in_progress'])
+        ->count();
+
+    $urgentOrders = CustomerOrder::query()
+        ->whereNotIn('status', ['completed', 'cancelled'])
+        ->where('priority', 'urgent')
+        ->count();
+
+    $activeCustomerOrderList = CustomerOrder::query()
+        ->with('customer:id,customer_name')
+        ->whereNotIn('status', ['completed', 'cancelled'])
+        ->orderBy('order_date')
+        ->take(5)
+        ->get();
+
+    $schedulingRecommendation = $productionSchedulingService->recommend();
+    $todayPlan = collect($schedulingRecommendation['recommendations'])
+        ->where('recommended_date', now()->toDateString())
+        ->values();
+    $todayPlanUsage = $todayPlan->first()['daily_capacity_used'] ?? 0;
+    $dailyCapacity = $schedulingRecommendation['summary']['daily_capacity'];
+    $todayPlanUtilization = $dailyCapacity !== null && $dailyCapacity > 0
+        ? min(100, ($todayPlanUsage / $dailyCapacity) * 100)
+        : 0;
+
 
 
 
@@ -316,7 +355,17 @@ class DashboardController extends Controller
             'totalRequests',
             'pendingRequests',
             'approvedRequests',
-            'rejectedRequests'
+            'rejectedRequests',
+            'activeCustomerOrders',
+            'lowStockItems',
+            'criticalItems',
+            'activeProduction',
+            'urgentOrders',
+            'activeCustomerOrderList',
+            'schedulingRecommendation',
+            'todayPlan',
+            'todayPlanUsage',
+            'todayPlanUtilization'
         )
     );
 
